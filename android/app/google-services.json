@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "807746515926",
+    "project_id": "buyandsale-be9e6",
+    "storage_bucket": "buyandsale-be9e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807746515926:android:cb065d3f92b4c32fd9ea77",
+        "android_client_info": {
+          "package_name": "com.example.shopping"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "807746515926-2078md5ups2t9c5udlskf95aknc62ajm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApUPAFJn99tMXoVE8UgKn8Cbzny2uN9OQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "807746515926-2078md5ups2t9c5udlskf95aknc62ajm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

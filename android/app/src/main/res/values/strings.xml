@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="facebook_app_id">667864901963240</string>
+<string name="fb_login_protocol_scheme">fb667864901963240</string>
+<string name="facebook_client_token">af5a93baedc05889230bf50587a5e860</string>
+<string name="app_name">4Buy and Sale</string>
+
+</resources>
