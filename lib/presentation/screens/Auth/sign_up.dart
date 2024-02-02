@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/services/apis.dart';
@@ -25,7 +26,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
-
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,12 +75,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
           GestureDetector(
               onTap: () async {
+                setState(() {
+                  isLoading = true;
+                });
                 await apiServices.registerUser(
                     email: email.text,
                     password: password.text,
                     context: context);
+                setState(() {
+                  isLoading = false;
+                });
               },
-              child: const CustomSignButton(text: 'تسجيل الدخول ')),
+              child: isLoading
+                  ? SpinKitDualRing(
+                      color: brawn,
+                    )
+                  : const CustomSignButton(text: 'تسجيل الدخول ')),
           const Center(
             child: Text(
               " قم بتسجيل الدخول بواسطة ",

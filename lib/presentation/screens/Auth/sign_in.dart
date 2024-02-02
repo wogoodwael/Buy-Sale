@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/services/apis.dart';
@@ -26,7 +27,7 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController password = TextEditingController();
   TextEditingController email = TextEditingController();
   ApiServices apiServices = ApiServices();
-
+  bool isLoading = false;
   Future<void> getUserToken() async {
     try {
       User? user = _auth.currentUser;
@@ -88,8 +89,15 @@ class _SignInScreenState extends State<SignInScreen> {
                       email: email.text,
                       password: password.text,
                       context: context);
+                  setState(() {
+                    isLoading = false;
+                  });
                 },
-                child: const CustomSignButton(text: 'تسجيل الدخول')),
+                child: isLoading
+                    ? SpinKitDualRing(
+                        color: brawn,
+                      )
+                    : const CustomSignButton(text: 'تسجيل الدخول')),
             Center(
               child: Text(
                 " قم بتسجيل الدخول بواسطة ",

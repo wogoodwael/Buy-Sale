@@ -37,7 +37,7 @@ class Data {
   String? updatedAt;
   String? phone;
   String? address;
-
+List<Comments>? comments;
 
   List<Files>? files;
  
@@ -55,7 +55,7 @@ class Data {
       this.updatedAt,
       this.phone,
       this.address,
-    
+    this.comments,
     
       this.files,
      });
@@ -81,6 +81,12 @@ class Data {
         files!.add(new Files.fromJson(v));
       });
     }
+     if (json['comments'] != null) {
+      comments = <Comments>[];
+      json['comments'].forEach((v) {
+        comments!.add(new Comments.fromJson(v));
+      });
+    }
   
   }
 
@@ -103,7 +109,9 @@ class Data {
     if (this.files != null) {
       data['files'] = this.files!.map((v) => v.toJson()).toList();
     }
-  
+      if (this.comments != null) {
+      data['comments'] = this.comments!.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }
@@ -129,6 +137,42 @@ class Files {
     data['advertisement_id'] = this.advertisementId;
     data['file_path'] = this.filePath;
     data['type'] = this.type;
+    return data;
+  }
+}
+class Comments {
+  int? id;
+  int? advertisementId;
+  int? userId;
+  String? content;
+  String? createdAt;
+  String? updatedAt;
+
+  Comments(
+      {this.id,
+      this.advertisementId,
+      this.userId,
+      this.content,
+      this.createdAt,
+      this.updatedAt});
+
+  Comments.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    advertisementId = json['advertisement_id'];
+    userId = json['user_id'];
+    content = json['content'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['advertisement_id'] = this.advertisementId;
+    data['user_id'] = this.userId;
+    data['content'] = this.content;
+    data['created_at'] = this.createdAt;
+    data['updated_at'] = this.updatedAt;
     return data;
   }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker_widget/image_picker_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
@@ -25,6 +26,36 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   TextEditingController birthday = TextEditingController();
   TextEditingController gender = TextEditingController();
   TextEditingController location = TextEditingController();
+  String? img;
+  String? fname;
+  String? lname;
+  String? hemail;
+  String? hgender;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getuserdata();
+  }
+
+  void getuserdata() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    img = sharedPreferences.getString("img_path")!;
+    fname = sharedPreferences.getString("user_name");
+    lname = sharedPreferences.getString("last_name");
+    hemail = sharedPreferences.getString("email");
+    hgender = sharedPreferences.getString("gender");
+    setState(() {
+      img;
+      fname;
+      lname;
+      hemail;
+      hgender;
+    });
+    print(img);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,9 +97,10 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
               height: 30,
             ),
             Stack(children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 40,
-                backgroundImage: ExactAssetImage("images/person2.png"),
+                backgroundImage:
+                    NetworkImage("https://buyandsell2024.com/$img"),
               ),
               Positioned(
                   right: 1,
@@ -86,15 +118,14 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
                         child: ImagePickerWidget(
-                          editIcon: const Icon(
+                          editIcon: Icon(
                             Icons.camera_alt,
-                            color: Colors.white,
-                            size: 25,
+                            color: brawn,
+                            size: 15,
                           ),
                           backgroundColor: Colors.white,
                           diameter: 50,
                           fit: BoxFit.none,
-                          initialImage: AssetImage("images"),
                           shape: ImagePickerWidgetShape.circle,
                           isEditable: true,
                           shouldCrop: true,
@@ -127,7 +158,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                 ),
                 //!
                 CustomTextField(
-                  hinttext: 'Andy',
+                  hinttext: fname ?? "",
                   controller: firstName,
                 ),
                 const SizedBox(
@@ -140,7 +171,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       fontSize: 15,
                     )),
                 CustomTextField(
-                  hinttext: 'Lexsian',
+                  hinttext: lname ?? "",
                   controller: lastName,
                 ),
                 const SizedBox(
@@ -153,7 +184,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                       fontSize: 15,
                     )),
                 CustomTextField(
-                  hinttext: "Andylexian22@gmail.com",
+                  hinttext: hemail ?? "alex@gmail.com",
                   controller: email,
                 ),
                 const SizedBox(
@@ -186,60 +217,35 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
             const SizedBox(
               height: 10,
             ),
-            Column(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      width: .4 * mediawidth(context),
-                      height: 50,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: brawn),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 10),
-                        child: TextFormField(
-                          controller: gender,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'ذكر',
-                            hintTextDirection: TextDirection.rtl,
-                            suffixIcon: Icon(
-                              Icons.check,
-                              color: darkbrawn,
-                            ),
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15,
-                            ),
-                          ),
+                Container(
+                  margin: EdgeInsets.only(right: 20),
+                  width: .4 * mediawidth(context),
+                  height: 50,
+                  decoration: BoxDecoration(
+                      border: Border.all(color: brawn),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: TextFormField(
+                      controller: gender,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: hgender,
+                        hintTextDirection: TextDirection.rtl,
+                        suffixIcon: Icon(
+                          Icons.check,
+                          color: darkbrawn,
+                        ),
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 15,
                         ),
                       ),
                     ),
-                    Container(
-                      width: .4 * mediawidth(context),
-                      height: 50,
-                      decoration: BoxDecoration(
-                          border: Border.all(color: brawn),
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: TextFormField(
-                          controller: gender,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'انثي',
-                            hintTextDirection: TextDirection.rtl,
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+                  ),
                 ),
               ],
             ),

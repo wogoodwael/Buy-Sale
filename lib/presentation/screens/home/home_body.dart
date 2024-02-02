@@ -10,6 +10,7 @@ import 'package:shopping/presentation/screens/home/home_container.dart';
 
 import 'package:shopping/presentation/widgets/search_container.dart';
 
+// ignore: must_be_immutable
 class HomeBody extends StatefulWidget {
   HomeBody({super.key, this.user_name});
   String? user_name;
@@ -20,6 +21,20 @@ class HomeBody extends StatefulWidget {
 
 class _HomeBodyState extends State<HomeBody> {
   ApiServices apiServices = ApiServices();
+
+  getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String username = prefs.getString('user_name')!;
+    setState(() {
+      widget.user_name = username;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserName();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +48,7 @@ class _HomeBodyState extends State<HomeBody> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
-                  widget.user_name!,
+                  widget.user_name ?? "",
                   style: const TextStyle(
                     fontSize: 15,
                     fontFamily: "",

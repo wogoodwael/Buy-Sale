@@ -6,7 +6,7 @@ class LoginModel {
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
-    data = json['data'] != null ?  Data.fromJson(json['data']) : null;
+    data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -27,7 +27,7 @@ class Data {
   String? lastName;
   String? email;
   String? phone;
-
+  String? imgPath;
   String? gender;
 
   String? token;
@@ -43,6 +43,7 @@ class Data {
       this.phone,
       this.gender,
       this.token,
+      this.imgPath,
       this.type});
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -53,7 +54,7 @@ class Data {
     lastName = json['last_name'];
     email = json['email'];
     phone = json['phone'];
-
+    imgPath = json['img_path'];
     gender = json['gender'];
 
     token = json['token'];
@@ -69,7 +70,7 @@ class Data {
     data['last_name'] = this.lastName;
     data['email'] = this.email;
     data['phone'] = this.phone;
-
+    data['img_path'] = this.imgPath;
     data['gender'] = this.gender;
 
     data['token'] = this.token;

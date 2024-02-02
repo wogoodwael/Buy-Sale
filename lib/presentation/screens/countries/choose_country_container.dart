@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping/business_logic/Cubit/cityCubit/cities_cubit.dart';
 import 'package:shopping/business_logic/Cubit/government_cubit/government_cubit.dart';
 
 import 'package:shopping/core/utils/colors.dart';
@@ -9,8 +11,10 @@ import 'package:shopping/data/models/government_model.dart';
 import 'package:shopping/presentation/widgets/countries_row.dart';
 
 class ChooseCountryContainer extends StatefulWidget {
-  const ChooseCountryContainer({super.key, required this.top});
+  ChooseCountryContainer({super.key, required this.top, this.id, this.ontap});
   final double top;
+  String? id;
+  void Function()? ontap;
 
   @override
   State<ChooseCountryContainer> createState() => _ChooseCountryContainerState();
@@ -33,10 +37,9 @@ class _ChooseCountryContainerState extends State<ChooseCountryContainer> {
             BlocProvider.of<GovernmentCubit>(context).governmentModel;
         if (state is GovernmentLoading) {
           return Center(
-            child: CircularProgressIndicator(
-              color: brawn,
-            ),
-          );
+              child: SpinKitDualRing(
+            color: brawn,
+          ));
         } else if (state is GovernmentSuccess) {
           return Center(
             child: Container(
@@ -48,6 +51,7 @@ class _ChooseCountryContainerState extends State<ChooseCountryContainer> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
+                    onHorizontalDragCancel: widget.ontap,
                     onTap: () {
                       branshMenu(context, widget.top);
                     },
@@ -100,6 +104,10 @@ class _ChooseCountryContainerState extends State<ChooseCountryContainer> {
               print(sharedPreferences.getString("government_id"));
               setState(() {
                 text = governmentModel!.data![index].nameAr.toString();
+                widget.id = governmentModel!.data![index].id.toString();
+                sharedPreferences.setString("government_choosen_id",
+                    governmentModel!.data![index].id.toString());
+                BlocProvider.of<CitiesCubit>(context).getCitiesCubit();
               });
             },
             value: 1,
@@ -114,5 +122,4 @@ class _ChooseCountryContainerState extends State<ChooseCountryContainer> {
       ),
     );
   }
-
 }

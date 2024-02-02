@@ -7,6 +7,7 @@ import 'package:shopping/presentation/screens/menu.dart';
 
 import 'package:shopping/presentation/widgets/person_container.dart';
 
+// ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
   HomeScreen({super.key, this.name});
   String? name;
@@ -61,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        drawer: const Drawer(
+        drawer:  Drawer(
             backgroundColor: Color(0xffd9d9d9),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
@@ -92,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             //* body of advertisement
-            const AdvertiseScreen(),
+            AdvertiseScreen(),
             //*body of setting
             const ProfileScreen()
           ],

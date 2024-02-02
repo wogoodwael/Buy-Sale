@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:shopping/business_logic/Cubit/categories_cubit/categories_cubit.dart';
+import 'package:shopping/business_logic/Cubit/categories/categories_cubit.dart';
 import 'package:shopping/data/models/categories_model.dart';
 import 'package:shopping/presentation/screens/menu.dart';
 import 'package:shopping/presentation/widgets/person_container.dart';
@@ -29,7 +29,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      drawer: const Drawer(
+      drawer:  Drawer(
           backgroundColor: Color(0xffd9d9d9),
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(

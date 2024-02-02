@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/subCategories/sub_categories_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/data/models/sub_cate.dart';
@@ -31,10 +33,9 @@ class _SubCategoryRowState extends State<SubCategoryRow> {
             BlocProvider.of<SubCategoriesCubit>(context).subCategoriesModel;
         if (state is SubCategoriesLoading) {
           return Center(
-            child: CircularProgressIndicator(
-              color: brawn,
-            ),
-          );
+              child: SpinKitDualRing(
+            color: brawn,
+          ));
         } else if (state is SubCategoriesSuccess) {
           return SizedBox(
               height: 500,
@@ -61,7 +62,12 @@ class _SubCategoryRowState extends State<SubCategoryRow> {
                           Column(
                             children: [
                               GestureDetector(
-                                onTap: () {
+                                onTap: () async {
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  prefs.setString(
+                                      'sub_category_id', item.id.toString());
+
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

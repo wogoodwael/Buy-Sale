@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/cityCubit/cities_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
@@ -20,9 +22,7 @@ class _ChooseCityContainerState extends State<ChooseCityContainer> {
   CityModel? cityModel;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    BlocProvider.of<CitiesCubit>(context).getCitiesCubit();
   }
 
   String? text;
@@ -33,8 +33,9 @@ class _ChooseCityContainerState extends State<ChooseCityContainer> {
         cityModel = BlocProvider.of<CitiesCubit>(context).cityModel;
         if (state is CitiesLoading) {
           return Center(
-            child: CircularProgressIndicator(),
-          );
+              child: SpinKitDualRing(
+            color: brawn,
+          ));
         } else if (state is CitiesSuccess) {
           return Center(
             child: Container(
@@ -69,7 +70,7 @@ class _ChooseCityContainerState extends State<ChooseCityContainer> {
           );
         } else {
           return Center(
-            child: Text("something went wrong "),
+            child: Text("يرجي اختيار المحافظه اولا  "),
           );
         }
       },
@@ -77,6 +78,7 @@ class _ChooseCityContainerState extends State<ChooseCityContainer> {
   }
 
   void branshMenu(BuildContext context, double top) {
+    BlocProvider.of<CitiesCubit>(context).getCitiesCubit();
     showMenu(
       context: context,
       color: grey,
@@ -94,6 +96,12 @@ class _ChooseCityContainerState extends State<ChooseCityContainer> {
               setState(() {
                 text = cityModel!.data![index].nameAr.toString();
               });
+              SharedPreferences sharedPreferences =
+                  await SharedPreferences.getInstance();
+              sharedPreferences.setString(
+                  'city_id', cityModel!.data![index].id.toString());
+              sharedPreferences.setInt(
+                  'id_of_city', cityModel!.data![index].id!);
             },
             value: 1,
             child: StatefulBuilder(

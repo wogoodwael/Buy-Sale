@@ -1,15 +1,91 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:shopping/core/utils/strings.dart';
+import 'package:shopping/data/models/menu_item.dart';
+import 'package:shopping/presentation/screens/Auth/sign_up.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
 import 'package:shopping/presentation/screens/home/home.dart';
+import 'package:shopping/presentation/widgets/item_list.dart';
 
-class MenuScreen extends StatelessWidget {
-  const MenuScreen({super.key});
+// ignore: must_be_immutable
+class MenuScreen extends StatefulWidget {
+  MenuScreen({super.key});
+
+  @override
+  State<MenuScreen> createState() => _MenuScreenState();
+}
+
+class _MenuScreenState extends State<MenuScreen> {
+  MenuItemModel? menuItemModel;
+
+  String? name;
+  getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String username = prefs.getString('user_name')!;
+    setState(() {
+      name = username;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserName();
+  }
 
   @override
   Widget build(BuildContext context) {
+    List<MenuItemModel> items = [
+      MenuItemModel(
+        text: "الرجوع إلى المحافظات",
+        ontap: () {
+          Navigator.pushReplacementNamed(context, countries);
+        },
+        icon: FontAwesomeIcons.flag,
+      ),
+      MenuItemModel(
+        text: "الرجوع إلى الرئيسيه",
+        ontap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => HomeScreen()));
+        },
+        icon: FontAwesomeIcons.home,
+      ),
+      MenuItemModel(
+        text: " الاقسام الرئيسية ",
+        ontap: () {
+          Navigator.pushReplacementNamed(context, section);
+        },
+        icon: FontAwesomeIcons.building,
+      ),
+      MenuItemModel(
+        text: "  اضافه اعلان ",
+        ontap: () {
+          Navigator.pushReplacementNamed(context, advertise);
+        },
+        icon: FontAwesomeIcons.adversal,
+      ),
+      MenuItemModel(
+        text: " تسجيل خروج  ",
+        ontap: () {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => SignUpScreen()));
+        },
+        icon: Icons.exit_to_app,
+      ),
+      MenuItemModel(
+        text: " الاعدادات ",
+        ontap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => ProfileScreen()));
+        },
+        icon: Icons.settings,
+      )
+    ];
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -36,7 +112,7 @@ class MenuScreen extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Text("محمد على",
+                Text(name ?? "",
                     style: GoogleFonts.cairo(fontSize: 20, color: Colors.white))
               ],
             ),
@@ -44,99 +120,17 @@ class MenuScreen extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushReplacementNamed(context, countries);
-              },
-              child: Text("الرجوع إلى المحافظات",
-                  style: GoogleFonts.cairo(
-                      fontWeight: FontWeight.w700, fontSize: 17)),
-            ),
-          ),
           const SizedBox(
             height: 5,
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () async {
-                SharedPreferences sharedPreferences =
-                    await SharedPreferences.getInstance();
-                String name = sharedPreferences.getString("user_name")!;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => HomeScreen(
-                              name: name,
-                            )));
-              },
-              child: Text("الرجوع إلى الرئيسيه",
-                  style: GoogleFonts.cairo(
-                      fontWeight: FontWeight.w700, fontSize: 17)),
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushReplacementNamed(context, section);
-              },
-              child: Text(" الاقسام الرئيسية ",
-                  style: GoogleFonts.cairo(
-                      fontWeight: FontWeight.w700, fontSize: 17)),
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.pushReplacementNamed(context, advertise);
-              },
-              child: Text("  اضافه اعلان ",
-                  style: GoogleFonts.cairo(
-                      fontWeight: FontWeight.w700, fontSize: 17)),
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              // onTap: () {
-              //   Navigator.pushReplacement(
-              //       context, MaterialPageRoute(builder: (_) => ChatScreen()));
-              // },
-              child: Text(" المحادثات  ",
-                  style: GoogleFonts.cairo(
-                      fontWeight: FontWeight.w700, fontSize: 17)),
-            ),
-          ),
-          const SizedBox(
-            height: 5,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => ProfileScreen()));
-                },
-                child: Text(" الاعدادات ",
-                    style: GoogleFonts.cairo(
-                        fontWeight: FontWeight.w700, fontSize: 17)),
-              ),
-            ),
-          ),
+          Container(
+            height: 400,
+            child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  return ItemList(menuItemModel: items[index]);
+                }),
+          )
         ],
       ),
     );

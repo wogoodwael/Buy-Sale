@@ -74,32 +74,27 @@ class _CountriesState extends State<Countries> {
                     image: DecorationImage(
                         image: AssetImage("images/footer.png"),
                         fit: BoxFit.cover)),
-                child: GestureDetector(
-                  onTap: () async {
-                    SharedPreferences sharedPreferences =
-                        await SharedPreferences.getInstance();
-                    String name = sharedPreferences.getString("user_name")!;
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => HomeScreen(
-                                  name: name,
-                                )));
-                  },
-                  child: Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 20),
-                      width: .5 * mediawidth(context),
-                      height: .07 * mediaHiegh(context),
-                      decoration: BoxDecoration(
-                          color: grey, borderRadius: BorderRadius.circular(30)),
-                      child: Center(
-                        child: Text(
-                          " التالي ",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 25),
-                        ),
-                      ),
+                child: Center(
+                  child: MaterialButton(
+                    minWidth: 200,
+                    color: grey,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    onPressed: () async {
+                      SharedPreferences sharedPreferences =
+                          await SharedPreferences.getInstance();
+                      String name = sharedPreferences.getString('user_name')!;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => HomeScreen(
+                                    name: name,
+                                  )));
+                    },
+                    child: Text(
+                      " التالي ",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
                     ),
                   ),
                 ),

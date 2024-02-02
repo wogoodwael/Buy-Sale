@@ -1,8 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shopping/business_logic/Cubit/categories_cubit/categories_cubit.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shopping/business_logic/Cubit/categories/categories_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
 
 import 'package:shopping/core/utils/strings.dart';
@@ -32,10 +32,9 @@ class _HomeContainerState extends State<HomeContainer> {
 
         if (state is CategoriesLoading) {
           return Center(
-            child: CircularProgressIndicator(
-              color: brawn,
-            ),
-          );
+              child: SpinKitDualRing(
+            color: brawn,
+          ));
         } else if (state is CategoriesSuccess) {
           return Container(
             height: 300,

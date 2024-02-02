@@ -1,41 +1,41 @@
 import 'package:flutter/material.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/data/models/advertisement_model.dart';
 import 'package:shopping/data/services/apis.dart';
 
 // ignore: must_be_immutable
-class AdvertismentDetails extends StatefulWidget {
-  AdvertismentDetails({
-    super.key,
-    this.name,
-    this.subdescribtion,
-    this.location,
-    this.price,
-    this.attributes,
-    this.sellerPhone,
-    this.fullDescribition,
-    this.comments,
-    this.imgPath,
-  });
+class MyAdvertisementDetails extends StatefulWidget {
+  MyAdvertisementDetails(
+      {super.key,
+      required this.id,
+      this.comments,
+      this.subdescribtion,
+      this.price,
+      this.description,
+      required this.name,
+      required this.imgPath,
+      required this.phone,
+      this.address});
+  int? id;
+  int? categoryId;
+  int? userId;
   String? name;
   String? subdescribtion;
-  String? location;
-  String? price;
-  List<Attributes>? attributes;
-  String? sellerPhone;
-  String? fullDescribition;
-
-  List<Comments>? comments;
-
+  String? description;
+  int? cityId;
+  int? price;
   String? imgPath;
-
+  String? createdAt;
+  String? updatedAt;
+  String? phone;
+  String? address;
+  List<Comments>? comments;
   @override
-  State<AdvertismentDetails> createState() => _AdvertismentDetailsState();
+  State<MyAdvertisementDetails> createState() => _MyAdvertisementDetailsState();
 }
 
-class _AdvertismentDetailsState extends State<AdvertismentDetails> {
+class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
   bool ontapcar = false;
 
   bool ontapchar1 = false;
@@ -249,10 +249,10 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                         Spacer(),
                         Padding(
                           padding: EdgeInsets.only(right: 60),
-                          child: Text(widget.price ?? "no price"),
+                          child: Text("${widget.price ?? 0}"),
                         ),
                         Text(
-                          widget.location ?? "no location",
+                          widget.address ?? "no location",
                           style: TextStyle(
                             fontFamily: "",
                             fontSize: 14,
@@ -269,16 +269,16 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                         ),
                       ],
                     ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: List.generate(
-                          widget.attributes?.length ?? 2,
-                          (index) => Text(
-                            widget.attributes?[index].value ?? "no value",
-                            style: GoogleFonts.plusJakartaSans(
-                                fontWeight: FontWeight.w600),
-                          ),
-                        )),
+                    // Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    //     children: List.generate(
+                    //       widget.attributes?.length ?? 2,
+                    //       (index) => Text(
+                    //         widget.attributes?[index].value ?? "no value",
+                    //         style: GoogleFonts.plusJakartaSans(
+                    //             fontWeight: FontWeight.w600),
+                    //       ),
+                    //     )),
                     SizedBox(
                       height: 20,
                     ),
@@ -312,12 +312,12 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                           child: Column(
                             children: [
                               Text(
-                                "اسم البائع",
+                                "انت",
                                 style: GoogleFonts.plusJakartaSans(
                                     fontWeight: FontWeight.w600, fontSize: 14),
                               ),
                               Text(
-                                widget.sellerPhone ?? "no seller phone",
+                                widget.phone ?? "no seller phone",
                                 style: TextStyle(fontSize: 14),
                               ),
                             ],
@@ -345,7 +345,7 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 40),
                         child: Text(
-                          widget.fullDescribition!,
+                          widget.description ?? "",
                           textAlign: TextAlign.end,
                           style: GoogleFonts.plusJakartaSans(fontSize: 14),
                         ),
@@ -379,7 +379,7 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                       children: [
                         Column(
                           children: List.generate(
-                            widget.comments?.length ?? 1,
+                            widget.comments?.length ?? 1 ,
                             (index) => Text(
                               "${widget.comments?[index].createdAt ?? " / / "}",
                               style: GoogleFonts.plusJakartaSans(
@@ -447,12 +447,12 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                                     onTap: () async {
                                       await apiServices.createComment(
                                           content: content.text);
-                                      setState(() {
-                                        widget
-                                            .comments![
-                                                widget.comments!.length - 1]
-                                            .content;
-                                      });
+                                      // setState(() {
+                                      //   widget
+                                      //       .comments?[
+                                      //           widget.comments?.length - 1]
+                                      //       .content;
+                                      // });
                                     },
                                     child: Icon(Icons.send)),
                                 border: InputBorder.none,

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/my_advertise/my_advertisement_cubit.dart';
 import 'package:shopping/core/helper/fav_provider.dart';
 import 'package:shopping/core/utils/colors.dart';
@@ -10,6 +12,8 @@ import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/services/apis.dart';
 import 'package:shopping/presentation/screens/client/fav_screen.dart';
+import 'package:shopping/presentation/screens/client/my_advertisement_details.dart';
+import 'package:shopping/presentation/screens/home/home.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -21,11 +25,22 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   ApiServices apiServices = ApiServices();
   MyAdvertisementModel? myAdvertisementModel;
+  String? img;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     BlocProvider.of<MyAdvertisementCubit>(context).getMyAdvertiseCubit();
+    imgf();
+  }
+
+  void imgf() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    img = sharedPreferences.getString("img_path")!;
+    setState(() {
+      img;
+    });
+    print(img);
   }
 
   @override
@@ -50,7 +65,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Spacer(),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushReplacementNamed(context, home);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => HomeScreen()));
                     },
                     child: Container(
                       margin: EdgeInsets.only(right: 10),
@@ -70,9 +86,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 height: 30,
               ),
               Stack(children: [
-                const CircleAvatar(
-                  radius: 40,
-                  backgroundImage: ExactAssetImage("images/person2.png"),
+                CircleAvatar(
+                  radius: 38,
+                  backgroundColor: darkbrawn,
+                  child: CircleAvatar(
+                    radius: 35,
+                    backgroundColor: Colors.white,
+                    backgroundImage:
+                        NetworkImage("https://buyandsell2024.com/$img"),
+
+                    // Error callback, display another image when the network image is not found
+                  ),
                 ),
                 Positioned(
                     right: 1,
@@ -82,12 +106,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.pushNamed(context, editProfile);
                       },
                       child: Container(
-                        width: 20,
-                        height: 20,
+                        width: 25,
+                        height: 25,
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.white, width: 2),
                             color: darkbrawn,
-                            borderRadius: BorderRadius.circular(10)),
+                            borderRadius: BorderRadius.circular(20)),
                         child: Center(
                           child: Icon(
                             Icons.edit,
@@ -113,8 +137,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           .myAdvertisementModel;
                   if (state is MyAdvertisementLoading) {
                     return Center(
-                      child: CircularProgressIndicator(),
-                    );
+                        child: SpinKitDualRing(
+                      color: brawn,
+                    ));
                   } else if (state is MyAdvertisementSuccess) {
                     return Container(
                       height: 230,
@@ -136,20 +161,53 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 SizedBox(
                                   height: 5,
                                 ),
-                                Container(
-                                  width: 150,
-                                  height: 180,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(35),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                MyAdvertisementDetails(
+                                                    description:
+                                                        myAdvertisementModel!
+                                                            .data![index]
+                                                            .description,
+                                                    price: myAdvertisementModel!
+                                                        .data![index].price,
+                                                    id: myAdvertisementModel!
+                                                        .data![index].id,
+                                                    name: myAdvertisementModel!
+                                                        .data![index].name,
+                                                    imgPath:
+                                                        myAdvertisementModel!
+                                                            .data![index]
+                                                            .imgPath,
+                                                    phone: myAdvertisementModel!
+                                                        .data![index].phone,
+                                                    address:
+                                                        myAdvertisementModel!
+                                                            .data![index]
+                                                            .address,
+                                                    subdescribtion:
+                                                        myAdvertisementModel!
+                                                            .data![index]
+                                                            .description!)));
+                                  },
+                                  child: Container(
+                                    width: 150,
+                                    height: 180,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(35),
+                                    ),
+                                    child: Image.network(
+                                        "https://buyandsell2024.com/${myAdvertisementModel!.data![index].imgPath}",
+                                        errorBuilder: (BuildContext context,
+                                            Object error,
+                                            StackTrace? stackTrace) {
+                                      // Error callback, display another image when the network image is not found
+                                      return Image.asset('images/cars.png');
+                                    }),
                                   ),
-                                  child: Image.network(
-                                      "https://buyandsell2024.com/${myAdvertisementModel!.data![index].imgPath}",
-                                      errorBuilder: (BuildContext context,
-                                          Object error,
-                                          StackTrace? stackTrace) {
-                                    // Error callback, display another image when the network image is not found
-                                    return Image.asset('images/cars.png');
-                                  }),
                                 ),
                               ]),
                             ],

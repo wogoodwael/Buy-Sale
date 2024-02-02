@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shopping/business_logic/Cubit/categories_cubit/categories_cubit.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping/business_logic/Cubit/categories/categories_cubit.dart';
+import 'package:shopping/business_logic/Cubit/sub_cate_create_adv/sub_cate_create_adv_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/categories_model.dart';
 import 'package:shopping/presentation/widgets/countries_row.dart';
 
+// ignore: must_be_immutable
 class ChooseCategoriesContainer extends StatefulWidget {
-  const ChooseCategoriesContainer({super.key, required this.top});
+  ChooseCategoriesContainer(
+      {super.key, required this.top, this.id, this.ontap});
   final double top;
+  String? id;
+  void Function()? ontap;
 
   @override
   State<ChooseCategoriesContainer> createState() =>
@@ -31,8 +38,10 @@ class _ChooseCategoriesContainerState extends State<ChooseCategoriesContainer> {
         categoriesModel =
             BlocProvider.of<CategoriesCubit>(context).categoriesModel;
         if (state is CategoriesLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Center(
+            child: SpinKitDualRing(
+              color: brawn,
+            ),
           );
         } else if (state is CategoriesSuccess) {
           return Center(
@@ -45,8 +54,13 @@ class _ChooseCategoriesContainerState extends State<ChooseCategoriesContainer> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
+                    onHorizontalDragCancel: widget.ontap,
+                    // onTapCancel: widget.ontap,
                     onTap: () {
-                      branshMenu(context, widget.top);
+                      branshMenu(
+                        context,
+                        widget.top,
+                      );
                     },
                     child: Icon(
                       Icons.keyboard_arrow_down,
@@ -75,7 +89,10 @@ class _ChooseCategoriesContainerState extends State<ChooseCategoriesContainer> {
     );
   }
 
-  void branshMenu(BuildContext context, double top) {
+  void branshMenu(
+    BuildContext context,
+    double top,
+  ) {
     showMenu(
       context: context,
       color: grey,
@@ -89,16 +106,33 @@ class _ChooseCategoriesContainerState extends State<ChooseCategoriesContainer> {
       items: List.generate(
         categoriesModel!.data!.categories!.length,
         (index) => PopupMenuItem(
-            onTap: () {
+            onTap: () async {
+              SharedPreferences sharedPreferences =
+                  await SharedPreferences.getInstance();
               setState(() {
                 text =
                     categoriesModel!.data!.categories![index].nameAr.toString();
+                widget.id =
+                    categoriesModel!.data!.categories![index].id.toString();
+                sharedPreferences.setString("adv_category_id",
+                    categoriesModel!.data!.categories![index].id.toString());
+                sharedPreferences.setString("category_choosen_name", text!);
+                text = sharedPreferences.getString("category_choosen_name");
+                BlocProvider.of<SubCateCreateAdvCubit>(context)
+                    .subCateCreateAdvCubit();
+
+                print("idinadv${widget.id}");
               });
             },
             value: 1,
             child: StatefulBuilder(
               builder: (BuildContext context,
                   void Function(void Function()) setState) {
+                setState(
+                  () {
+                    text;
+                  },
+                );
                 return CountiesRow(
                     country_name: categoriesModel!
                         .data!.categories![index].nameAr

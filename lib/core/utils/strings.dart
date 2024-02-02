@@ -26,5 +26,6 @@ String governmentLink = "https://buyandsell2024.com/api/governorate"; //&done
 String categoriesLink = "https://buyandsell2024.com/api/category"; //&done
 String myadvertiseLink =
     "https://buyandsell2024.com/api/my_advertisement"; //&done
-String updateProfileLink = "https://buyandsell2024.com/profile";
-String createCommentLink = "https://buyandsell2024.com/api/comment";//&done
+String updateProfileLink = "https://buyandsell2024.com/api/profile"; //&done
+String createCommentLink = "https://buyandsell2024.com/api/comment"; //&done
+String createAdvLink = "https://buyandsell2024.com/api/advertisement";

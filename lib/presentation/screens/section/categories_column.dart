@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shopping/business_logic/Cubit/categories_cubit/categories_cubit.dart';
+import 'package:shopping/business_logic/Cubit/categories/categories_cubit.dart';
+
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/categories_model.dart';
 import 'package:shopping/data/services/apis.dart';

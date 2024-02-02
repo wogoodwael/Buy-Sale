@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -29,13 +30,13 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
 
   @override
   Widget build(BuildContext context) {
-    List img = [
-      'images/chair.png',
-      'images/char2.png',
-      'images/char3.png',
-      'images/char4.png',
-      'images/char5.png'
-    ];
+    // List img = [
+    //   'images/chair.png',
+    //   'images/char2.png',
+    //   'images/char3.png',
+    //   'images/char4.png',
+    //   'images/char5.png'
+    // ];
     bool isAddedToFavorites = false;
     return SafeArea(
       child: Scaffold(
@@ -76,7 +77,9 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
 
                 if (state is AdvertismentLoading) {
                   return Center(
-                    child: CircularProgressIndicator(),
+                    child: SpinKitDualRing(
+                      color: brawn,
+                    ),
                   );
                 } else if (state is AdvertismentSuccess) {
                   return Column(
