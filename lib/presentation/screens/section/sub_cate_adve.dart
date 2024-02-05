@@ -120,7 +120,12 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                   .data![index].description;
                                               print(
                                                   "========================${des}");
-                                              // ignore: use_build_context_synchronously
+                                              BlocProvider.of<
+                                                          AdvertismentCubit>(
+                                                      context)
+                                                  .getAdvertismentCubit();
+                                             
+
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -173,6 +178,12 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                                         index]
                                                                     .imgPath ??
                                                                 "assets/images/car.png",
+                                                            advId:
+                                                                advertismentModel!
+                                                                    .data![
+                                                                        index]
+                                                                    .id
+                                                                    .toString(),
                                                           )));
                                               setState(() {
                                                 advertismentModel
@@ -214,8 +225,9 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                         advertismentModel!
                                                             .data!;
                                                     return GestureDetector(
-                                                      onTap: () {
+                                                      onTap: () async {
                                                         value.add(items[index]);
+
                                                         setState(() {
                                                           isAddedToFavorites =
                                                               true;

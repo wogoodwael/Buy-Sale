@@ -37,28 +37,26 @@ class Data {
   String? updatedAt;
   String? phone;
   String? address;
-List<Comments>? comments;
+  List<MyComments>? mycomments;
 
   List<Files>? files;
- 
 
-  Data(
-      {this.id,
-      this.categoryId,
-      this.userId,
-      this.name,
-      this.description,
-      this.cityId,
-      this.price,
-      this.imgPath,
-      this.createdAt,
-      this.updatedAt,
-      this.phone,
-      this.address,
-    this.comments,
-    
-      this.files,
-     });
+  Data({
+    this.id,
+    this.categoryId,
+    this.userId,
+    this.name,
+    this.description,
+    this.cityId,
+    this.price,
+    this.imgPath,
+    this.createdAt,
+    this.updatedAt,
+    this.phone,
+    this.address,
+    this.mycomments,
+    this.files,
+  });
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -73,21 +71,19 @@ List<Comments>? comments;
     updatedAt = json['updated_at'];
     phone = json['phone'];
     address = json['address'];
-  
- 
+
     if (json['files'] != null) {
       files = <Files>[];
       json['files'].forEach((v) {
         files!.add(new Files.fromJson(v));
       });
     }
-     if (json['comments'] != null) {
-      comments = <Comments>[];
+    if (json['comments'] != null) {
+      mycomments = <MyComments>[];
       json['comments'].forEach((v) {
-        comments!.add(new Comments.fromJson(v));
+        mycomments!.add(new MyComments.fromJson(v));
       });
     }
-  
   }
 
   Map<String, dynamic> toJson() {
@@ -104,13 +100,12 @@ List<Comments>? comments;
     data['updated_at'] = this.updatedAt;
     data['phone'] = this.phone;
     data['address'] = this.address;
-  
-  
+
     if (this.files != null) {
       data['files'] = this.files!.map((v) => v.toJson()).toList();
     }
-      if (this.comments != null) {
-      data['comments'] = this.comments!.map((v) => v.toJson()).toList();
+    if (this.mycomments != null) {
+      data['comments'] = this.mycomments!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -140,7 +135,8 @@ class Files {
     return data;
   }
 }
-class Comments {
+
+class MyComments {
   int? id;
   int? advertisementId;
   int? userId;
@@ -148,7 +144,7 @@ class Comments {
   String? createdAt;
   String? updatedAt;
 
-  Comments(
+  MyComments(
       {this.id,
       this.advertisementId,
       this.userId,
@@ -156,7 +152,7 @@ class Comments {
       this.createdAt,
       this.updatedAt});
 
-  Comments.fromJson(Map<String, dynamic> json) {
+  MyComments.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     advertisementId = json['advertisement_id'];
     userId = json['user_id'];

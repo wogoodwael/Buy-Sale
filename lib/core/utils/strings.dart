@@ -28,4 +28,4 @@ String myadvertiseLink =
     "https://buyandsell2024.com/api/my_advertisement"; //&done
 String updateProfileLink = "https://buyandsell2024.com/api/profile"; //&done
 String createCommentLink = "https://buyandsell2024.com/api/comment"; //&done
-String createAdvLink = "https://buyandsell2024.com/api/advertisement";
+String createAdvLink = "https://buyandsell2024.com/api/advertisement";//&done

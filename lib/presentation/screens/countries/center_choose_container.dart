@@ -19,6 +19,7 @@ class CenterChooseContainer extends StatefulWidget {
 class _CenterChooseContainerState extends State<CenterChooseContainer> {
   GovernmentModel? governmentModel;
   CityModel? cityModel;
+  bool isDeleted = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -60,29 +61,44 @@ class _CenterChooseContainerState extends State<CenterChooseContainer> {
                             scrollDirection: Axis.horizontal,
                             itemCount: cityModel!.data!.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Container(
-                                margin: EdgeInsets.only(top: 10, right: 10),
-                                width: 75,
-                                height: 22,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5),
-                                    color: lightbrawn),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Icon(
-                                      Icons.clear,
-                                      size: 13,
-                                      color: Colors.white,
-                                    ),
-                                    Text(
-                                      cityModel!.data![index].nameAr.toString(),
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ],
-                                ),
-                              );
+                              return isDeleted
+                                  ? Container()
+                                  : Container(
+                                      margin:
+                                          EdgeInsets.only(top: 10, right: 10),
+                                      width: 75,
+                                      height: 22,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: lightbrawn),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                isDeleted = true;
+                                              });
+                                            },
+                                            child: Icon(
+                                              Icons.clear,
+                                              size: 13,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          isDeleted
+                                              ? Container()
+                                              : Text(
+                                                  cityModel!.data![index].nameAr
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                        ],
+                                      ),
+                                    );
                             },
                           ),
                         ),

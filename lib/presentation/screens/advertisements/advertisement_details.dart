@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shopping/business_logic/Cubit/advertisement/advertisment_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
+import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/advertisement_model.dart';
 import 'package:shopping/data/services/apis.dart';
 
@@ -18,6 +21,7 @@ class AdvertismentDetails extends StatefulWidget {
     this.fullDescribition,
     this.comments,
     this.imgPath,
+    required this.advId,
   });
   String? name;
   String? subdescribtion;
@@ -26,7 +30,7 @@ class AdvertismentDetails extends StatefulWidget {
   List<Attributes>? attributes;
   String? sellerPhone;
   String? fullDescribition;
-
+  final String advId;
   List<Comments>? comments;
 
   String? imgPath;
@@ -352,7 +356,16 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 10,
+                    ),
+                    Divider(
+                      color: grey,
+                      thickness: 1,
+                      endIndent: 30,
+                      indent: 30,
+                    ),
+                    SizedBox(
+                      height: 10,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -365,7 +378,7 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                               color: darkbrawn),
                         ),
                         Text(
-                          "مراجعه",
+                          "التعليقات",
                           style: GoogleFonts.plusJakartaSans(
                               fontWeight: FontWeight.w600, fontSize: 16),
                         ),
@@ -380,56 +393,34 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                         Column(
                           children: List.generate(
                             widget.comments?.length ?? 1,
-                            (index) => Text(
-                              "${widget.comments?[index].createdAt ?? " / / "}",
-                              style: GoogleFonts.plusJakartaSans(
-                                  color: Colors.grey),
+                            (index) => Row(
+                              children: [
+                                Text(
+                                  "${widget.comments?[index].content ?? "no comments"}",
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                SizedBox(
+                                  width: .09 * mediawidth(context),
+                                ),
+                                Text(
+                                  "${widget.comments?[index].createdAt ?? " / / "}",
+                                  style: GoogleFonts.plusJakartaSans(
+                                      color: Colors.grey),
+                                ),
+                                SizedBox(
+                                  width: .1 * mediawidth(context),
+                                ),
+                                Text(
+                                  "${widget.comments?[index].userId ?? "0"}",
+                                  style: GoogleFonts.plusJakartaSans(
+                                      color: Colors.grey),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              "محمد علي ",
-                              style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
-                            ),
-                            const Row(
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        const CircleAvatar(
-                          radius: 20,
-                          backgroundImage:
-                              ExactAssetImage("images/person2.png"),
-                        ),
                       ],
                     ),
-                    Column(
-                        children: List.generate(
-                            widget.comments?.length ?? 1,
-                            (index) => Text(
-                                  "${widget.comments?[index].content ?? "no comments"}",
-                                  style: TextStyle(color: Colors.black),
-                                ))),
                     SizedBox(
                       height: 20,
                     ),
@@ -441,17 +432,25 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: TextField(
+                            textDirection: TextDirection.rtl,
                             controller: content,
                             decoration: InputDecoration(
                                 prefixIcon: GestureDetector(
                                     onTap: () async {
+                                      content.clear();
                                       await apiServices.createComment(
-                                          content: content.text);
+                                          content: content.text,
+                                          advId: widget.advId,
+                                          context: context);
                                       setState(() {
-                                        widget
-                                            .comments![
-                                                widget.comments!.length - 1]
-                                            .content;
+                                        widget.comments!.last.content =
+                                            content.text;
+                                        // widget.comments!
+                                        //     .add(widget.comments!.last);
+                                        // widget.comments!.length;
+                                        BlocProvider.of<AdvertismentCubit>(
+                                                context)
+                                            .getAdvertismentCubit();
                                       });
                                     },
                                     child: Icon(Icons.send)),
@@ -461,7 +460,7 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 200,
                     ),
                   ],
                 ),

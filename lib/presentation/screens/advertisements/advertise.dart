@@ -1,11 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_cubit.dart';
+import 'package:shopping/core/helper/errors_snack.dart';
+import 'package:shopping/core/helper/header.dart';
 
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
@@ -21,6 +27,8 @@ import 'package:shopping/presentation/screens/countries/center_choose_container.
 import 'package:shopping/presentation/screens/countries/choose_city_container.dart';
 import 'package:shopping/presentation/screens/countries/choose_country_container.dart';
 import 'package:shopping/presentation/widgets/countries_row.dart';
+import 'package:shopping/presentation/widgets/custom_text_field.dart';
+import 'package:video_player/video_player.dart';
 
 // ignore: must_be_immutable
 class AdvertiseScreen extends StatefulWidget {
@@ -60,6 +68,35 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   List<String> numList = [];
   Map<String, dynamic>? attributesMap;
   Map<String, dynamic>? filesMap;
+  bool picked = false;
+  bool isLoading = false;
+  Widget? image;
+  VideoPlayerController? _controller;
+  File? _videoFile;
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  void _pickVideo() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.video,
+    );
+
+    if (result != null) {
+      setState(() {
+        _videoFile = File(result.files.single.path!);
+        _controller = VideoPlayerController.file(_videoFile!)
+          ..initialize().then((_) {
+            setState(() {
+              _controller?.play();
+            });
+          });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,26 +105,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Container(
-              width: mediawidth(context),
-              height: .2 * mediaHiegh(context),
-              decoration: BoxDecoration(
-                  color: brawn,
-                  borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(50))),
-              child: const Padding(
-                padding: EdgeInsets.only(top: 50),
-                child: Center(
-                  child: Text(
-                    "اضف اعلان",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ),
+            const AdvertisementHeader(),
             const Padding(
               padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
               child: Text(
@@ -198,8 +216,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                               context,
                             ),
                       );
-                      // BlocProvider.of<AttrsCategoriesCubit>(context)
-                      //     .getCategoriesAttrsCubit();
+
                       SharedPreferences sharedPreferences =
                           await SharedPreferences.getInstance();
                       type = sharedPreferences.getString("type")!;
@@ -247,6 +264,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black)),
                             child: TextField(
+                                textDirection: TextDirection.rtl,
                               onSubmitted: (value) {
                                 attributesMap = {
                                   'attributes[0][id]': getCateAttrsModel!
@@ -279,6 +297,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black)),
                             child: TextField(
+                                textDirection: TextDirection.rtl,
                               controller: priceOfProduct,
                               decoration:
                                   InputDecoration(border: InputBorder.none),
@@ -286,74 +305,13 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                           )),
                         ],
                       ),
-            const Padding(
-                padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                child: Text(
-                  "سعر  المنتج ",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                )),
-            Center(
-                child: Container(
-              width: .85 * mediawidth(context),
-              height: 40,
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.black)),
-              child: TextField(
-                controller: price,
-                decoration: InputDecoration(border: InputBorder.none),
-              ),
-            )),
-            const Padding(
-                padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                child: Text(
-                  "عنوان  البائع ",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                )),
-            Center(
-                child: Container(
-              width: .85 * mediawidth(context),
-              height: 40,
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.black)),
-              child: TextField(
-                controller: locattion,
-                decoration: InputDecoration(border: InputBorder.none),
-              ),
-            )),
-            const Padding(
-                padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                child: Text(
-                  "رقم موبايل  البائع ",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                )),
-            Center(
-                child: Container(
-              width: .85 * mediawidth(context),
-              height: 40,
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.black)),
-              child: TextField(
-                controller: phone,
-                decoration: InputDecoration(border: InputBorder.none),
-              ),
-            )),
-            const Padding(
-                padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                child: Text(
-                  "اسم البائع   ",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                )),
-            Center(
-                child: Container(
-              width: .85 * mediawidth(context),
-              height: 40,
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.black)),
-              child: TextField(
-                controller: sellerName,
-                decoration: InputDecoration(border: InputBorder.none),
-              ),
-            )),
+            AdvTextField(
+              text: 'سعر المنتج',
+              controller: price,
+            ),
+            AdvTextField(text: "عنوان  البائع ", controller: locattion),
+            AdvTextField(text: "رقم موبايل  البائع ", controller: phone),
+            AdvTextField(text: "اسم البائع   ", controller: sellerName),
             const SizedBox(
               height: 20,
             ),
@@ -380,21 +338,49 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       'files[0][file_path]': files[0],
                       'files[0][type]': files.first.extension!
                     };
+                    setState(() {
+                      picked = true;
+                    });
                     print("filesssssssss${files[0].path}");
                     print("filesssssssss${files.first.extension!}");
                   },
-                  child: Center(
-                    child: CircleAvatar(
-                      backgroundColor: brawn,
-                      child: const Icon(Icons.add),
-                    ),
-                  ),
+                  child: picked
+                      ? image
+                      : Center(
+                          child: CircleAvatar(
+                            backgroundColor: brawn,
+                            child: const Icon(Icons.add),
+                          ),
+                        ),
                 ),
               ),
             ),
             const SizedBox(
               height: 20,
             ),
+            const Padding(
+                padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
+                child: Text(
+                  "فديو المنتج   ",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                )),
+            Center(
+                child: Container(
+              width: .8 * mediawidth(context),
+              height: 150,
+              decoration: BoxDecoration(
+                  color: grey, borderRadius: BorderRadius.circular(10)),
+              child: MaterialButton(
+                  onPressed: _pickVideo,
+                  child: _videoFile == null
+                      ? const Icon(Icons.video_library)
+                      : _controller != null && _controller!.value.isInitialized
+                          ? AspectRatio(
+                              aspectRatio: _controller!.value.aspectRatio,
+                              child: VideoPlayer(_controller!),
+                            )
+                          : const CircularProgressIndicator()),
+            )),
             const Padding(
                 padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
                 child: Text(
@@ -428,7 +414,9 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
 
                   List ciryid = [sharedPreferences.getInt("id_of_city")!, 15];
                   String categoriesId = sharedPreferences.getString("sub_id")!;
-
+                  setState(() {
+                    isLoading = true;
+                  });
 //!post adv
                   await apiServices.postAdvertise(
                       name: nameOfProduct.text,
@@ -441,44 +429,47 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       price: price.text,
                       atrributes0: attributesMap!.values.first,
                       atrributes1: attributesMap!.values.last,
-                      filetype: 'image');
+                      filetype: 'image',
+                      context: context);
+                  setState(() {
+                    isLoading = false;
+                  });
                   print("cooshen category $categoriesId");
                   print("uploaded file ${filesMap!.values.first}");
                   print("uploaded attributes $attributesMap");
 
                   print("file type ${files.first.extension}");
                   print("city id $ciryid");
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      behavior: SnackBarBehavior.floating,
-                      backgroundColor: Colors.green,
-                      margin: EdgeInsets.only(
-                          bottom: MediaQuery.sizeOf(context).height - 100),
-                      content: Text("تم انشاء الاعلان بنجاح")));
+
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => ProfileScreen()));
+                      MaterialPageRoute(builder: (_) => const ProfileScreen()));
                 },
                 child: FittedBox(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "نشر الاعلان ",
                         style: TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
-                      Icon(
-                        Icons.upload_sharp,
-                        color: Colors.white,
-                      )
+                      isLoading
+                          ? const SpinKitDualRing(
+                              color: Colors.white,
+                            )
+                          : const Icon(
+                              Icons.upload_sharp,
+                              color: Colors.white,
+                            )
                     ],
                   ),
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 100,
             )
           ],
@@ -495,14 +486,16 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
       FilePickerResult? pickedFiles = await FilePicker.platform.pickFiles(
         // Removed allowMultiple: true
         allowMultiple: true, // Allow multiple files selection
-        type: FileType.image,
+        type: FileType.any,
       );
       if (pickedFiles != null) {
         setState(() {
+          image = Image.file(File(pickedFiles.files.first.path!));
           files = pickedFiles.files;
 
           // Assign the files property of the FilePickerResult object
         });
+
         print(files.first.extension);
       }
     } catch (e) {

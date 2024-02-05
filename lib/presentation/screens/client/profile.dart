@@ -43,6 +43,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     print(img);
   }
 
+  void getCommentId() async {
+    myAdvertisementModel =
+        BlocProvider.of<MyAdvertisementCubit>(context).myAdvertisementModel;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,30 +173,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         MaterialPageRoute(
                                             builder: (_) =>
                                                 MyAdvertisementDetails(
-                                                    description:
-                                                        myAdvertisementModel!
-                                                            .data![index]
-                                                            .description,
-                                                    price: myAdvertisementModel!
-                                                        .data![index].price,
-                                                    id: myAdvertisementModel!
-                                                        .data![index].id,
-                                                    name: myAdvertisementModel!
-                                                        .data![index].name,
-                                                    imgPath:
-                                                        myAdvertisementModel!
-                                                            .data![index]
-                                                            .imgPath,
-                                                    phone: myAdvertisementModel!
-                                                        .data![index].phone,
-                                                    address:
-                                                        myAdvertisementModel!
-                                                            .data![index]
-                                                            .address,
-                                                    subdescribtion:
-                                                        myAdvertisementModel!
-                                                            .data![index]
-                                                            .description!)));
+                                                  description:
+                                                      myAdvertisementModel!
+                                                          .data![index]
+                                                          .description,
+                                                  price: myAdvertisementModel!
+                                                      .data![index].price,
+                                                  id: myAdvertisementModel!
+                                                      .data![index].id,
+                                                  name: myAdvertisementModel!
+                                                      .data![index].name,
+                                                  imgPath: myAdvertisementModel!
+                                                      .data![index].imgPath,
+                                                  phone: myAdvertisementModel!
+                                                      .data![index].phone,
+                                                  address: myAdvertisementModel!
+                                                      .data![index].address,
+                                                  subdescribtion:
+                                                      myAdvertisementModel!
+                                                          .data![index]
+                                                          .description!,
+                                                  comments: myAdvertisementModel
+                                                          ?.data?[index]
+                                                          .mycomments ??
+                                                      [],
+                                                )));
                                   },
                                   child: Container(
                                     width: 150,

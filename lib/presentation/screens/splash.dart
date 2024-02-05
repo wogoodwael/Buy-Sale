@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
+import 'package:shopping/presentation/screens/Auth/sign_in.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -28,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             Container(
               width: mediawidth(context),
-              height:mediaHiegh(context) * .55,
+              height: mediaHiegh(context) * .55,
               decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -62,9 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   Text(
                     "هذا البرنامج مخصص للشراء والبيع لكل \nالاشياء بسهولة وسلاسة",
                     style: TextStyle(
-                        fontSize: 24,
-                        height: 1,
-                        fontWeight: FontWeight.w500),
+                        fontSize: 24, height: 1, fontWeight: FontWeight.w500),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(
@@ -72,7 +71,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, signIn);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => SignInScreen()));
                     },
                     child: Container(
                       width: .5 * mediawidth(context),

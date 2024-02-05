@@ -12,5 +12,5 @@ CustomSnackBar(BuildContext context, String text, Color color) {
         left: 10,
         right: 10,
       ),
-      content: FittedBox(child: Text(text))));
+      content: Text(text)));
 }

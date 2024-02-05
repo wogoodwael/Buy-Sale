@@ -9,6 +9,7 @@ import 'package:shopping/presentation/screens/section/categories_screen.dart';
 import 'package:shopping/presentation/screens/home/home_container.dart';
 
 import 'package:shopping/presentation/widgets/search_container.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class HomeBody extends StatefulWidget {
@@ -34,6 +35,16 @@ class _HomeBodyState extends State<HomeBody> {
   void initState() {
     super.initState();
     getUserName();
+  }
+
+  void _launchDeepLink() async {
+    const url =
+        'https://4BuyAndSale.com/profile'; // Replace with your app's deep link
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -84,10 +95,15 @@ class _HomeBodyState extends State<HomeBody> {
           ),
           Padding(
             padding: EdgeInsets.only(right: 45),
-            child: Text(
-              "لدينا كل ما تحتاجه",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, fontSize: 20, color: brawn),
+            child: GestureDetector(
+              onTap: () {
+                _launchDeepLink();
+              },
+              child: Text(
+                "لدينا كل ما تحتاجه",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, fontSize: 20, color: brawn),
+              ),
             ),
           ),
           SizedBox(

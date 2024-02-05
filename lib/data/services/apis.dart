@@ -1,4 +1,6 @@
 //* get governments
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -16,6 +18,7 @@ import 'package:http/http.dart' as http;
 import 'package:shopping/data/models/login_model.dart';
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/models/sub_cate.dart';
+import 'package:shopping/presentation/screens/countries/countries_and_cities.dart';
 
 class ApiServices {
   //^register
@@ -69,7 +72,9 @@ class ApiServices {
         if (data['status'] == true) {
           print("success to login user $data");
           CustomSnackBar(context, 'تم تسجيل الدخول بنجاح', Colors.green);
-          Navigator.pushNamed(context, countries);
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => Countries()));
+            
         } else {
           print(data);
           CustomSnackBar(context, data['message'], Colors.red);
@@ -102,7 +107,8 @@ class ApiServices {
       required String firstName,
       required String lastName,
       required String email,
-      required String gender}) async {
+      required String gender,
+      required BuildContext context}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String token = sharedPreferences.getString('login_token')!;
     var response = http.MultipartRequest("POST", Uri.parse(updateProfileLink));
@@ -122,10 +128,13 @@ class ApiServices {
         final responseData = await response.stream.toBytes();
         final responseString = String.fromCharCodes(responseData);
         print(responseString);
-
+        CustomSnackBar(context, "تم تحديث الملف الشخصي", Colors.green);
+        Navigator.pop(context);
         return true;
       } else {
         print("error-----${await response.stream.bytesToString()}");
+        CustomSnackBar(context,
+            'تاكد من كتابه الايميل بشكل صحيح وملئ جميع الفراغات', Colors.red);
         return false;
       }
     });
@@ -245,19 +254,19 @@ class ApiServices {
   }
 
   //! post advertisement
-  Future postAdvertise({
-    required String name,
-    required var cityId,
-    required String categoriesId,
-    required String description,
-    required PlatformFile files,
-    required String phone,
-    required String adress,
-    required String price,
-    required var atrributes0,
-    required var atrributes1,
-    required String filetype,
-  }) async {
+  Future postAdvertise(
+      {required String name,
+      required var cityId,
+      required String categoriesId,
+      required String description,
+      required PlatformFile files,
+      required String phone,
+      required String adress,
+      required String price,
+      required var atrributes0,
+      required var atrributes1,
+      required String filetype,
+      required BuildContext context}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String token = sharedPreferences.getString('login_token')!;
     print("valid token $token");
@@ -291,6 +300,7 @@ class ApiServices {
         Map<String, dynamic> jsonMap = jsonDecode(responseString);
         if (jsonMap['status'] == true) {
           print('truuuuuuue');
+          CustomSnackBar(context, "تم انشاء الاعلان بنجاح", Colors.green);
         }
         print(responseString);
 
@@ -343,18 +353,22 @@ class ApiServices {
   }
 
   //*create comment
-  Future createComment({required String content}) async {
+  Future createComment(
+      {required String content,
+      required String advId,
+      required BuildContext context}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String token = sharedPreferences.getString('login_token')!;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String id = prefs.getString("categories_id")!;
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String id = prefs.getString("categories_id")!;
     http.Response response = await http.post(Uri.parse(createCommentLink),
         headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
-        body: {"content": content, "advertisement_id": 9.toString()});
+        body: {"content": content, "advertisement_id": advId});
     Map<String, dynamic> data = jsonDecode(response.body);
     if (response.statusCode == 200) {
       if (data['status'] == true) {
         print("comment created successfully $data");
+        CustomSnackBar(context, "تم انشاء التعليق", Colors.green);
       } else {
         print("error in data status");
       }
@@ -363,6 +377,26 @@ class ApiServices {
     }
   }
 
-//*delete comment
-  Future deleteComment({required String id}) async {}
+//!delete comment
+  Future deleteComment(
+      {required String id, required BuildContext context}) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String token = preferences.getString("login_token")!;
+    http.Response response = await http.delete(
+      Uri.parse("https://buyandsell2024.com/api/comment/$id"),
+      headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
+    );
+    Map<String, dynamic> data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      print("success delete status ");
+      if (data['status'] == true) {
+        print("comment deleted successfully");
+        CustomSnackBar(context, 'تم حذف التعليق', Colors.green);
+      } else {
+        print("error in data status$data");
+      }
+    } else {
+      print(response.statusCode);
+    }
+  }
 }

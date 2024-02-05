@@ -1,21 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping/business_logic/Cubit/my_advertise/my_advertisement_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
-import 'package:shopping/data/models/advertisement_model.dart';
+import 'package:shopping/core/utils/strings.dart';
+
+import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/services/apis.dart';
 
 // ignore: must_be_immutable
 class MyAdvertisementDetails extends StatefulWidget {
   MyAdvertisementDetails(
       {super.key,
-      required this.id,
+       this.id,
       this.comments,
       this.subdescribtion,
       this.price,
       this.description,
-      required this.name,
-      required this.imgPath,
-      required this.phone,
+       this.name,
+       this.imgPath,
+       this.phone,
       this.address});
   int? id;
   int? categoryId;
@@ -30,7 +36,7 @@ class MyAdvertisementDetails extends StatefulWidget {
   String? updatedAt;
   String? phone;
   String? address;
-  List<Comments>? comments;
+  List<MyComments>? comments;
   @override
   State<MyAdvertisementDetails> createState() => _MyAdvertisementDetailsState();
 }
@@ -72,6 +78,21 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
     } else {
       return '';
     }
+  }
+
+  String? userName;
+  getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String username = prefs.getString('user_name')!;
+    setState(() {
+      userName = username;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserName();
   }
 
   @override
@@ -285,16 +306,21 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          margin: EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(
-                              color: grey,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Icon(
-                            Icons.share,
-                            color: brawn,
+                        GestureDetector(
+                          onTap: () {
+                            Share.share('${widget.id}');
+                          },
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            margin: EdgeInsets.only(left: 10),
+                            decoration: BoxDecoration(
+                                color: grey,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Icon(
+                              Icons.share,
+                              color: brawn,
+                            ),
                           ),
                         ),
                         const Spacer(),
@@ -352,7 +378,16 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: 10,
+                    ),
+                    Divider(
+                      color: grey,
+                      thickness: 1,
+                      endIndent: 30,
+                      indent: 30,
+                    ),
+                    SizedBox(
+                      height: 10,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -365,7 +400,7 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                               color: darkbrawn),
                         ),
                         Text(
-                          "مراجعه",
+                          "التعليقات",
                           style: GoogleFonts.plusJakartaSans(
                               fontWeight: FontWeight.w600, fontSize: 16),
                         ),
@@ -374,94 +409,84 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: List.generate(
-                            widget.comments?.length ?? 1 ,
-                            (index) => Text(
-                              "${widget.comments?[index].createdAt ?? " / / "}",
-                              style: GoogleFonts.plusJakartaSans(
-                                  color: Colors.grey),
-                            ),
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "محمد علي ",
-                              style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
-                            ),
-                            const Row(
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        const CircleAvatar(
-                          radius: 20,
-                          backgroundImage:
-                              ExactAssetImage("images/person2.png"),
-                        ),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    //   children: [
+                    //     Column(
+                    //       children: [
+                    //         Text(
+                    //           userName ?? "",
+                    //           style: GoogleFonts.plusJakartaSans(
+                    //               fontSize: 16, fontWeight: FontWeight.w600),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ],
+                    // ),
                     Column(
                         children: List.generate(
                             widget.comments?.length ?? 1,
-                            (index) => Text(
-                                  "${widget.comments?[index].content ?? "no comments"}",
-                                  style: TextStyle(color: Colors.black),
+                            (index) => Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                        size: 20,
+                                      ),
+                                      onPressed: () async {
+                                        SharedPreferences prefs =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        prefs.setString(
+                                            "comment_id",
+                                            widget.comments?[index].id
+                                                    .toString() ??
+                                                '0');
+                                        prefs.setString(
+                                            "comment_content",
+                                            widget.comments?[index].content
+                                                    .toString() ??
+                                                '');
+                                        String id =
+                                            prefs.getString("comment_id")!;
+                                        await apiServices.deleteComment(
+                                            id: id, context: context);
+
+                                        setState(() {
+                                          widget.comments!
+                                              .remove(widget.comments![index]);
+                                        });
+                                      },
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          right: .1 * mediawidth(context)),
+                                      child: Text(
+                                        widget.comments?[index].content ??
+                                            "no comments",
+                                        style: const TextStyle(
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                    Text(
+                                      "${widget.comments?[index].createdAt ?? " / / "}",
+                                      style: GoogleFonts.plusJakartaSans(
+                                          color: Colors.grey),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "${widget.comments?[index].userId ?? " 0 "}",
+                                      style: GoogleFonts.plusJakartaSans(
+                                          color: Colors.grey),
+                                    ),
+                                  ],
                                 ))),
                     SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      width: 350,
-                      height: 100,
-                      decoration: BoxDecoration(
-                          color: grey, borderRadius: BorderRadius.circular(20)),
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: TextField(
-                            controller: content,
-                            decoration: InputDecoration(
-                                prefixIcon: GestureDetector(
-                                    onTap: () async {
-                                      await apiServices.createComment(
-                                          content: content.text);
-                                      // setState(() {
-                                      //   widget
-                                      //       .comments?[
-                                      //           widget.comments?.length - 1]
-                                      //       .content;
-                                      // });
-                                    },
-                                    child: Icon(Icons.send)),
-                                border: InputBorder.none,
-                                hintText: 'كتابه تعليق',
-                                hintTextDirection: TextDirection.rtl)),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
+                      height: 200,
                     ),
                   ],
                 ),

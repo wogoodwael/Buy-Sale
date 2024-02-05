@@ -300,7 +300,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     firstName: firstName.text,
                     lastName: lastName.text,
                     email: email.text,
-                    gender: gender.text);
+                    gender: gender.text, context: context);
               },
               child: Container(
                 width: .8 * mediawidth(context),
