@@ -14,18 +14,22 @@ import 'package:shopping/data/services/apis.dart';
 class MyAdvertisementDetails extends StatefulWidget {
   MyAdvertisementDetails(
       {super.key,
-       this.id,
+      this.id,
       this.comments,
       this.subdescribtion,
       this.price,
       this.description,
-       this.name,
-       this.imgPath,
-       this.phone,
+      this.name,
+      this.imgPath,
+      this.phone,
+      this.sellername,
+      this.commentername,
       this.address});
   int? id;
   int? categoryId;
   int? userId;
+  String? sellername;
+  String? commentername;
   String? name;
   String? subdescribtion;
   String? description;
@@ -338,7 +342,7 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                           child: Column(
                             children: [
                               Text(
-                                "انت",
+                                widget.sellername ?? "انت",
                                 style: GoogleFonts.plusJakartaSans(
                                     fontWeight: FontWeight.w600, fontSize: 14),
                               ),
@@ -479,7 +483,7 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                                       width: 10,
                                     ),
                                     Text(
-                                      "${widget.comments?[index].userId ?? " 0 "}",
+                                      "${widget.comments?[index].user?.firstName ?? " 0 "}",
                                       style: GoogleFonts.plusJakartaSans(
                                           color: Colors.grey),
                                     ),

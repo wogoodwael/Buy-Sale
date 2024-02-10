@@ -9,8 +9,9 @@ import 'package:shopping/business_logic/Cubit/advertisement/advertisment_cubit.d
 import 'package:shopping/core/helper/fav_provider.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/data/models/advertisement_model.dart';
+import 'package:shopping/data/services/apis.dart';
 import 'package:shopping/presentation/screens/advertisements/advertisement_details.dart';
-import 'package:shopping/presentation/screens/client/fav_screen.dart';
+
 import 'package:shopping/presentation/widgets/search_container.dart';
 
 class SubCategoryAdvertise extends StatefulWidget {
@@ -28,6 +29,7 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
     BlocProvider.of<AdvertismentCubit>(context).getAdvertismentCubit();
   }
 
+  TextEditingController searchname = TextEditingController();
   @override
   Widget build(BuildContext context) {
     // List img = [
@@ -37,7 +39,7 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
     //   'images/char4.png',
     //   'images/char5.png'
     // ];
-    bool isAddedToFavorites = false;
+    bool? isAddedToFavorites;
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -82,6 +84,7 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                     ),
                   );
                 } else if (state is AdvertismentSuccess) {
+                 
                   return Column(
                     children: [
                       SizedBox(
@@ -120,17 +123,21 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                   .data![index].description;
                                               print(
                                                   "========================${des}");
-                                              BlocProvider.of<
-                                                          AdvertismentCubit>(
-                                                      context)
-                                                  .getAdvertismentCubit();
-                                             
 
+                                              // ignore: use_build_context_synchronously
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (_) =>
                                                           AdvertismentDetails(
+                                                            advId:
+                                                                id.toString(),
+                                                            sellername:
+                                                                advertismentModel!
+                                                                    .data![
+                                                                        index]
+                                                                    .user!
+                                                                    .firstName,
                                                             name:
                                                                 advertismentModel!
                                                                     .data![
@@ -176,14 +183,9 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                             imgPath: advertismentModel
                                                                     ?.data?[
                                                                         index]
-                                                                    .imgPath ??
+                                                                    .files?[0]
+                                                                    .filePath ??
                                                                 "assets/images/car.png",
-                                                            advId:
-                                                                advertismentModel!
-                                                                    .data![
-                                                                        index]
-                                                                    .id
-                                                                    .toString(),
                                                           )));
                                               setState(() {
                                                 advertismentModel
@@ -209,51 +211,39 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                               top: 10,
                                               right: 10,
                                               child: Container(
-                                                width: 30,
-                                                height: 30,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.white,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20)),
-                                                child: Consumer<Fav>(
-                                                  builder:
-                                                      (BuildContext context,
-                                                          Fav value,
-                                                          Widget? child) {
-                                                    List<Data> items =
-                                                        advertismentModel!
-                                                            .data!;
-                                                    return GestureDetector(
-                                                      onTap: () async {
-                                                        value.add(items[index]);
-
-                                                        setState(() {
-                                                          isAddedToFavorites =
-                                                              true;
-                                                        });
-                                                      },
-                                                      child: Center(
-                                                          child:
-                                                              isAddedToFavorites
-                                                                  ? const Icon(
-                                                                      Icons
-                                                                          .favorite,
-                                                                      color: Colors
-                                                                          .red,
-                                                                      size: 20,
-                                                                    )
-                                                                  : const Icon(
-                                                                      Icons
-                                                                          .favorite_border,
-                                                                      color: Colors
-                                                                          .grey,
-                                                                      size: 20,
-                                                                    )),
-                                                    );
-                                                  },
-                                                ),
-                                              ))
+                                                  width: 30,
+                                                  height: 30,
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              20)),
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      SharedPreferences
+                                                          sharedPreferences =
+                                                          await SharedPreferences
+                                                              .getInstance();
+                                                      sharedPreferences.setInt(
+                                                          'id_adv',
+                                                          advertismentModel!
+                                                              .data![index]
+                                                              .id!);
+                                                      int id = sharedPreferences
+                                                          .getInt("id_adv")!;
+                                                      await ApiServices()
+                                                          .addToFav(context,
+                                                              id: id);
+                                                    
+                                                    },
+                                                    
+                                                    child: Center(
+                                                        child: Icon(
+                                                      Icons.favorite,
+                                                      color: Colors.red,
+                                                      size: 20,
+                                                    )),
+                                                  )))
                                         ]),
                                         SizedBox(width: 20),
                                         Text(

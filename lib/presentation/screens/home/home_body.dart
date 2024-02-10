@@ -39,7 +39,7 @@ class _HomeBodyState extends State<HomeBody> {
 
   void _launchDeepLink() async {
     const url =
-        'https://4BuyAndSale.com/profile'; // Replace with your app's deep link
+        'https://buyandsell2024.com/signup'; // Replace with your app's deep link
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -97,6 +97,10 @@ class _HomeBodyState extends State<HomeBody> {
             padding: EdgeInsets.only(right: 45),
             child: GestureDetector(
               onTap: () {
+                RouteSettings settings = ModalRoute.of(context)!.settings;
+
+                // Print the settings
+                print('Settings: ${settings}');
                 _launchDeepLink();
               },
               child: Text(
@@ -109,7 +113,7 @@ class _HomeBodyState extends State<HomeBody> {
           SizedBox(
             height: 10,
           ),
-          SearchContainer(),
+          // SearchContainer(),
           SizedBox(
             height: 20,
           ),

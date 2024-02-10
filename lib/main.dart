@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/advertisement/advertisment_cubit.dart';
@@ -9,6 +9,7 @@ import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_
 import 'package:shopping/business_logic/Cubit/categories/categories_cubit.dart';
 
 import 'package:shopping/business_logic/Cubit/cityCubit/cities_cubit.dart';
+import 'package:shopping/business_logic/Cubit/filter_category_cubit/filter_category_cubit.dart';
 import 'package:shopping/business_logic/Cubit/government_cubit/government_cubit.dart';
 
 import 'package:shopping/business_logic/Cubit/my_advertise/my_advertisement_cubit.dart';
@@ -18,8 +19,8 @@ import 'package:shopping/core/helper/fav_provider.dart';
 import 'package:shopping/core/utils/app_routes.dart';
 import 'package:shopping/data/services/apis.dart';
 import 'package:shopping/firebase_options.dart';
-import 'package:shopping/presentation/screens/client/my_advertisement_details.dart';
-import 'package:shopping/presentation/screens/client/profile.dart';
+import 'package:shopping/presentation/screens/Auth/sign_up.dart';
+
 import 'package:shopping/presentation/screens/home/home.dart';
 
 import 'package:shopping/presentation/screens/splash.dart';
@@ -52,14 +53,25 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (context) => SubCateCreateAdvCubit(ApiServices(), lenght)),
         BlocProvider(create: (context) => AttrsCategoriesCubit(ApiServices())),
+        BlocProvider(create: (context)=>FilterCategoryCubit(ApiServices()))
       ],
       child: ChangeNotifierProvider(
         create: (BuildContext context) {
           return Fav();
         },
-        child: MaterialApp.router(
+        child: MaterialApp(
           debugShowCheckedModeBanner: false,
-         routerConfig: router,
+         routes: {
+"/":(context) => sharedpref.getString("login_token") == null
+                ? const SplashScreen()
+                : HomeScreen(),
+                "/signup" : (context) => SignUpScreen(),
+                
+         },
+
+         
+           onGenerateRoute: appRouter.generateRoute,
+         initialRoute: '/',
          
         ),
       ),
@@ -67,16 +79,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final router = GoRouter(routes: [
-  GoRoute(path: '/', builder: (_,__)=>sharedpref.getString("login_token") == null
-                ? SplashScreen()
-                : HomeScreen(),
-                routes: [
-                  GoRoute(path: 'my_advertisement_details', builder: (_ , __) => MyAdvertisementDetails()),
-                  GoRoute(path: 'profile', builder: (_ , __) => ProfileScreen()),
-                ]
-                )
-],
+// final router = GoRouter(routes: [
+//   GoRoute(path: '/', builder: (_,__)=>sharedpref.getString("login_token") == null
+//                 ? SplashScreen()
+//                 : HomeScreen(),
+//                 routes: [
+//                   GoRoute(path: 'my_advertisement_details', builder: (_ , __) => MyAdvertisementDetails()),
+//                   GoRoute(path: 'profile', builder: (_ , __) => ProfileScreen()),
+//                 ]
+//                 )
+// ],
 
 
-);
+// );

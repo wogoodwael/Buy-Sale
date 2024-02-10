@@ -25,6 +25,8 @@ class _CategoriesColumnState extends State<CategoriesColumn> {
     BlocProvider.of<CategoriesCubit>(context).getCategoriesCubit();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     int itemsPerRow = 2;

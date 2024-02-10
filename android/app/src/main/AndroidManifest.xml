@@ -58,7 +58,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="http" />
         <data android:scheme="https"/>
-        <data android:host="4BuyAndSale.com"/>
+        <data android:host="buyandsell2024.com"/>
         </intent-filter>
     </activity>
 

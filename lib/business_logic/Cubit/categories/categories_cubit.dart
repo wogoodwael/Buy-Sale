@@ -9,6 +9,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   CategoriesCubit(this.apiServices) : super(CategoriesInitial());
   ApiServices apiServices;
   CategoriesModel? categoriesModel;
+
   void getCategoriesCubit() async {
     emit(CategoriesLoading());
     try {

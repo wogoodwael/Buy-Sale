@@ -29,6 +29,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
+    // Get the settings
+   
     return Scaffold(
       backgroundColor: const Color(0xffffffff),
       body: SingleChildScrollView(

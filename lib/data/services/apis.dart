@@ -1,4 +1,3 @@
-//* get governments
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
@@ -13,11 +12,13 @@ import 'package:shopping/data/models/advertisement_model.dart';
 import 'package:shopping/data/models/categories_attrs_model.dart';
 import 'package:shopping/data/models/categories_model.dart';
 import 'package:shopping/data/models/city_model.dart';
+import 'package:shopping/data/models/filter_model.dart';
 import 'package:shopping/data/models/government_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:shopping/data/models/login_model.dart';
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/models/sub_cate.dart';
+import 'package:shopping/presentation/screens/client/profile.dart';
 import 'package:shopping/presentation/screens/countries/countries_and_cities.dart';
 
 class ApiServices {
@@ -74,7 +75,6 @@ class ApiServices {
           CustomSnackBar(context, 'تم تسجيل الدخول بنجاح', Colors.green);
           Navigator.push(
               context, MaterialPageRoute(builder: (_) => Countries()));
-            
         } else {
           print(data);
           CustomSnackBar(context, data['message'], Colors.red);
@@ -171,6 +171,21 @@ class ApiServices {
     return categoriesModel;
   }
 
+//^search categories api
+  Future<FilterModel> getCategoryFilter({required String name}) async {
+    http.Response response = await http.get(
+        Uri.parse("https://buyandsell2024.com/api/category?name=$name"),
+        headers: {"api-token": "gh-general"});
+    Map<String, dynamic> data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      print("the data in filter services is ${data}");
+    } else {
+      print("error ${response.statusCode} ");
+    }
+    FilterModel filterModel = FilterModel.fromJson(data);
+    return filterModel;
+  }
+
   //* get sub categories
   Future<SubCategoriesModel> getSubCategories() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -259,7 +274,7 @@ class ApiServices {
       required var cityId,
       required String categoriesId,
       required String description,
-      required PlatformFile files,
+      required List<PlatformFile> files,
       required String phone,
       required String adress,
       required String price,
@@ -285,13 +300,17 @@ class ApiServices {
     response.fields['attributes[0][value]'] = atrributes1;
 
     response.fields['files[0][type]'] = filetype;
-    print("~~~~~~~~~~~~~~~");
 
-    response.files.add(await http.MultipartFile.fromPath(
-      'files[0][file_path]',
-      files.path!,
-    ));
+    List<http.MultipartFile> files2 = [];
+    for (PlatformFile file in files) {
+      var f =
+          await http.MultipartFile.fromPath('files[0][file_path]', file.path!);
+      files2.add(f);
+    }
+    response.files.addAll(files2);
+
     print(response.fields.toString());
+    print(response.files.toString());
     return await response.send().then((response) async {
       if (response.statusCode == 200) {
         print("Uploaded Advertisement files!");
@@ -301,6 +320,8 @@ class ApiServices {
         if (jsonMap['status'] == true) {
           print('truuuuuuue');
           CustomSnackBar(context, "تم انشاء الاعلان بنجاح", Colors.green);
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const ProfileScreen()));
         }
         print(responseString);
 
@@ -364,13 +385,15 @@ class ApiServices {
     http.Response response = await http.post(Uri.parse(createCommentLink),
         headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
         body: {"content": content, "advertisement_id": advId});
+    print("@@@Advvvvv $advId");
+    print("@@@Advvvvv $content");
     Map<String, dynamic> data = jsonDecode(response.body);
     if (response.statusCode == 200) {
       if (data['status'] == true) {
         print("comment created successfully $data");
         CustomSnackBar(context, "تم انشاء التعليق", Colors.green);
       } else {
-        print("error in data status");
+        print("error in data status $data");
       }
     } else {
       print("error${response.statusCode}");
@@ -398,5 +421,47 @@ class ApiServices {
     } else {
       print(response.statusCode);
     }
+  }
+
+//!add to fav
+  Future addToFav(BuildContext context, {required int id}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('login_token')!;
+    http.Response response = await http.get(
+      Uri.parse("https://buyandsell2024.com/api/advertisement/$id/toggle_like"),
+      headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
+    );
+    Map<String, dynamic> data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      if (data['status'] == true) {
+        CustomSnackBar(context, 'تمت الاضافه الي المفضله', Colors.green);
+      } else {
+        print("error in favorite data $data");
+      }
+    } else {
+      print("resonse error ${response.statusCode}");
+    }
+  }
+
+//!fetch favorite
+  Future <AdvertismentModel>fetchFavorites({required BuildContext context}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('login_token')!;
+    http.Response response = await http.get(
+      Uri.parse("https://buyandsell2024.com/api/my_liked_advertisement"),
+      headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
+    );
+    Map<String, dynamic> data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      if (data['status'] == true) {
+        print("success favorite data $data");
+      } else {
+        print("error in fetch favorite data$data");
+      }
+    } else {
+      print("error in response ${response.statusCode}");
+    }
+    AdvertismentModel advertismentModel = AdvertismentModel.fromJson(data);
+    return advertismentModel;
   }
 }

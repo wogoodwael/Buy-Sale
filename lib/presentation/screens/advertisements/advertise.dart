@@ -10,9 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_cubit.dart';
-import 'package:shopping/core/helper/errors_snack.dart';
 import 'package:shopping/core/helper/header.dart';
-
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/categories_attrs_model.dart';
@@ -22,7 +20,6 @@ import 'package:shopping/presentation/screens/advertisements/choose_atrr._contai
 import 'package:shopping/presentation/screens/advertisements/choose_cat.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_sub.dart';
 import 'package:shopping/presentation/screens/advertisements/select_attrs.dart';
-import 'package:shopping/presentation/screens/client/profile.dart';
 import 'package:shopping/presentation/screens/countries/center_choose_container.dart';
 import 'package:shopping/presentation/screens/countries/choose_city_container.dart';
 import 'package:shopping/presentation/screens/countries/choose_country_container.dart';
@@ -192,7 +189,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
               child: TextField(
                 controller: nameOfProduct,
                 textDirection: TextDirection.rtl,
-                decoration: InputDecoration(border: InputBorder.none),
+                decoration: const InputDecoration(border: InputBorder.none),
               ),
             )),
             (showAttrs == true)
@@ -264,7 +261,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black)),
                             child: TextField(
-                                textDirection: TextDirection.rtl,
+                              textDirection: TextDirection.rtl,
                               onSubmitted: (value) {
                                 attributesMap = {
                                   'attributes[0][id]': getCateAttrsModel!
@@ -297,7 +294,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black)),
                             child: TextField(
-                                textDirection: TextDirection.rtl,
+                              textDirection: TextDirection.rtl,
                               controller: priceOfProduct,
                               decoration:
                                   InputDecoration(border: InputBorder.none),
@@ -335,7 +332,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                     await pickFiles();
                     //!add
                     filesMap = {
-                      'files[0][file_path]': files[0],
+                      'files[0][file_path]': files,
                       'files[0][type]': files.first.extension!
                     };
                     setState(() {
@@ -419,18 +416,19 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   });
 //!post adv
                   await apiServices.postAdvertise(
-                      name: nameOfProduct.text,
-                      cityId: jsonEncode(ciryid),
-                      categoriesId: categoriesId,
-                      description: describtion.text,
-                      files: filesMap!.values.first,
-                      phone: phone.text,
-                      adress: locattion.text,
-                      price: price.text,
-                      atrributes0: attributesMap!.values.first,
-                      atrributes1: attributesMap!.values.last,
-                      filetype: 'image',
-                      context: context);
+                    name: nameOfProduct.text,
+                    cityId: jsonEncode(ciryid),
+                    categoriesId: categoriesId,
+                    description: describtion.text,
+                    files: filesMap!.values.first,
+                    phone: phone.text,
+                    adress: locattion.text,
+                    price: price.text,
+                    atrributes0: attributesMap!.values.first,
+                    atrributes1: attributesMap!.values.last,
+                    filetype: 'image',
+                    context: context,
+                  );
                   setState(() {
                     isLoading = false;
                   });
@@ -440,9 +438,6 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
 
                   print("file type ${files.first.extension}");
                   print("city id $ciryid");
-
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const ProfileScreen()));
                 },
                 child: FittedBox(
                   child: Row(
@@ -478,7 +473,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
     );
   }
 
-  List files = [];
+  List<PlatformFile> files = [];
   // Changed the variable type to FilePickerResult
 
   Future<void> pickFiles() async {

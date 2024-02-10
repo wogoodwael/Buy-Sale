@@ -20,16 +20,16 @@ class SubCategoriesModel {
 }
 
 class Data {
-  List<Categories>? categories;
+  List<SubCategories>? categories;
   Parent? parent;
 
   Data({this.categories, this.parent});
 
   Data.fromJson(Map<String, dynamic> json) {
     if (json['categories'] != null) {
-      categories = <Categories>[];
+      categories = <SubCategories>[];
       json['categories'].forEach((v) {
-        categories!.add(new Categories.fromJson(v));
+        categories!.add(new SubCategories.fromJson(v));
       });
     }
     parent =
@@ -48,7 +48,7 @@ class Data {
   }
 }
 
-class Categories {
+class SubCategories {
   int? id;
   String? nameAr;
   String? nameEn;
@@ -61,7 +61,7 @@ class Categories {
   int? active;
   Parent? parent;
 
-  Categories(
+  SubCategories(
       {this.id,
       this.nameAr,
       this.nameEn,
@@ -74,7 +74,7 @@ class Categories {
       this.active,
       this.parent});
 
-  Categories.fromJson(Map<String, dynamic> json) {
+  SubCategories.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     nameAr = json['name_ar'];
     nameEn = json['name_en'];

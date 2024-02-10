@@ -38,25 +38,25 @@ class Data {
   String? phone;
   String? address;
   List<MyComments>? mycomments;
-
+  User? user;
   List<Files>? files;
 
-  Data({
-    this.id,
-    this.categoryId,
-    this.userId,
-    this.name,
-    this.description,
-    this.cityId,
-    this.price,
-    this.imgPath,
-    this.createdAt,
-    this.updatedAt,
-    this.phone,
-    this.address,
-    this.mycomments,
-    this.files,
-  });
+  Data(
+      {this.id,
+      this.categoryId,
+      this.userId,
+      this.name,
+      this.description,
+      this.cityId,
+      this.price,
+      this.imgPath,
+      this.createdAt,
+      this.updatedAt,
+      this.phone,
+      this.address,
+      this.mycomments,
+      this.files,
+      this.user});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -84,6 +84,7 @@ class Data {
         mycomments!.add(new MyComments.fromJson(v));
       });
     }
+    user = json['user'] != null ? new User.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -106,6 +107,9 @@ class Data {
     }
     if (this.mycomments != null) {
       data['comments'] = this.mycomments!.map((v) => v.toJson()).toList();
+    }
+    if (this.user != null) {
+      data['user'] = this.user!.toJson();
     }
     return data;
   }
@@ -143,6 +147,7 @@ class MyComments {
   String? content;
   String? createdAt;
   String? updatedAt;
+  User? user;
 
   MyComments(
       {this.id,
@@ -150,7 +155,8 @@ class MyComments {
       this.userId,
       this.content,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.user});
 
   MyComments.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -159,6 +165,7 @@ class MyComments {
     content = json['content'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    user = json['user'] != null ? new User.fromJson(json['user']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -169,6 +176,31 @@ class MyComments {
     data['content'] = this.content;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    if (this.user != null) {
+      data['user'] = this.user!.toJson();
+    }
+    return data;
+  }
+}
+
+class User {
+  int? id;
+  String? firstName;
+  String? lastName;
+
+  User({this.id, this.firstName, this.lastName});
+
+  User.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    firstName = json['first_name'];
+    lastName = json['last_name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['first_name'] = this.firstName;
+    data['last_name'] = this.lastName;
     return data;
   }
 }

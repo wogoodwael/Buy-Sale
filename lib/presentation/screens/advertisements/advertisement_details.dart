@@ -10,23 +10,28 @@ import 'package:shopping/data/services/apis.dart';
 
 // ignore: must_be_immutable
 class AdvertismentDetails extends StatefulWidget {
-  AdvertismentDetails({
-    super.key,
-    this.name,
-    this.subdescribtion,
-    this.location,
-    this.price,
-    this.attributes,
-    this.sellerPhone,
-    this.fullDescribition,
-    this.comments,
-    this.imgPath,
-    required this.advId,
-  });
+  AdvertismentDetails(
+      {super.key,
+      this.name,
+      this.subdescribtion,
+      this.location,
+      this.price,
+      this.attributes,
+      this.sellerPhone,
+      this.fullDescribition,
+      this.comments,
+      this.imgPath,
+      required this.advId,
+      this.commentername,
+      this.sellername,
+      this.nameofattrs});
   String? name;
   String? subdescribtion;
   String? location;
   String? price;
+  String? sellername;
+  String? commentername;
+  String? nameofattrs;
   List<Attributes>? attributes;
   String? sellerPhone;
   String? fullDescribition;
@@ -127,342 +132,352 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
             ),
             Column(
               children: [
-                Column(
-                  children: [
-                    Container(
-                        width: double.infinity,
-                        height: 200,
-                        color: Colors.white,
-                        child: choose() == 'char1' ||
-                                choose() == 'product' ||
-                                choose() == 'char2'
-                            ? Image.asset(img())
-                            : Image.network(
+                Container(
+                    width: mediawidth(context),
+                    height: 200,
+                    color: Colors.white,
+                    child: choose() == 'char1' ||
+                            choose() == 'product' ||
+                            choose() == 'char2'
+                        ? Image.asset(img())
+                        : FittedBox(
+                            fit: BoxFit.fitHeight,
+                            child: Image.network(
                                 "https://buyandsell2024.com/${widget.imgPath}",
-                                errorBuilder: (BuildContext context,
+                                width: 300, errorBuilder: (BuildContext context,
                                     Object error, StackTrace? stackTrace) {
-                                // Error callback, display another image when the network image is not found
-                                return Image.asset('images/car.png');
-                              })),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              ontapchar1 = !ontapchar1;
-                            });
-                          },
-                          child: Container(
-                            width: 90,
-                            height: 80,
-                            color: grey,
-                            child: ontapchar1
-                                ? Image.asset("images/car.png")
-                                : Image.asset("images/char2.png"),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              ontapproduct == !ontapproduct;
-                            });
-                          },
-                          child: Container(
-                            width: 90,
-                            height: 80,
-                            color: grey,
-                            child: Image.asset("images/product.png"),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              ontapchar2 = !ontapchar2;
-                            });
-                          },
-                          child: Container(
-                            width: 90,
-                            height: 80,
-                            color: grey,
-                            child: Image.asset("images/char4.png"),
-                          ),
-                        )
-                      ],
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 15, right: 15, top: 20),
-                      child: Row(
-                        children: [
-                          Icon(Icons.star, color: Colors.orange),
-                          Text(
-                            "4.4  ",
-                            style: TextStyle(
-                                fontFamily: "",
-                                fontSize: 15,
-                                color: Colors.orange),
-                            textAlign: TextAlign.end,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(right: 80),
-                            child: Text(
-                              "(52)",
-                              style: TextStyle(
-                                fontSize: 15,
-                              ),
-                              textAlign: TextAlign.end,
-                            ),
-                          ),
-                          Spacer(),
-                          Text(
-                            widget.name ?? "no name",
-                            textAlign: TextAlign.justify,
-                            style: TextStyle(
-                              fontFamily: "",
-                              fontSize: 15,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
+                              // Error callback, display another image when the network image is not found
+                              return Image.asset('images/car.png');
+                            }),
+                          )),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          ontapchar1 = !ontapchar1;
+                        });
+                      },
+                      child: Container(
+                        width: 90,
+                        height: 80,
+                        color: grey,
+                        child: ontapchar1
+                            ? Image.asset("images/car.png")
+                            : Image.asset("images/char2.png"),
                       ),
                     ),
-                    const SizedBox(
-                      height: 5,
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          ontapproduct == !ontapproduct;
+                        });
+                      },
+                      child: Container(
+                        width: 90,
+                        height: 80,
+                        color: grey,
+                        child: Image.asset("images/product.png"),
+                      ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(right: 30),
-                          child: Text(
-                            widget.subdescribtion ?? "no subdescribtion",
-                            textDirection: TextDirection.rtl,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 2,
-                    ),
-                    Row(
-                      children: [
-                        Spacer(),
-                        Padding(
-                          padding: EdgeInsets.only(right: 60),
-                          child: Text(widget.price ?? "no price"),
-                        ),
-                        Text(
-                          widget.location ?? "no location",
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          ontapchar2 = !ontapchar2;
+                        });
+                      },
+                      child: Container(
+                        width: 90,
+                        height: 80,
+                        color: grey,
+                        child: Image.asset("images/char4.png"),
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 15, right: 15, top: 20),
+                  child: Row(
+                    children: [
+                      Icon(Icons.star, color: Colors.orange),
+                      Text(
+                        "4.4  ",
+                        style: TextStyle(
+                            fontFamily: "", fontSize: 15, color: Colors.orange),
+                        textAlign: TextAlign.end,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 80),
+                        child: Text(
+                          "(52)",
                           style: TextStyle(
-                            fontFamily: "",
-                            fontSize: 14,
-                            color: Color(0xff9CA4AB),
+                            fontSize: 15,
                           ),
+                          textAlign: TextAlign.end,
                         ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 10),
-                          child: Icon(
-                            Icons.location_on,
-                            size: 25,
-                            color: Color(0xff9CA4AB),
-                          ),
+                      ),
+                      Spacer(),
+                      Text(
+                        widget.name ?? "no name",
+                        textAlign: TextAlign.justify,
+                        style: TextStyle(
+                          fontFamily: "",
+                          fontSize: 15,
+                          color: Colors.grey,
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 30),
+                      child: Text(
+                        widget.subdescribtion ?? "no subdescribtion",
+                        textDirection: TextDirection.rtl,
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: List.generate(
-                          widget.attributes?.length ?? 2,
-                          (index) => Text(
+                  ],
+                ),
+                SizedBox(
+                  height: 2,
+                ),
+                Row(
+                  children: [
+                    Spacer(),
+                    Padding(
+                      padding: EdgeInsets.only(right: 60),
+                      child: Text(widget.price ?? "no price"),
+                    ),
+                    Text(
+                      widget.location ?? "no location",
+                      style: TextStyle(
+                        fontFamily: "",
+                        fontSize: 14,
+                        color: Color(0xff9CA4AB),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 10),
+                      child: Icon(
+                        Icons.location_on,
+                        size: 25,
+                        color: Color(0xff9CA4AB),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: List.generate(
+                      widget.attributes?.length ?? 2,
+                      (index) => Row(
+                        children: [
+                          Text(
                             widget.attributes?[index].value ?? "no value",
                             style: GoogleFonts.plusJakartaSans(
                                 fontWeight: FontWeight.w600),
                           ),
-                        )),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          margin: EdgeInsets.only(left: 10),
-                          decoration: BoxDecoration(
-                              color: grey,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Icon(
-                            Icons.share,
-                            color: brawn,
+                          SizedBox(
+                            width: 20,
                           ),
-                        ),
-                        const Spacer(),
-                        const Padding(
-                          padding: EdgeInsets.only(right: 30, top: 10),
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            radius: 20,
-                            backgroundImage:
-                                ExactAssetImage("images/person.png"),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(right: 20),
-                          child: Column(
-                            children: [
-                              Text(
-                                "اسم البائع",
-                                style: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.w600, fontSize: 14),
-                              ),
-                              Text(
-                                widget.sellerPhone ?? "no seller phone",
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "وصف",
+                          Text(
+                            widget.attributes?[index].attribute?.name ??
+                                "no name",
                             style: GoogleFonts.plusJakartaSans(
-                                fontWeight: FontWeight.w600, fontSize: 17),
+                                fontWeight: FontWeight.w600),
                           ),
-                        ),
-                      ],
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 40),
-                        child: Text(
-                          widget.fullDescribition!,
-                          textAlign: TextAlign.end,
-                          style: GoogleFonts.plusJakartaSans(fontSize: 14),
-                        ),
+                        ],
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Divider(
-                      color: grey,
-                      thickness: 1,
-                      endIndent: 30,
-                      indent: 30,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(
-                          "اظهار الكل",
-                          style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: darkbrawn),
-                        ),
-                        Text(
-                          "التعليقات",
-                          style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w600, fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: List.generate(
-                            widget.comments?.length ?? 1,
-                            (index) => Row(
-                              children: [
-                                Text(
-                                  "${widget.comments?[index].content ?? "no comments"}",
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                SizedBox(
-                                  width: .09 * mediawidth(context),
-                                ),
-                                Text(
-                                  "${widget.comments?[index].createdAt ?? " / / "}",
-                                  style: GoogleFonts.plusJakartaSans(
-                                      color: Colors.grey),
-                                ),
-                                SizedBox(
-                                  width: .1 * mediawidth(context),
-                                ),
-                                Text(
-                                  "${widget.comments?[index].userId ?? "0"}",
-                                  style: GoogleFonts.plusJakartaSans(
-                                      color: Colors.grey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
+                    )),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
                     Container(
-                      width: 350,
-                      height: 100,
+                      width: 40,
+                      height: 40,
+                      margin: EdgeInsets.only(left: 10),
                       decoration: BoxDecoration(
                           color: grey, borderRadius: BorderRadius.circular(20)),
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: TextField(
-                            textDirection: TextDirection.rtl,
-                            controller: content,
-                            decoration: InputDecoration(
-                                prefixIcon: GestureDetector(
-                                    onTap: () async {
-                                      content.clear();
-                                      await apiServices.createComment(
-                                          content: content.text,
-                                          advId: widget.advId,
-                                          context: context);
-                                      setState(() {
-                                        widget.comments!.last.content =
-                                            content.text;
-                                        // widget.comments!
-                                        //     .add(widget.comments!.last);
-                                        // widget.comments!.length;
-                                        BlocProvider.of<AdvertismentCubit>(
-                                                context)
-                                            .getAdvertismentCubit();
-                                      });
-                                    },
-                                    child: Icon(Icons.send)),
-                                border: InputBorder.none,
-                                hintText: 'كتابه تعليق',
-                                hintTextDirection: TextDirection.rtl)),
+                      child: Icon(
+                        Icons.share,
+                        color: brawn,
                       ),
                     ),
-                    SizedBox(
-                      height: 200,
+                    const Spacer(),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 30, top: 10),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.grey,
+                        radius: 20,
+                        backgroundImage: ExactAssetImage("images/person.png"),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: Column(
+                        children: [
+                          Text(
+                            widget.sellername ?? "",
+                            style: GoogleFonts.plusJakartaSans(
+                                fontWeight: FontWeight.w600, fontSize: 14),
+                          ),
+                          Text(
+                            widget.sellerPhone ?? "no seller phone",
+                            style: TextStyle(fontSize: 14),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "وصف",
+                        style: GoogleFonts.plusJakartaSans(
+                            fontWeight: FontWeight.w600, fontSize: 17),
+                      ),
+                    ),
+                  ],
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 40),
+                    child: Text(
+                      widget.fullDescribition!,
+                      textAlign: TextAlign.end,
+                      style: GoogleFonts.plusJakartaSans(fontSize: 14),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Divider(
+                  color: grey,
+                  thickness: 1,
+                  endIndent: 30,
+                  indent: 30,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      "اظهار الكل",
+                      style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: darkbrawn),
+                    ),
+                    Text(
+                      "التعليقات",
+                      style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w600, fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: List.generate(
+                        widget.comments?.length ?? 1,
+                        (index) => Row(
+                          children: [
+                            Text(
+                              "${widget.comments?[index].content ?? "no comments"}",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            SizedBox(
+                              width: .09 * mediawidth(context),
+                            ),
+                            Text(
+                              "${widget.comments?[index].createdAt ?? " / / "}",
+                              style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.grey),
+                            ),
+                            SizedBox(
+                              width: .1 * mediawidth(context),
+                            ),
+                            Text(
+                              "${widget.comments?[index].user?.firstName ?? "0"}",
+                              style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Container(
+                  width: 350,
+                  height: 100,
+                  decoration: BoxDecoration(
+                      color: grey, borderRadius: BorderRadius.circular(20)),
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: TextField(
+                        textDirection: TextDirection.rtl,
+                        controller: content,
+                        decoration: InputDecoration(
+                            prefixIcon: GestureDetector(
+                                onTap: () async {
+                                  await apiServices.createComment(
+                                      content: content.text,
+                                      advId: widget.advId,
+                                      context: context);
+                                  setState(() {
+                                    widget.comments!.last.content =
+                                        content.text;
+                                    content.clear();
+                                    // widget.comments!
+                                    //     .add(widget.comments!.last);
+                                    // widget.comments!.length;
+                                    BlocProvider.of<AdvertismentCubit>(context)
+                                        .getAdvertismentCubit();
+                                  });
+                                },
+                                child: Icon(Icons.send)),
+                            border: InputBorder.none,
+                            hintText: 'كتابه تعليق',
+                            hintTextDirection: TextDirection.rtl)),
+                  ),
+                ),
+                SizedBox(
+                  height: 200,
                 ),
               ],
             )

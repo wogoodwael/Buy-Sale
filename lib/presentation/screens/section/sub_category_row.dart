@@ -52,7 +52,7 @@ class _SubCategoryRowState extends State<SubCategoryRow> {
                       endIndex = subCategoriesModel!.data!.categories!.length;
                     }
 
-                    List<Categories> currentRowItems = subCategoriesModel!
+                    List<SubCategories> currentRowItems = subCategoriesModel!
                         .data!.categories!
                         .sublist(startIndex, endIndex);
                     return Row(
