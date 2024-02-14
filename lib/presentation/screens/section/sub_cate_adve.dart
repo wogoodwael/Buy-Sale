@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/advertisement/advertisment_cubit.dart';
-import 'package:shopping/core/helper/fav_provider.dart';
+
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/data/models/advertisement_model.dart';
 import 'package:shopping/data/services/apis.dart';
@@ -39,7 +39,7 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
     //   'images/char4.png',
     //   'images/char5.png'
     // ];
-    bool? isAddedToFavorites;
+
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -84,7 +84,6 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                     ),
                   );
                 } else if (state is AdvertismentSuccess) {
-                 
                   return Column(
                     children: [
                       SizedBox(
@@ -157,6 +156,11 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                                         index]
                                                                     .address
                                                                     .toString(),
+                                                            files: advertismentModel
+                                                                    ?.data?[
+                                                                        index]
+                                                                    .files ??
+                                                                [],
                                                             price:
                                                                 advertismentModel!
                                                                     .data![
@@ -180,12 +184,6 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                                         index]
                                                                     .comments ??
                                                                 [],
-                                                            imgPath: advertismentModel
-                                                                    ?.data?[
-                                                                        index]
-                                                                    .files?[0]
-                                                                    .filePath ??
-                                                                "assets/images/car.png",
                                                           )));
                                               setState(() {
                                                 advertismentModel
@@ -195,17 +193,24 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                             child: Container(
                                                 width: 150,
                                                 height: 100,
-                                                child: Image.network(
-                                                    "https://buyandsell2024.com/${advertismentModel!.data![index].imgPath}",
-                                                    errorBuilder:
-                                                        (BuildContext context,
-                                                            Object error,
-                                                            StackTrace?
-                                                                stackTrace) {
-                                                  // Error callback, display another image when the network image is not found
-                                                  return Image.asset(
-                                                      'images/chair.png');
-                                                })),
+                                                child: advertismentModel!
+                                                        .data![index]
+                                                        .files!
+                                                        .isNotEmpty
+                                                    ? Image.network(
+                                                        "https://buyandsell2024.com/${advertismentModel!.data![index].imgPath}",
+                                                        errorBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                Object error,
+                                                                StackTrace?
+                                                                    stackTrace) {
+                                                        // Error callback, display another image when the network image is not found
+                                                        return Image.asset(
+                                                            'images/chair.png');
+                                                      })
+                                                    : Image.asset(
+                                                        'images/chair.png')),
                                           ),
                                           Positioned(
                                               top: 10,
@@ -234,9 +239,7 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                       await ApiServices()
                                                           .addToFav(context,
                                                               id: id);
-                                                    
                                                     },
-                                                    
                                                     child: Center(
                                                         child: Icon(
                                                       Icons.favorite,

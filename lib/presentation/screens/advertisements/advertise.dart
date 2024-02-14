@@ -59,17 +59,21 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   DropdownMenu? select;
   TextEditingController textController = TextEditingController();
   TextEditingController numberController = TextEditingController();
+  TextEditingController stringAttrs = TextEditingController();
   int selectValue = 1;
   List<Widget> widgets = [];
   List<String> textList = [];
   List<String> numList = [];
   Map<String, dynamic>? attributesMap;
+  List attrsListId = [];
+  List attrsListvalue = [];
   Map<String, dynamic>? filesMap;
   bool picked = false;
   bool isLoading = false;
   Widget? image;
   VideoPlayerController? _controller;
   File? _videoFile;
+  List<String> fileType = [];
 
   @override
   void dispose() {
@@ -77,6 +81,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
     super.dispose();
   }
 
+  List<PlatformFile> filesVideos = [];
   void _pickVideo() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.video,
@@ -84,6 +89,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
 
     if (result != null) {
       setState(() {
+        filesVideos = result.files;
         _videoFile = File(result.files.single.path!);
         _controller = VideoPlayerController.file(_videoFile!)
           ..initialize().then((_) {
@@ -262,15 +268,19 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                                 border: Border.all(color: Colors.black)),
                             child: TextField(
                               textDirection: TextDirection.rtl,
-                              onSubmitted: (value) {
-                                attributesMap = {
-                                  'attributes[0][id]': getCateAttrsModel!
-                                      .data![1].attribute!.id!
-                                      .toString(),
-                                  'attributes[0][value]': priceOfProduct.text
-                                };
-                              },
                               controller: priceOfProduct,
+                              onSubmitted: (val) {
+                                val = priceOfProduct.text;
+                                for (var i = 1;
+                                    i < getCateAttrsModel!.data!.length;
+                                    i++) {
+                                  attrsListId.add({
+                                    'id': getCateAttrsModel!
+                                        .data![i].attribute!.id!,
+                                    'value': val
+                                  });
+                                }
+                              },
                               decoration:
                                   InputDecoration(border: InputBorder.none),
                             ),
@@ -294,8 +304,19 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black)),
                             child: TextField(
+                              controller: stringAttrs,
+                              onTap: () {
+                                for (var i = 0;
+                                    i < getCateAttrsModel!.data!.length;
+                                    i++) {
+                                  attrsListId.add({
+                                    'id': getCateAttrsModel!
+                                        .data![i].attribute!.id!,
+                                    'value': stringAttrs.text
+                                  });
+                                }
+                              },
                               textDirection: TextDirection.rtl,
-                              controller: priceOfProduct,
                               decoration:
                                   InputDecoration(border: InputBorder.none),
                             ),
@@ -331,10 +352,12 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   onTap: () async {
                     await pickFiles();
                     //!add
+
                     filesMap = {
                       'files[0][file_path]': files,
-                      'files[0][type]': files.first.extension!
+                      'files[0][type]': fileType
                     };
+
                     setState(() {
                       picked = true;
                     });
@@ -355,29 +378,30 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
             const SizedBox(
               height: 20,
             ),
-            const Padding(
-                padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                child: Text(
-                  "فديو المنتج   ",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                )),
-            Center(
-                child: Container(
-              width: .8 * mediawidth(context),
-              height: 150,
-              decoration: BoxDecoration(
-                  color: grey, borderRadius: BorderRadius.circular(10)),
-              child: MaterialButton(
-                  onPressed: _pickVideo,
-                  child: _videoFile == null
-                      ? const Icon(Icons.video_library)
-                      : _controller != null && _controller!.value.isInitialized
-                          ? AspectRatio(
-                              aspectRatio: _controller!.value.aspectRatio,
-                              child: VideoPlayer(_controller!),
-                            )
-                          : const CircularProgressIndicator()),
-            )),
+            // const Padding(
+            //     padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
+            //     child: Text(
+            //       "فديو المنتج   ",
+            //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            //     )),
+            // Center(
+            //     child: Container(
+            //   width: .8 * mediawidth(context),
+            //   height: 150,
+            //   decoration: BoxDecoration(
+            //       color: grey, borderRadius: BorderRadius.circular(10)),
+            //   child: MaterialButton(
+            //       onPressed: _pickVideo,
+            //       child: _videoFile == null
+            //           ? const Icon(Icons.video_library)
+            //           : _controller != null && _controller!.value.isInitialized
+            //               ? AspectRatio(
+            //                   aspectRatio: _controller!.value.aspectRatio,
+            //                   child: VideoPlayer(_controller!),
+            //                 )
+            //               : const CircularProgressIndicator()),
+            // )),
+
             const Padding(
                 padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
                 child: Text(
@@ -414,6 +438,25 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   setState(() {
                     isLoading = true;
                   });
+                  for (var i = 0; i < files.length; i++) {
+                    if (files[i].extension == 'mp4') {
+                      fileType.add('video');
+                    } else {
+                      fileType.add('image');
+                    }
+                  }
+                  // Map mapListFiles = {
+                  //   'file_path': files.first,
+                  //   'type': fileType
+                  // };
+
+                  // Map upload = {};
+                  // upload.addAll(mapListFiles);
+
+                  // List<PlatformFile> mylist = [];
+                  // mylist.add(upload.values.first);
+                  // upload.addAll(fileType);
+
 //!post adv
                   await apiServices.postAdvertise(
                     name: nameOfProduct.text,
@@ -424,20 +467,22 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                     phone: phone.text,
                     adress: locattion.text,
                     price: price.text,
-                    atrributes0: attributesMap!.values.first,
-                    atrributes1: attributesMap!.values.last,
-                    filetype: 'image',
+                    atrributesid: jsonEncode(attrsListId),
                     context: context,
+                    filetype: fileType,
                   );
                   setState(() {
                     isLoading = false;
                   });
+
                   print("cooshen category $categoriesId");
                   print("uploaded file ${filesMap!.values.first}");
-                  print("uploaded attributes $attributesMap");
 
-                  print("file type ${files.first.extension}");
-                  print("city id $ciryid");
+                  print("uploaded attributes id ${jsonEncode(attrsListId)}");
+                  print(
+                      "uploaded attributes value ${jsonEncode(attrsListvalue)}");
+
+                  print("file type ${files.last.extension}");
                 },
                 child: FittedBox(
                   child: Row(
@@ -491,7 +536,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
           // Assign the files property of the FilePickerResult object
         });
 
-        print(files.first.extension);
+        print(files.last.extension);
       }
     } catch (e) {
       print('Error: $e');
@@ -614,6 +659,13 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       getCateAttrsModel!.data![1].attribute!.id!.toString(),
                   'attributes[0][value]': texts
                 };
+                for (var i = 0; i < getCateAttrsModel!.data!.length; i++) {
+                  attrsListId.add({
+                    'id': getCateAttrsModel!.data![index].attribute!.id!,
+                    'value': texts
+                  });
+                }
+
                 print(attributesMap);
               });
             },

@@ -1,14 +1,16 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shopping/business_logic/Cubit/my_advertise/my_advertisement_cubit.dart';
+
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/services/apis.dart';
+import 'package:shopping/presentation/screens/client/profile.dart';
 
 // ignore: must_be_immutable
 class MyAdvertisementDetails extends StatefulWidget {
@@ -20,7 +22,7 @@ class MyAdvertisementDetails extends StatefulWidget {
       this.price,
       this.description,
       this.name,
-      this.imgPath,
+      this.files,
       this.phone,
       this.sellername,
       this.commentername,
@@ -35,7 +37,7 @@ class MyAdvertisementDetails extends StatefulWidget {
   String? description;
   int? cityId;
   int? price;
-  String? imgPath;
+  List<Files>? files;
   String? createdAt;
   String? updatedAt;
   String? phone;
@@ -56,33 +58,33 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
   bool isAdmine = false;
   ApiServices apiServices = ApiServices();
   TextEditingController content = TextEditingController();
-  String choose() {
-    if (ontapcar == true) {
-      return 'car';
-    } else if (ontapchar1 == true) {
-      return 'char1';
-    } else if (ontapchar2 == true) {
-      return 'char2';
-    } else if (ontapproduct == true) {
-      return 'product';
-    } else {
-      return '';
-    }
-  }
+  // String choose() {
+  //   if (ontapcar == true) {
+  //     return widget.imgPath1 ?? 'car';
+  //   } else if (ontapchar1 == true) {
+  //     return widget.imgPath2 ?? 'char1';
+  //   } else if (ontapchar2 == true) {
+  //     return widget.imgPath3 ?? 'char2';
+  //   } else if (ontapproduct == true) {
+  //     return widget.imgPath4 ?? 'product';
+  //   } else {
+  //     return '';
+  //   }
+  // }
 
-  String img() {
-    if (ontapcar == true) {
-      return 'images/car.png';
-    } else if (ontapchar1 == true) {
-      return 'images/char2.png';
-    } else if (ontapchar2 == true) {
-      return 'images/char4.png';
-    } else if (ontapproduct == true) {
-      return 'images/product.png';
-    } else {
-      return '';
-    }
-  }
+  // String img() {
+  //   if (ontapcar == true) {
+  //     return 'images/car.png';
+  //   } else if (ontapchar1 == true) {
+  //     return 'images/char2.png';
+  //   } else if (ontapchar2 == true) {
+  //     return 'images/char4.png';
+  //   } else if (ontapproduct == true) {
+  //     return 'images/product.png';
+  //   } else {
+  //     return 'images/char2.png';
+  //   }
+  // }
 
   String? userName;
   getUserName() async {
@@ -113,7 +115,11 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Icon(Icons.favorite_border),
+                    GestureDetector(
+                        onTap: () {
+                          apiServices.addToFav(context, id: widget.id!);
+                        },
+                        child: const Icon(Icons.favorite_border)),
                     Center(
                         child: Text(
                       "التفاصيل",
@@ -126,7 +132,8 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                     )),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (_) => ProfileScreen()));
                       },
                       child: Container(
                         margin: const EdgeInsets.only(right: 10),
@@ -151,66 +158,42 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                 Column(
                   children: [
                     Container(
+                        margin: EdgeInsets.only(bottom: 10),
                         width: double.infinity,
                         height: 200,
                         color: Colors.white,
-                        child: choose() == 'char1' ||
-                                choose() == 'product' ||
-                                choose() == 'char2'
-                            ? Image.asset(img())
-                            : Image.network(
-                                "https://buyandsell2024.com/${widget.imgPath}",
-                                errorBuilder: (BuildContext context,
-                                    Object error, StackTrace? stackTrace) {
-                                // Error callback, display another image when the network image is not found
-                                return Image.asset('images/car.png');
-                              })),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              ontapchar1 = !ontapchar1;
-                            });
-                          },
-                          child: Container(
-                            width: 90,
-                            height: 80,
-                            color: grey,
-                            child: ontapchar1
-                                ? Image.asset("images/car.png")
-                                : Image.asset("images/char2.png"),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              ontapproduct == !ontapproduct;
-                            });
-                          },
-                          child: Container(
-                            width: 90,
-                            height: 80,
-                            color: grey,
-                            child: Image.asset("images/product.png"),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              ontapchar2 = !ontapchar2;
-                            });
-                          },
-                          child: Container(
-                            width: 90,
-                            height: 80,
-                            color: grey,
-                            child: Image.asset("images/char4.png"),
-                          ),
-                        )
-                      ],
-                    ),
+                        child: widget.files!.isEmpty
+                            ? Center(child: Text("لم تضف اي صور لاعلانك "))
+                            : CarouselSlider(
+                                items: List.generate(
+                                    widget.files?.length ?? 1,
+                                    (index) => Image.network(
+                                            "https://buyandsell2024.com/${widget.files?[index].filePath}",
+                                            errorBuilder: (BuildContext context,
+                                                Object error,
+                                                StackTrace? stackTrace) {
+                                          // Error callback, display another image when the network image is not found
+                                          return Image.asset(
+                                              'images/car_two.jpeg');
+                                        })),
+                                options: CarouselOptions(
+                                  height: 200,
+                                  aspectRatio: 16 / 9,
+                                  viewportFraction: 0.5,
+                                  initialPage: 0,
+                                  enableInfiniteScroll: false,
+                                  reverse: false,
+                                  autoPlay: false,
+                                  autoPlayInterval: Duration(seconds: 1),
+                                  autoPlayAnimationDuration:
+                                      Duration(milliseconds: 3000),
+                                  autoPlayCurve: Curves.linear,
+                                  enlargeCenterPage: true,
+                                  enlargeFactor: 0.3,
+                                  // onPageChanged: callbackFunction,
+                                  scrollDirection: Axis.horizontal,
+                                ))),
+
                     Padding(
                       padding: EdgeInsets.only(left: 15, right: 15, top: 20),
                       child: Row(

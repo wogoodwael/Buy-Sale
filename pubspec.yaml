@@ -58,6 +58,7 @@ dependencies:
   go_router: 
   url_launcher: ^6.2.4
   video_player: ^2.8.2
+  uni_links: ^0.5.1
 
 
 

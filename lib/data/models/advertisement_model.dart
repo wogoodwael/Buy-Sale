@@ -41,7 +41,7 @@ class Data {
 
   List<Attributes>? attributes;
 
-  List<Files>? files;
+  List<FilesAdv>? files;
   User? user;
 
   Data({
@@ -85,9 +85,9 @@ class Data {
     }
 
     if (json['files'] != null) {
-      files = <Files>[];
+      files = <FilesAdv>[];
       json['files'].forEach((v) {
-        files!.add(new Files.fromJson(v));
+        files!.add(new FilesAdv.fromJson(v));
       });
     }
     if (json['comments'] != null) {
@@ -188,15 +188,15 @@ class Attribute {
   }
 }
 
-class Files {
+class FilesAdv {
   int? id;
   int? advertisementId;
   String? filePath;
   String? type;
 
-  Files({this.id, this.advertisementId, this.filePath, this.type});
+  FilesAdv({this.id, this.advertisementId, this.filePath, this.type});
 
-  Files.fromJson(Map<String, dynamic> json) {
+  FilesAdv.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     advertisementId = json['advertisement_id'];
     filePath = json['file_path'];

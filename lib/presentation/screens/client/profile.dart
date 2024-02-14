@@ -3,16 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/my_advertise/my_advertisement_cubit.dart';
-import 'package:shopping/core/helper/fav_provider.dart';
+import 'package:shopping/core/helper/errors_snack.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/advertisement_model.dart';
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/services/apis.dart';
-import 'package:shopping/presentation/screens/client/fav_screen.dart';
 import 'package:shopping/presentation/screens/client/my_advertisement_details.dart';
 import 'package:shopping/presentation/screens/home/home.dart';
 
@@ -33,6 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     BlocProvider.of<MyAdvertisementCubit>(context).getMyAdvertiseCubit();
     imgf();
+    apiServices.fetchFavorites(context: context);
   }
 
   void imgf() async {
@@ -148,21 +147,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ));
                   } else if (state is MyAdvertisementSuccess) {
                     return Container(
-                      height: 230,
+                      height: 250,
                       width: mediawidth(context),
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: myAdvertisementModel!.data!.length,
+                        itemCount: myAdvertisementModel!.data!.length > 1
+                            ? myAdvertisementModel!.data!.length
+                            : 1,
                         itemBuilder: (BuildContext context, int index) {
                           return Row(
                             children: [
                               Column(children: [
-                                Text(
-                                  myAdvertisementModel!.data![index].name
-                                      .toString(),
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400),
+                                Row(
+                                  children: [
+                                    Text(
+                                      myAdvertisementModel!.data![index].name ??
+                                          "".toString(),
+                                      style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    IconButton(
+                                        onPressed: () {
+                                          apiServices.deleteAdv(
+                                              context: context,
+                                              id: myAdvertisementModel!
+                                                  .data![index].id!);
+                                          BlocProvider.of<MyAdvertisementCubit>(
+                                                  context)
+                                              .getMyAdvertiseCubit();
+                                          CustomSnackBar(
+                                              context,
+                                              'لقد تم حذف الاعلان ',
+                                              Colors.green);
+
+                                          setState(() {
+                                            myAdvertisementModel!.data!.length;
+                                          });
+                                        },
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ))
+                                  ],
                                 ),
                                 SizedBox(
                                   height: 5,
@@ -189,8 +216,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                       .data![index].id,
                                                   name: myAdvertisementModel!
                                                       .data![index].name,
-                                                  imgPath: myAdvertisementModel!
-                                                      .data![index].imgPath,
+                                                  files: myAdvertisementModel
+                                                          ?.data?[index]
+                                                          .files ??
+                                                      [],
                                                   phone: myAdvertisementModel!
                                                       .data![index].phone,
                                                   address: myAdvertisementModel!
@@ -211,14 +240,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(35),
                                     ),
-                                    child: Image.network(
-                                        "https://buyandsell2024.com/${myAdvertisementModel!.data![index].files![0].filePath}",
-                                        errorBuilder: (BuildContext context,
-                                            Object error,
-                                            StackTrace? stackTrace) {
-                                      // Error callback, display another image when the network image is not found
-                                      return Image.asset('images/cars.png');
-                                    }),
+
+                                    //files?[index].filePath
+                                    child: myAdvertisementModel!
+                                            .data![index].files!.isNotEmpty
+                                        ? Image.network(
+                                            "https://buyandsell2024.com/${myAdvertisementModel?.data?[index].files?[0].filePath}",
+                                            errorBuilder: (BuildContext context,
+                                                Object error,
+                                                StackTrace? stackTrace) {
+                                            // Error callback, display another image when the network image is not found
+                                            return Image.asset(
+                                                'images/cars.png');
+                                          })
+                                        : Image.asset('images/cars.png'),
                                   ),
                                 ),
                               ]),

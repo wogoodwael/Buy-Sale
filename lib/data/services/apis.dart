@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -278,9 +279,8 @@ class ApiServices {
       required String phone,
       required String adress,
       required String price,
-      required var atrributes0,
-      required var atrributes1,
-      required String filetype,
+      required List<String> filetype,
+      required var atrributesid,
       required BuildContext context}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String token = sharedPreferences.getString('login_token')!;
@@ -296,17 +296,21 @@ class ApiServices {
     response.fields['price'] = price;
     response.fields['phone'] = phone;
     response.fields['address'] = adress;
-    response.fields['attributes[0][id]'] = atrributes0;
-    response.fields['attributes[0][value]'] = atrributes1;
-
-    response.fields['files[0][type]'] = filetype;
+    response.fields['attributes'] = atrributesid;
 
     List<http.MultipartFile> files2 = [];
     for (PlatformFile file in files) {
-      var f =
-          await http.MultipartFile.fromPath('files[0][file_path]', file.path!);
+      var f = await http.MultipartFile.fromPath(
+          'files[$file][file_path]', file.path!);
+      var t;
+      for (var i = 0; i < files.length; i++) {
+        t = http.MultipartFile.fromString('files[$file][type]', filetype[i]);
+      }
+
       files2.add(f);
+      files2.add(t);
     }
+    print("filllllllllles$files2");
     response.files.addAll(files2);
 
     print(response.fields.toString());
@@ -444,7 +448,8 @@ class ApiServices {
   }
 
 //!fetch favorite
-  Future <AdvertismentModel>fetchFavorites({required BuildContext context}) async {
+  Future<AdvertismentModel> fetchFavorites(
+      {required BuildContext context}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String token = prefs.getString('login_token')!;
     http.Response response = await http.get(
@@ -463,5 +468,25 @@ class ApiServices {
     }
     AdvertismentModel advertismentModel = AdvertismentModel.fromJson(data);
     return advertismentModel;
+  }
+
+//!delete adv
+  Future deleteAdv({required BuildContext context, required int id}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString("login_token")!;
+    http.Response response = await http.delete(
+      Uri.parse("https://buyandsell2024.com/api/advertisement/$id"),
+      headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
+    );
+    Map<String, dynamic> data = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      if (data['status'] == true) {
+        print("adv deleted successfully");
+      } else {
+        print("error in data status $data");
+      }
+    } else {
+      print("error in status code ${response.statusCode}");
+    }
   }
 }

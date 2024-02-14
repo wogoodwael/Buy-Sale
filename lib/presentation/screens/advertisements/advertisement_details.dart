@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +21,8 @@ class AdvertismentDetails extends StatefulWidget {
       this.sellerPhone,
       this.fullDescribition,
       this.comments,
-      this.imgPath,
+   
+      this.files,
       required this.advId,
       this.commentername,
       this.sellername,
@@ -37,8 +39,8 @@ class AdvertismentDetails extends StatefulWidget {
   String? fullDescribition;
   final String advId;
   List<Comments>? comments;
+  List<FilesAdv>? files;
 
-  String? imgPath;
 
   @override
   State<AdvertismentDetails> createState() => _AdvertismentDetailsState();
@@ -55,33 +57,33 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
   bool isAdmine = false;
   ApiServices apiServices = ApiServices();
   TextEditingController content = TextEditingController();
-  String choose() {
-    if (ontapcar == true) {
-      return 'car';
-    } else if (ontapchar1 == true) {
-      return 'char1';
-    } else if (ontapchar2 == true) {
-      return 'char2';
-    } else if (ontapproduct == true) {
-      return 'product';
-    } else {
-      return '';
-    }
-  }
+  // String choose() {
+  //   if (ontapcar == true) {
+  //     return 'car';
+  //   } else if (ontapchar1 == true) {
+  //     return 'char1';
+  //   } else if (ontapchar2 == true) {
+  //     return 'char2';
+  //   } else if (ontapproduct == true) {
+  //     return 'product';
+  //   } else {
+  //     return '';
+  //   }
+  // }
 
-  String img() {
-    if (ontapcar == true) {
-      return 'images/car.png';
-    } else if (ontapchar1 == true) {
-      return 'images/char2.png';
-    } else if (ontapchar2 == true) {
-      return 'images/char4.png';
-    } else if (ontapproduct == true) {
-      return 'images/product.png';
-    } else {
-      return '';
-    }
-  }
+  // String img() {
+  //   if (ontapcar == true) {
+  //     return 'images/car.png';
+  //   } else if (ontapchar1 == true) {
+  //     return 'images/char2.png';
+  //   } else if (ontapchar2 == true) {
+  //     return 'images/char4.png';
+  //   } else if (ontapproduct == true) {
+  //     return 'images/product.png';
+  //   } else {
+  //     return '';
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -133,71 +135,43 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
             Column(
               children: [
                 Container(
-                    width: mediawidth(context),
+                    margin: EdgeInsets.only(bottom: 10),
+                    width: double.infinity,
                     height: 200,
                     color: Colors.white,
-                    child: choose() == 'char1' ||
-                            choose() == 'product' ||
-                            choose() == 'char2'
-                        ? Image.asset(img())
-                        : FittedBox(
-                            fit: BoxFit.fitHeight,
-                            child: Image.network(
-                                "https://buyandsell2024.com/${widget.imgPath}",
-                                width: 300, errorBuilder: (BuildContext context,
-                                    Object error, StackTrace? stackTrace) {
-                              // Error callback, display another image when the network image is not found
-                              return Image.asset('images/car.png');
-                            }),
-                          )),
+                    child: widget.files!.isEmpty
+                        ? Center(
+                            child: Text("لم يتم اضافه اي صور لهذا الاعلان "))
+                        : CarouselSlider(
+                            items: List.generate(
+                                widget.files?.length ?? 1,
+                                (index) => Image.network(
+                                        "https://buyandsell2024.com/${widget.files?[index].filePath}",
+                                        errorBuilder: (BuildContext context,
+                                            Object error,
+                                            StackTrace? stackTrace) {
+                                      // Error callback, display another image when the network image is not found
+                                      return Image.asset('images/car_two.jpeg');
+                                    })),
+                            options: CarouselOptions(
+                              height: 200,
+                              aspectRatio: 16 / 9,
+                              viewportFraction: 0.5,
+                              initialPage: 0,
+                              enableInfiniteScroll: false,
+                              reverse: false,
+                              autoPlay: false,
+                              autoPlayInterval: Duration(seconds: 1),
+                              autoPlayAnimationDuration:
+                                  Duration(milliseconds: 3000),
+                              autoPlayCurve: Curves.linear,
+                              enlargeCenterPage: true,
+                              enlargeFactor: 0.3,
+                              // onPageChanged: callbackFunction,
+                              scrollDirection: Axis.horizontal,
+                            ))),
                 SizedBox(
                   height: 20,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          ontapchar1 = !ontapchar1;
-                        });
-                      },
-                      child: Container(
-                        width: 90,
-                        height: 80,
-                        color: grey,
-                        child: ontapchar1
-                            ? Image.asset("images/car.png")
-                            : Image.asset("images/char2.png"),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          ontapproduct == !ontapproduct;
-                        });
-                      },
-                      child: Container(
-                        width: 90,
-                        height: 80,
-                        color: grey,
-                        child: Image.asset("images/product.png"),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          ontapchar2 = !ontapchar2;
-                        });
-                      },
-                      child: Container(
-                        width: 90,
-                        height: 80,
-                        color: grey,
-                        child: Image.asset("images/char4.png"),
-                      ),
-                    )
-                  ],
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 15, right: 15, top: 20),
