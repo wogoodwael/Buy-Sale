@@ -79,6 +79,8 @@ class _ChooseCityContainerState extends State<ChooseCityContainer> {
 
   void branshMenu(BuildContext context, double top) {
     BlocProvider.of<CitiesCubit>(context).getCitiesCubit();
+    // Track selected values
+    List<int> selectedValues = [];
     showMenu(
       context: context,
       color: grey,
@@ -92,25 +94,67 @@ class _ChooseCityContainerState extends State<ChooseCityContainer> {
       items: List.generate(
         cityModel!.data!.length,
         (index) => PopupMenuItem(
-            onTap: () async {
-              setState(() {
-                text = cityModel!.data![index].nameAr.toString();
-              });
-              SharedPreferences sharedPreferences =
-                  await SharedPreferences.getInstance();
-              sharedPreferences.setString(
-                  'city_id', cityModel!.data![index].id.toString());
-              sharedPreferences.setInt(
-                  'id_of_city', cityModel!.data![index].id!);
+          onTap: () async {
+            setState(() {
+              text = cityModel!.data![index].nameAr.toString();
+              // Toggle selection
+              if (selectedValues.contains(cityModel!.data![index].id!)) {
+                selectedValues.remove(cityModel!.data![index].id!);
+              } else {
+                selectedValues.add(cityModel!.data![index].id!);
+              }
+              print(selectedValues);
+            });
+            SharedPreferences sharedPreferences =
+                await SharedPreferences.getInstance();
+            sharedPreferences.setString(
+                'city_id', cityModel!.data![index].id.toString());
+            sharedPreferences.setInt('id_of_city', cityModel!.data![index].id!);
+          },
+          value: selectedValues.contains(cityModel!.data![index].id!)
+              ? cityModel!.data![index].id
+              : null,
+          child: StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    cityModel!.data![index].nameAr.toString(),
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Checkbox(
+                    fillColor: MaterialStateProperty.resolveWith((states) {
+                      if (!states.contains(MaterialState.selected)) {
+                        return Colors.white;
+                      }
+                      return null;
+                    }),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(2)),
+                    side: BorderSide(
+                      color: Colors.white,
+                      width: 1,
+                    ),
+                    activeColor: Colors.green,
+                    checkColor: Colors.white,
+                    value: selectedValues.contains(cityModel!.data![index].id),
+                    onChanged: (val) {
+                      setState(() {
+                        if (val!) {
+                          selectedValues.add(cityModel!.data![index].id!);
+                        } else {
+                          selectedValues.remove(cityModel!.data![index].id!);
+                        }
+                      });
+                    },
+                  ),
+                ],
+              );
             },
-            value: 1,
-            child: StatefulBuilder(
-              builder: (BuildContext context,
-                  void Function(void Function()) setState) {
-                return CountiesRow(
-                    country_name: cityModel!.data![index].nameAr.toString());
-              },
-            )),
+          ),
+        ),
       ),
     );
   }

@@ -16,6 +16,7 @@ import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/categories_attrs_model.dart';
 import 'package:shopping/data/models/sub_cate.dart';
 import 'package:shopping/data/services/apis.dart';
+import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_atrr._container.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_cat.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_sub.dart';
@@ -43,6 +44,9 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   bool show = false;
   bool showCity = false;
   bool showAttrs = false;
+  bool selectattrs = false;
+  bool numAttrs = false;
+  bool sringAttrs = false;
   String type = '';
   int? length;
   String? value;
@@ -65,10 +69,13 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   List<String> textList = [];
   List<String> numList = [];
   Map<String, dynamic>? attributesMap;
-  List attrsListId = [];
+
+  List attrsListNumber = [];
+  List attrsListSelect = [];
   List attrsListvalue = [];
   Map<String, dynamic>? filesMap;
   bool picked = false;
+  bool pickedVideo = false;
   bool isLoading = false;
   Widget? image;
   VideoPlayerController? _controller;
@@ -82,24 +89,6 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   }
 
   List<PlatformFile> filesVideos = [];
-  void _pickVideo() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.video,
-    );
-
-    if (result != null) {
-      setState(() {
-        filesVideos = result.files;
-        _videoFile = File(result.files.single.path!);
-        _controller = VideoPlayerController.file(_videoFile!)
-          ..initialize().then((_) {
-            setState(() {
-              _controller?.play();
-            });
-          });
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -251,6 +240,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   )
                 : (type == 'number')
                     ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           const Padding(
                               padding: EdgeInsets.only(
@@ -270,16 +260,15 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                               textDirection: TextDirection.rtl,
                               controller: priceOfProduct,
                               onSubmitted: (val) {
-                                val = priceOfProduct.text;
-                                for (var i = 1;
-                                    i < getCateAttrsModel!.data!.length;
-                                    i++) {
-                                  attrsListId.add({
-                                    'id': getCateAttrsModel!
-                                        .data![i].attribute!.id!,
-                                    'value': val
-                                  });
-                                }
+                                String id =
+                                    sharedpref.getString('id_of_attrs')!;
+                                attrsListNumber.add(
+                                    {'id': id, 'value': priceOfProduct.text});
+                                setState(() {
+                                  numAttrs = true;
+                                  attrsListSelect = List.from(attrsListNumber);
+                                  print("=========$attrsListSelect");
+                                });
                               },
                               decoration:
                                   InputDecoration(border: InputBorder.none),
@@ -288,6 +277,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                         ],
                       )
                     : Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           const Padding(
                               padding: EdgeInsets.only(
@@ -305,20 +295,20 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                                 border: Border.all(color: Colors.black)),
                             child: TextField(
                               controller: stringAttrs,
-                              onTap: () {
-                                for (var i = 0;
-                                    i < getCateAttrsModel!.data!.length;
-                                    i++) {
-                                  attrsListId.add({
-                                    'id': getCateAttrsModel!
-                                        .data![i].attribute!.id!,
-                                    'value': stringAttrs.text
-                                  });
-                                }
+                              onSubmitted: (val) {
+                                String id =
+                                    sharedpref.getString('id_of_attrs')!;
+                                attrsListvalue.add(
+                                    {'id': id, 'value': priceOfProduct.text});
+                                setState(() {
+                                  numAttrs = true;
+                                  attrsListSelect = List.from(attrsListvalue);
+                                  print("=========$attrsListSelect");
+                                });
                               },
                               textDirection: TextDirection.rtl,
-                              decoration:
-                                  InputDecoration(border: InputBorder.none),
+                              decoration: const InputDecoration(
+                                  border: InputBorder.none),
                             ),
                           )),
                         ],
@@ -358,50 +348,39 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       'files[0][type]': fileType
                     };
 
-                    setState(() {
-                      picked = true;
-                    });
+                    for (var i = 0; i < files.length; i++) {
+                      if (files[i].extension == 'mp4') {
+                        setState(() {
+                          pickedVideo = true;
+                        });
+                      } else {
+                        setState(() {
+                          picked = true;
+                        });
+                      }
+                    }
+
                     print("filesssssssss${files[0].path}");
                     print("filesssssssss${files.first.extension!}");
                   },
                   child: picked
                       ? image
-                      : Center(
-                          child: CircleAvatar(
-                            backgroundColor: brawn,
-                            child: const Icon(Icons.add),
-                          ),
-                        ),
+                      : pickedVideo
+                          ? _controller != null
+                              ? VideoPlayer(_controller!)
+                              : Container()
+                          : Center(
+                              child: CircleAvatar(
+                                backgroundColor: brawn,
+                                child: const Icon(Icons.add),
+                              ),
+                            ),
                 ),
               ),
             ),
             const SizedBox(
               height: 20,
             ),
-            // const Padding(
-            //     padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-            //     child: Text(
-            //       "فديو المنتج   ",
-            //       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            //     )),
-            // Center(
-            //     child: Container(
-            //   width: .8 * mediawidth(context),
-            //   height: 150,
-            //   decoration: BoxDecoration(
-            //       color: grey, borderRadius: BorderRadius.circular(10)),
-            //   child: MaterialButton(
-            //       onPressed: _pickVideo,
-            //       child: _videoFile == null
-            //           ? const Icon(Icons.video_library)
-            //           : _controller != null && _controller!.value.isInitialized
-            //               ? AspectRatio(
-            //                   aspectRatio: _controller!.value.aspectRatio,
-            //                   child: VideoPlayer(_controller!),
-            //                 )
-            //               : const CircularProgressIndicator()),
-            // )),
-
             const Padding(
                 padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
                 child: Text(
@@ -445,17 +424,6 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       fileType.add('image');
                     }
                   }
-                  // Map mapListFiles = {
-                  //   'file_path': files.first,
-                  //   'type': fileType
-                  // };
-
-                  // Map upload = {};
-                  // upload.addAll(mapListFiles);
-
-                  // List<PlatformFile> mylist = [];
-                  // mylist.add(upload.values.first);
-                  // upload.addAll(fileType);
 
 //!post adv
                   await apiServices.postAdvertise(
@@ -467,7 +435,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                     phone: phone.text,
                     adress: locattion.text,
                     price: price.text,
-                    atrributesid: jsonEncode(attrsListId),
+                    atrributesid: jsonEncode(attrsListSelect),
                     context: context,
                     filetype: fileType,
                   );
@@ -478,7 +446,8 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   print("cooshen category $categoriesId");
                   print("uploaded file ${filesMap!.values.first}");
 
-                  print("uploaded attributes id ${jsonEncode(attrsListId)}");
+                  print(
+                      "uploaded attributes id ${jsonEncode(attrsListSelect)}");
                   print(
                       "uploaded attributes value ${jsonEncode(attrsListvalue)}");
 
@@ -532,7 +501,13 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
         setState(() {
           image = Image.file(File(pickedFiles.files.first.path!));
           files = pickedFiles.files;
-
+          _videoFile = File(pickedFiles.files.single.path!);
+          _controller = VideoPlayerController.file(_videoFile!)
+            ..initialize().then((_) {
+              setState(() {
+                _controller?.play();
+              });
+            });
           // Assign the files property of the FilePickerResult object
         });
 
@@ -583,29 +558,11 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                 print("ttttttttt${type}");
                 sharedPreferences.setInt("lenght",
                     getCateAttrsModel!.data![index].attribute!.values!.length);
+                sharedPreferences.setString("id_of_attrs",
+                    getCateAttrsModel!.data![index].attribute!.id.toString());
 
                 length = sharedPreferences.getInt('lenght');
                 print("lenght of values list${length}");
-                sharedPreferences.setString('attr0_id',
-                    getCateAttrsModel!.data![0].attribute!.id.toString());
-                // BlocProvider.of<AttrsCategoriesCubit>(context)
-                //     .getCategoriesAttrsCubit();
-                // for (var idElement in getCateAttrsModel!.data!) {
-                //   id.add(idElement.attributeId!);
-                // }
-                // jsonEncode(id);
-
-                // for (var element in getCateAttrsModel!.data!) {
-                //   attrsList.add(element.attribute!);
-                // }
-                // jsonEncode(attrsList);
-
-                sharedPreferences.setString('attr1_id',
-                    getCateAttrsModel!.data![1].attribute!.id.toString());
-                sharedPreferences.setString(
-                    'attr1_value',
-                    getCateAttrsModel!.data![1].attribute!.values![1].value
-                        .toString());
               });
             },
             value: 1,
@@ -650,21 +607,15 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                 texts = getCateAttrsModel!
                     .data![1].attribute!.values![index].value
                     .toString();
+                selectattrs = true;
                 sharedPreferences.setString(
                     "texts",
                     getCateAttrsModel!.data![1].attribute!.values![index].value
                         .toString());
-                attributesMap = {
-                  'attributes[0][id]':
-                      getCateAttrsModel!.data![1].attribute!.id!.toString(),
-                  'attributes[0][value]': texts
-                };
-                for (var i = 0; i < getCateAttrsModel!.data!.length; i++) {
-                  attrsListId.add({
-                    'id': getCateAttrsModel!.data![index].attribute!.id!,
-                    'value': texts
-                  });
-                }
+                attrsListSelect.add({
+                  'id': getCateAttrsModel!.data![index].attribute!.id!,
+                  'value': texts
+                });
 
                 print(attributesMap);
               });
