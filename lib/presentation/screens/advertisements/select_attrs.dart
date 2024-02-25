@@ -5,11 +5,12 @@ import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/categories_attrs_model.dart';
-import 'package:shopping/presentation/widgets/countries_row.dart';
 
+// ignore: must_be_immutable
 class SelectAttribute extends StatefulWidget {
   SelectAttribute(
-      {super.key, this.top, required this.ontap, required this.text});
+      {super.key, this.top, required this.ontap, required this.text, required this.textofRow});
+  final String textofRow;
   double? top;
   Function()? ontap;
   String? text;
@@ -38,10 +39,10 @@ class _SelectAttributeState extends State<SelectAttribute> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Padding(
+                   Padding(
                       padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
                       child: Text(
-                        " مواصفات المنتج  الاختياريه ",
+                       widget. textofRow,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
                       )),

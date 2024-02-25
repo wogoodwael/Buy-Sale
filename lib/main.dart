@@ -60,7 +60,9 @@ bool _initialUriIsHandled = false;
     super.initState();
     _handleIncomingLinks();
     _handleInitialUri();
+    
   }
+ 
 void _handleIncomingLinks() {
     if (!kIsWeb) {
       // It will handle app links while the app is already started - be it in

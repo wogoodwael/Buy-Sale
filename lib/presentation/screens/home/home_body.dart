@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/services/apis.dart';
-import 'package:shopping/presentation/screens/section/categories_screen.dart';
+import 'package:shopping/presentation/screens/categories/categories_screen.dart';
 import 'package:shopping/presentation/screens/home/home_container.dart';
 
 import 'package:shopping/presentation/widgets/search_container.dart';

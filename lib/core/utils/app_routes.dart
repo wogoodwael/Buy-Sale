@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shopping/core/utils/strings.dart';
-import 'package:shopping/presentation/screens/Auth/otp.dart';
+
 import 'package:shopping/presentation/screens/Auth/sign_in.dart';
 import 'package:shopping/presentation/screens/Auth/sign_up.dart';
 import 'package:shopping/presentation/screens/advertisements/advertise.dart';
 import 'package:shopping/presentation/screens/client/profile_edit.dart';
 import 'package:shopping/presentation/screens/countries/countries_and_cities.dart';
 import 'package:shopping/presentation/screens/home/home.dart';
-import 'package:shopping/presentation/screens/section/categories_screen.dart';
+import 'package:shopping/presentation/screens/categories/categories_screen.dart';
 import 'package:shopping/presentation/screens/splash.dart';
 
 class AppRouter {
@@ -19,8 +19,7 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => SignUpScreen());
       case signIn:
         return MaterialPageRoute(builder: (_) => SignInScreen());
-      // case otp:
-      //   return MaterialPageRoute(builder: (_) => OtpScreen());
+  
       case advertise:
         return MaterialPageRoute(builder: (_) => AdvertiseScreen());
       case countries:

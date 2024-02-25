@@ -2,7 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
+
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -16,91 +16,13 @@ import 'package:shopping/data/models/city_model.dart';
 import 'package:shopping/data/models/filter_model.dart';
 import 'package:shopping/data/models/government_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:shopping/data/models/login_model.dart';
+
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/models/sub_cate.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
-import 'package:shopping/presentation/screens/countries/countries_and_cities.dart';
+
 
 class ApiServices {
-  //^register
-  Future registerUser(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
-    http.Response response = await http.post(Uri.parse(registerLink), headers: {
-      "api-token": "gh-general"
-    }, body: {
-      "email": email,
-      "password": password,
-    });
-    Map<String, dynamic> data = jsonDecode(response.body);
-    try {
-      if (response.statusCode == 200) {
-        if (data['status'] == true) {
-          print("success to register user $data");
-          CustomSnackBar(context, 'تم انشاء حساب بنجاح', Colors.green);
-          Navigator.pushNamed(context, signIn);
-        } else {
-          print(data);
-          CustomSnackBar(
-              context,
-              'تاكد ان الايميل لم يستخدم من قبل ثم تاكد من كلمه المرور',
-              Colors.red);
-        }
-
-        return data['user'];
-      }
-    } on Exception catch (e) {
-      CustomSnackBar(context, e.toString(), Colors.red);
-    }
-  }
-
-  //^login
-  Future<LoginModel> loginUser(
-      {required String email,
-      required String password,
-      required BuildContext context}) async {
-    http.Response response = await http.post(Uri.parse(loginLink), headers: {
-      "api-token": "gh-general"
-    }, body: {
-      "email": email,
-      "password": password,
-    });
-    Map<String, dynamic> data = jsonDecode(response.body);
-    LoginModel loginModel = LoginModel.fromJson(data);
-    try {
-      if (response.statusCode == 200) {
-        if (data['status'] == true) {
-          print("success to login user $data");
-          CustomSnackBar(context, 'تم تسجيل الدخول بنجاح', Colors.green);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (_) => Countries()));
-        } else {
-          print(data);
-          CustomSnackBar(context, data['message'], Colors.red);
-        }
-      } else {
-        print("error${response.statusCode}");
-      }
-
-      SharedPreferences sharedPreferences =
-          await SharedPreferences.getInstance();
-      sharedPreferences.setString(
-          "user_name", loginModel.data!.firstName.toString());
-      sharedPreferences.setString(
-          "last_name", loginModel.data!.lastName.toString());
-      sharedPreferences.setString("email", loginModel.data!.email.toString());
-      sharedPreferences.setString("gender", loginModel.data!.gender.toString());
-      sharedPreferences.setString(
-          "login_token", loginModel.data!.token.toString());
-      sharedPreferences.setString(
-          "img_path", loginModel.data!.imgPath.toString());
-    } on Exception catch (e) {
-      CustomSnackBar(context, e.toString(), Colors.red);
-    }
-    return loginModel;
-  }
 
   //! update profile
   Future updateProfile(
@@ -377,98 +299,7 @@ class ApiServices {
     return myAdvertisementModel;
   }
 
-  //*create comment
-  Future createComment(
-      {required String content,
-      required String advId,
-      required BuildContext context}) async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String token = sharedPreferences.getString('login_token')!;
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // String id = prefs.getString("categories_id")!;
-    http.Response response = await http.post(Uri.parse(createCommentLink),
-        headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
-        body: {"content": content, "advertisement_id": advId});
-    print("@@@Advvvvv $advId");
-    print("@@@Advvvvv $content");
-    Map<String, dynamic> data = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      if (data['status'] == true) {
-        print("comment created successfully $data");
-        CustomSnackBar(context, "تم انشاء التعليق", Colors.green);
-      } else {
-        print("error in data status $data");
-      }
-    } else {
-      print("error${response.statusCode}");
-    }
-  }
 
-//!delete comment
-  Future deleteComment(
-      {required String id, required BuildContext context}) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String token = preferences.getString("login_token")!;
-    http.Response response = await http.delete(
-      Uri.parse("https://buyandsell2024.com/api/comment/$id"),
-      headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
-    );
-    Map<String, dynamic> data = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      print("success delete status ");
-      if (data['status'] == true) {
-        print("comment deleted successfully");
-        CustomSnackBar(context, 'تم حذف التعليق', Colors.green);
-      } else {
-        print("error in data status$data");
-      }
-    } else {
-      print(response.statusCode);
-    }
-  }
-
-//!add to fav
-  Future addToFav(BuildContext context, {required int id}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('login_token')!;
-    http.Response response = await http.get(
-      Uri.parse("https://buyandsell2024.com/api/advertisement/$id/toggle_like"),
-      headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
-    );
-    Map<String, dynamic> data = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      if (data['status'] == true) {
-        CustomSnackBar(context, 'تمت الاضافه الي المفضله', Colors.green);
-      } else {
-        print("error in favorite data $data");
-      }
-    } else {
-      print("resonse error ${response.statusCode}");
-    }
-  }
-
-//!fetch favorite
-  Future<AdvertismentModel> fetchFavorites(
-      {required BuildContext context}) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('login_token')!;
-    http.Response response = await http.get(
-      Uri.parse("https://buyandsell2024.com/api/my_liked_advertisement"),
-      headers: {"api-token": "gh-general", "Authorization": "Bearer $token"},
-    );
-    Map<String, dynamic> data = jsonDecode(response.body);
-    if (response.statusCode == 200) {
-      if (data['status'] == true) {
-        print("success favorite data $data");
-      } else {
-        print("error in fetch favorite data$data");
-      }
-    } else {
-      print("error in response ${response.statusCode}");
-    }
-    AdvertismentModel advertismentModel = AdvertismentModel.fromJson(data);
-    return advertismentModel;
-  }
 
 //!delete adv
   Future deleteAdv({required BuildContext context, required int id}) async {

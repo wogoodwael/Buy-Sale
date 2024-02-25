@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:shopping/presentation/screens/section/sub_category_row.dart';
+import 'package:shopping/presentation/screens/categories/sub_category_row.dart';
 
 class SubCategorieScreen extends StatelessWidget {
   const SubCategorieScreen({super.key});

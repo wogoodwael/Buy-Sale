@@ -12,7 +12,7 @@ import 'package:shopping/presentation/screens/search/search_screen.dart';
 
 import 'package:shopping/presentation/widgets/person_container.dart';
 import 'package:shopping/presentation/widgets/search_container.dart';
-import 'package:shopping/presentation/screens/section/categories_column.dart';
+import 'package:shopping/presentation/screens/categories/categories_column.dart';
 
 class CategoriesScreen extends StatefulWidget {
   CategoriesScreen({super.key});

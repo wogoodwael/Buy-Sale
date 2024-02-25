@@ -11,6 +11,7 @@ import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/advertisement_model.dart';
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/services/apis.dart';
+import 'package:shopping/data/services/favorite_api.dart';
 import 'package:shopping/presentation/screens/client/my_advertisement_details.dart';
 import 'package:shopping/presentation/screens/home/home.dart';
 
@@ -27,11 +28,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? img;
   @override
   void initState() {
-    // TODO: implement initState
+  
     super.initState();
+   
     BlocProvider.of<MyAdvertisementCubit>(context).getMyAdvertiseCubit();
     imgf();
-    apiServices.fetchFavorites(context: context);
+    fetchFavorites(context: context);
   }
 
   void imgf() async {
@@ -232,6 +234,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                           ?.data?[index]
                                                           .mycomments ??
                                                       [],
+                                                  videoUrl: myAdvertisementModel
+                                                          ?.data?[index]
+                                                          .files?[0]
+                                                          .filePath ??
+                                                      "",
                                                 )));
                                   },
                                   child: Container(
@@ -290,7 +297,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 height: 10,
               ),
               FutureBuilder<AdvertismentModel>(
-                  future: apiServices.fetchFavorites(context: context),
+                  future: fetchFavorites(context: context),
                   builder: (BuildContext context,
                       AsyncSnapshot<AdvertismentModel> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -317,7 +324,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     ),
                                     IconButton(
                                         onPressed: () async {
-                                          apiServices.addToFav(context,
+                                          addToFav(context,
                                               id: snapshot
                                                   .data!.data![index].id!);
                                           setState(() {

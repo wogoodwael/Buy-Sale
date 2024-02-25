@@ -4,7 +4,7 @@ import 'package:shopping/core/utils/strings.dart';
 
 import 'package:shopping/data/models/filter_model.dart';
 import 'package:shopping/data/services/apis.dart';
-import 'package:shopping/presentation/screens/section/sub_categories.dart';
+import 'package:shopping/presentation/screens/categories/sub_categories.dart';
 
 class SearchScreen extends SearchDelegate {
   @override

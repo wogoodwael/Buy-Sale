@@ -6,7 +6,7 @@ import 'package:shopping/business_logic/Cubit/subCategories/sub_categories_cubit
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/data/models/sub_cate.dart';
 import 'package:shopping/data/services/apis.dart';
-import 'package:shopping/presentation/screens/section/sub_cate_adve.dart';
+import 'package:shopping/presentation/screens/categories/sub_cate_adve.dart';
 
 class SubCategoryRow extends StatefulWidget {
   const SubCategoryRow({super.key});

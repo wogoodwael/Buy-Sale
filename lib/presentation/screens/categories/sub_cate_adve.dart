@@ -9,7 +9,8 @@ import 'package:shopping/business_logic/Cubit/advertisement/advertisment_cubit.d
 
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/data/models/advertisement_model.dart';
-import 'package:shopping/data/services/apis.dart';
+
+import 'package:shopping/data/services/favorite_api.dart';
 import 'package:shopping/presentation/screens/advertisements/advertisement_details.dart';
 
 import 'package:shopping/presentation/widgets/search_container.dart';
@@ -236,8 +237,8 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                               .id!);
                                                       int id = sharedPreferences
                                                           .getInt("id_adv")!;
-                                                      await ApiServices()
-                                                          .addToFav(context,
+                                                      await
+                                                          addToFav(context,
                                                               id: id);
                                                     },
                                                     child: Center(

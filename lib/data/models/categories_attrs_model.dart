@@ -69,7 +69,6 @@ class Attribute {
       this.nameEn,
       this.createdAt,
       this.updatedAt,
-    
       this.type,
       this.values});
 
@@ -96,7 +95,7 @@ class Attribute {
     data['name_en'] = this.nameEn;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-  
+
     data['type'] = this.type;
     if (this.values != null) {
       data['values'] = this.values!.map((v) => v.toJson()).toList();
@@ -108,24 +107,32 @@ class Attribute {
 class Values {
   int? id;
   int? attributeId;
+  int? relatedAttributeId;
   String? value;
+  Null? deletedAt;
 
-
-  Values({this.id, this.attributeId, this.value, });
+  Values(
+      {this.id,
+      this.attributeId,
+      this.relatedAttributeId,
+      this.value,
+      this.deletedAt});
 
   Values.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     attributeId = json['attribute_id'];
+    relatedAttributeId = json['related_attribute_id'];
     value = json['value'];
-    
+    deletedAt = json['deleted_at'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['attribute_id'] = this.attributeId;
+    data['related_attribute_id'] = this.relatedAttributeId;
     data['value'] = this.value;
- 
+    data['deleted_at'] = this.deletedAt;
     return data;
   }
 }

@@ -59,6 +59,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   TextEditingController price = TextEditingController();
   String? text;
   String? texts;
+  String? textModel;
   String? number;
   DropdownMenu? select;
   TextEditingController textController = TextEditingController();
@@ -69,7 +70,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   List<String> textList = [];
   List<String> numList = [];
   Map<String, dynamic>? attributesMap;
-
+  int? selectedId;
   List attrsListNumber = [];
   List attrsListSelect = [];
   List attrsListvalue = [];
@@ -89,7 +90,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   }
 
   List<PlatformFile> filesVideos = [];
-
+  List<String> cities = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,7 +169,9 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                     top: .5 * mediaHiegh(context),
                   )
                 : Container(),
-            const CenterChooseContainer(),
+            CenterChooseContainer(
+              lenght: sharedpref.getStringList('selected_cities_names')!.length,
+            ),
             const Padding(
                 padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
                 child: Text(
@@ -223,20 +226,38 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   )
                 : Container(),
             (type == 'select')
-                ? SelectAttribute(
-                    ontap: () async {
-                      SharedPreferences sharedPreferences =
-                          await SharedPreferences.getInstance();
-                      branshMenuSelect(
-                        context,
-                        .5 * mediaHiegh(context),
-                      );
-                      texts = sharedPreferences.getString('texts') ?? "";
-                      setState(() {
-                        texts = texts;
-                      });
-                    },
-                    text: texts,
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      SelectAttribute(
+                        ontap: () async {
+                          branshMenuType(
+                            context,
+                            .5 * mediaHiegh(context),
+                          );
+
+                          setState(() {
+                            texts = texts;
+                          });
+                        },
+                        text: texts,
+                        textofRow: 'النوع',
+                      ),
+                      SelectAttribute(
+                        ontap: () async {
+                          SharedPreferences sharedPreferences =
+                              await SharedPreferences.getInstance();
+                          branshMenuModel(context, .5 * mediaHiegh(context));
+                          textModel =
+                              sharedPreferences.getString('textModel') ?? "";
+                          setState(() {
+                            textModel = textModel;
+                          });
+                        },
+                        text: textModel,
+                        textofRow: 'الموديل',
+                      ),
+                    ],
                   )
                 : (type == 'number')
                     ? Column(
@@ -412,7 +433,8 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   SharedPreferences sharedPreferences =
                       await SharedPreferences.getInstance();
 
-                  List ciryid = [sharedPreferences.getInt("id_of_city")!, 15];
+                  List cityid =
+                      sharedPreferences.getStringList('selected_cities')!;
                   String categoriesId = sharedPreferences.getString("sub_id")!;
                   setState(() {
                     isLoading = true;
@@ -428,7 +450,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
 //!post adv
                   await apiServices.postAdvertise(
                     name: nameOfProduct.text,
-                    cityId: jsonEncode(ciryid),
+                    cityId: jsonEncode(cityid),
                     categoriesId: categoriesId,
                     description: describtion.text,
                     files: filesMap!.values.first,
@@ -536,7 +558,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
           const RoundedRectangleBorder(side: BorderSide(color: Colors.black)),
       position: RelativeRect.fromLTRB(70, top, 40, 1),
       items: List.generate(
-        getCateAttrsModel!.data!.length,
+        getCateAttrsModel!.data!.length - 1,
         (index) => PopupMenuItem(
             onTap: () async {
               SharedPreferences sharedPreferences =
@@ -580,7 +602,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   }
 
 //!attrs
-  void branshMenuSelect(
+  void branshMenuType(
     BuildContext context,
     double top,
   ) {
@@ -604,17 +626,87 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
               SharedPreferences sharedPreferences =
                   await SharedPreferences.getInstance();
               setState(() {
+                selectedId = getCateAttrsModel!.data![index].attribute!.id!;
                 texts = getCateAttrsModel!
-                    .data![1].attribute!.values![index].value
+                    .data![0].attribute!.values![index].value
                     .toString();
                 selectattrs = true;
                 sharedPreferences.setString(
                     "texts",
-                    getCateAttrsModel!.data![1].attribute!.values![index].value
+                    getCateAttrsModel!
+                        .data![index].attribute!.values![index].value
                         .toString());
+                sharedPreferences.setInt(
+                    "related_id",
+                    getCateAttrsModel!
+                        .data![index].attribute!.values![index].id!);
                 attrsListSelect.add({
                   'id': getCateAttrsModel!.data![index].attribute!.id!,
                   'value': texts
+                });
+
+                // Pass the selected ID to branshMenuModel
+                branshMenuModel(context, top);
+              });
+            },
+            value: 1,
+            child: StatefulBuilder(
+              builder: (BuildContext context,
+                  void Function(void Function()) setState) {
+                return CountiesRow(
+                    country_name: getCateAttrsModel!
+                        .data![0].attribute!.values![index].value
+                        .toString());
+              },
+            )),
+      ),
+    );
+  }
+
+  void branshMenuModel(
+    BuildContext context,
+    double top,
+    // Accept the selected ID as a parameter
+  ) {
+    int related = sharedpref.getInt('related_id')!;
+    // Filter the items based on the selected ID
+    List filteredItems = getCateAttrsModel!.data!
+        .where((item) => item.attribute!.values![0].relatedAttributeId == related)
+        .toList();
+    print("fffffffffffff$filteredItems");
+    showMenu(
+      context: context,
+      color: grey,
+      constraints: const BoxConstraints(
+        minWidth: 230,
+        minHeight: 300,
+      ),
+      shape:
+          const RoundedRectangleBorder(side: BorderSide(color: Colors.black)),
+      position: RelativeRect.fromLTRB(70, top, 40, 1),
+      items: List.generate(
+        filteredItems.length,
+        (index) => PopupMenuItem(
+            onTap: () async {
+              SharedPreferences sharedPreferences =
+                  await SharedPreferences.getInstance();
+              setState(() {
+                textModel = filteredItems[index]
+                    .attribute!
+                    .values![index]
+                    .value
+                    .toString();
+                selectattrs = true;
+                sharedPreferences.setString(
+                    "textModel",
+                    filteredItems[index]
+                        .attribute!
+                        .values![index]
+                        .value
+                        .toString());
+                attrsListSelect.add({
+                  'id': filteredItems[index].attribute!.id!,
+                  'value': textModel
                 });
 
                 print(attributesMap);
@@ -625,8 +717,10 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
               builder: (BuildContext context,
                   void Function(void Function()) setState) {
                 return CountiesRow(
-                    country_name: getCateAttrsModel!
-                        .data![1].attribute!.values![index].value
+                    country_name: filteredItems[index]
+                        .attribute!
+                        .values![index]
+                        .value
                         .toString());
               },
             )),

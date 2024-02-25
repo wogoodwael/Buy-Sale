@@ -1,4 +1,6 @@
+
 import 'package:carousel_slider/carousel_slider.dart';
+
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -10,7 +12,13 @@ import 'package:shopping/core/utils/strings.dart';
 
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/services/apis.dart';
+import 'package:shopping/data/services/comments_api.dart';
+import 'package:shopping/data/services/favorite_api.dart';
+import 'package:shopping/presentation/screens/advertisements/video.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
+import 'package:video_player/video_player.dart';
+
+enum Source { Asset, NetWork }
 
 // ignore: must_be_immutable
 class MyAdvertisementDetails extends StatefulWidget {
@@ -26,7 +34,8 @@ class MyAdvertisementDetails extends StatefulWidget {
       this.phone,
       this.sellername,
       this.commentername,
-      this.address});
+      this.address,
+      required this.videoUrl});
   int? id;
   int? categoryId;
   int? userId;
@@ -43,6 +52,7 @@ class MyAdvertisementDetails extends StatefulWidget {
   String? phone;
   String? address;
   List<MyComments>? comments;
+  final String videoUrl;
   @override
   State<MyAdvertisementDetails> createState() => _MyAdvertisementDetailsState();
 }
@@ -58,33 +68,7 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
   bool isAdmine = false;
   ApiServices apiServices = ApiServices();
   TextEditingController content = TextEditingController();
-  // String choose() {
-  //   if (ontapcar == true) {
-  //     return widget.imgPath1 ?? 'car';
-  //   } else if (ontapchar1 == true) {
-  //     return widget.imgPath2 ?? 'char1';
-  //   } else if (ontapchar2 == true) {
-  //     return widget.imgPath3 ?? 'char2';
-  //   } else if (ontapproduct == true) {
-  //     return widget.imgPath4 ?? 'product';
-  //   } else {
-  //     return '';
-  //   }
-  // }
 
-  // String img() {
-  //   if (ontapcar == true) {
-  //     return 'images/car.png';
-  //   } else if (ontapchar1 == true) {
-  //     return 'images/char2.png';
-  //   } else if (ontapchar2 == true) {
-  //     return 'images/char4.png';
-  //   } else if (ontapproduct == true) {
-  //     return 'images/product.png';
-  //   } else {
-  //     return 'images/char2.png';
-  //   }
-  // }
 
   String? userName;
   getUserName() async {
@@ -98,6 +82,7 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
   @override
   void initState() {
     super.initState();
+
     getUserName();
   }
 
@@ -117,7 +102,7 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                   children: [
                     GestureDetector(
                         onTap: () {
-                          apiServices.addToFav(context, id: widget.id!);
+                          addToFav(context, id: widget.id!);
                         },
                         child: const Icon(Icons.favorite_border)),
                     Center(
@@ -163,19 +148,24 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                         height: 200,
                         color: Colors.white,
                         child: widget.files!.isEmpty
-                            ? Center(child: Text("لم تضف اي صور لاعلانك "))
-                            : CarouselSlider(
-                                items: List.generate(
-                                    widget.files?.length ?? 1,
-                                    (index) => Image.network(
-                                            "https://buyandsell2024.com/${widget.files?[index].filePath}",
-                                            errorBuilder: (BuildContext context,
-                                                Object error,
-                                                StackTrace? stackTrace) {
-                                          // Error callback, display another image when the network image is not found
-                                          return Image.asset(
-                                              'images/car_two.jpeg');
-                                        })),
+                            ? Center(child: Text("لم تضف اي صور لاعلانك ")):
+                            widget.files?[0].type=='video'? VideoPlayerScreen(
+                                        url:
+                                            "https://buyandsell2024.com/${widget.files?[0].filePath}"):
+                             CarouselSlider(
+                                items: List.generate(widget.files?.length ?? 1,
+                                    (index) {
+                                   
+                                    return Image.network(
+                                        "https://buyandsell2024.com/${widget.files?[index].filePath}",
+                                        errorBuilder: (BuildContext context,
+                                            Object error,
+                                            StackTrace? stackTrace) {
+                                      // Error callback, display another image when the network image is not found
+                                      return Image.asset('images/car_two.jpeg');
+                                    });
+                                
+                                }),
                                 options: CarouselOptions(
                                   height: 200,
                                   aspectRatio: 16 / 9,
@@ -438,7 +428,7 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                                                 '');
                                         String id =
                                             prefs.getString("comment_id")!;
-                                        await apiServices.deleteComment(
+                                        await deleteComment(
                                             id: id, context: context);
 
                                         setState(() {
@@ -484,4 +474,6 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
       )),
     );
   }
+
+  
 }

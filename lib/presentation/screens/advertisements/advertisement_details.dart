@@ -8,6 +8,7 @@ import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/advertisement_model.dart';
 import 'package:shopping/data/services/apis.dart';
+import 'package:shopping/data/services/comments_api.dart';
 
 // ignore: must_be_immutable
 class AdvertismentDetails extends StatefulWidget {
@@ -57,34 +58,7 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
   bool isAdmine = false;
   ApiServices apiServices = ApiServices();
   TextEditingController content = TextEditingController();
-  // String choose() {
-  //   if (ontapcar == true) {
-  //     return 'car';
-  //   } else if (ontapchar1 == true) {
-  //     return 'char1';
-  //   } else if (ontapchar2 == true) {
-  //     return 'char2';
-  //   } else if (ontapproduct == true) {
-  //     return 'product';
-  //   } else {
-  //     return '';
-  //   }
-  // }
-
-  // String img() {
-  //   if (ontapcar == true) {
-  //     return 'images/car.png';
-  //   } else if (ontapchar1 == true) {
-  //     return 'images/char2.png';
-  //   } else if (ontapchar2 == true) {
-  //     return 'images/char4.png';
-  //   } else if (ontapproduct == true) {
-  //     return 'images/product.png';
-  //   } else {
-  //     return '';
-  //   }
-  // }
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -429,7 +403,7 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                         decoration: InputDecoration(
                             prefixIcon: GestureDetector(
                                 onTap: () async {
-                                  await apiServices.createComment(
+                                  await createComment(
                                       content: content.text,
                                       advId: widget.advId,
                                       context: context);

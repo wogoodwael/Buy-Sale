@@ -4,6 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/services/apis.dart';
+import 'package:shopping/data/services/auth_api.dart';
 import 'package:shopping/data/services/google_auth.dart';
 import 'package:shopping/presentation/widgets/bottons.dart';
 import 'package:shopping/presentation/widgets/header.dart';
@@ -80,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 setState(() {
                   isLoading = true;
                 });
-                await apiServices.registerUser(
+                await registerUser(
                     email: email.text,
                     password: password.text,
                     context: context);
