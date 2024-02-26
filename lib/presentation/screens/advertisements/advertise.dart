@@ -82,7 +82,8 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   VideoPlayerController? _controller;
   File? _videoFile;
   List<String> fileType = [];
-
+  List<String> testWithAttribute = [];
+  List<String> testWithoutAttribute = [];
   @override
   void dispose() {
     _controller?.dispose();
@@ -170,7 +171,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   )
                 : Container(),
             CenterChooseContainer(
-              lenght: sharedpref.getStringList('selected_cities_names')!.length,
+              lenght: sharedpref.getStringList('selected_cities_names')?.length,
             ),
             const Padding(
                 padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
@@ -245,11 +246,9 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       ),
                       SelectAttribute(
                         ontap: () async {
-                          SharedPreferences sharedPreferences =
-                              await SharedPreferences.getInstance();
-                          branshMenuModel(context, .5 * mediaHiegh(context));
-                          textModel =
-                              sharedPreferences.getString('textModel') ?? "";
+                          branshMenuModel(context, .5 * mediaHiegh(context),
+                              testWithAttribute);
+
                           setState(() {
                             textModel = textModel;
                           });
@@ -636,17 +635,34 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                     getCateAttrsModel!
                         .data![index].attribute!.values![index].value
                         .toString());
-                sharedPreferences.setInt(
-                    "related_id",
-                    getCateAttrsModel!
-                        .data![index].attribute!.values![index].id!);
+                sharedPreferences.setInt("related_id",
+                    getCateAttrsModel!.data![0].attribute!.values![index].id!);
                 attrsListSelect.add({
                   'id': getCateAttrsModel!.data![index].attribute!.id!,
                   'value': texts
                 });
+                for (var i = 0;
+                    i < getCateAttrsModel!.data![1].attribute!.values!.length;
+                    i++) {
+                  var value =
+                      getCateAttrsModel!.data![1].attribute!.values![i].value;
+                  var id = getCateAttrsModel!
+                      .data![1].attribute!.values![i].relatedAttributeId;
+                  print(
+                      "sssssssssssss${getCateAttrsModel!.data![0].attribute!.values![index].id!}");
+                  // Check if the item has the related attribute
+                  if (id ==
+                      getCateAttrsModel!
+                          .data![0].attribute!.values![index].id) {
+                    // Add the item to the list of items with the related attribute
+                    testWithAttribute.add(value!);
+                  }
+                }
 
-                // Pass the selected ID to branshMenuModel
-                branshMenuModel(context, top);
+                print("With related attribute: $testWithAttribute");
+
+                // // Pass the selected ID and filtered lists to branshMenuModel
+                // branshMenuModel(context, top, testWithAttribute);
               });
             },
             value: 1,
@@ -666,14 +682,8 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   void branshMenuModel(
     BuildContext context,
     double top,
-    // Accept the selected ID as a parameter
+    List testWithAttribute,
   ) {
-    int related = sharedpref.getInt('related_id')!;
-    // Filter the items based on the selected ID
-    List filteredItems = getCateAttrsModel!.data!
-        .where((item) => item.attribute!.values![0].relatedAttributeId == related)
-        .toList();
-    print("fffffffffffff$filteredItems");
     showMenu(
       context: context,
       color: grey,
@@ -685,27 +695,16 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
           const RoundedRectangleBorder(side: BorderSide(color: Colors.black)),
       position: RelativeRect.fromLTRB(70, top, 40, 1),
       items: List.generate(
-        filteredItems.length,
+        testWithAttribute.length,
         (index) => PopupMenuItem(
             onTap: () async {
-              SharedPreferences sharedPreferences =
-                  await SharedPreferences.getInstance();
               setState(() {
-                textModel = filteredItems[index]
-                    .attribute!
-                    .values![index]
-                    .value
-                    .toString();
+                textModel = testWithAttribute[index];
+
                 selectattrs = true;
-                sharedPreferences.setString(
-                    "textModel",
-                    filteredItems[index]
-                        .attribute!
-                        .values![index]
-                        .value
-                        .toString());
+
                 attrsListSelect.add({
-                  'id': filteredItems[index].attribute!.id!,
+                  'id': testWithAttribute[index].attribute!.id!,
                   'value': textModel
                 });
 
@@ -716,12 +715,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
             child: StatefulBuilder(
               builder: (BuildContext context,
                   void Function(void Function()) setState) {
-                return CountiesRow(
-                    country_name: filteredItems[index]
-                        .attribute!
-                        .values![index]
-                        .value
-                        .toString());
+                return CountiesRow(country_name: testWithAttribute[index]);
               },
             )),
       ),
