@@ -82,7 +82,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   VideoPlayerController? _controller;
   File? _videoFile;
   List<String> fileType = [];
-  List<String> testWithAttribute = [];
+  List testWithAttribute = [];
   List<String> testWithoutAttribute = [];
   @override
   void dispose() {
@@ -625,24 +625,24 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
               SharedPreferences sharedPreferences =
                   await SharedPreferences.getInstance();
               setState(() {
-                selectedId = getCateAttrsModel!.data![index].attribute!.id!;
+                // selectedId = getCateAttrsModel!.data![index].attribute!.id!;
                 texts = getCateAttrsModel!
                     .data![0].attribute!.values![index].value
                     .toString();
+                print("ttttttt$texts");
                 selectattrs = true;
-                sharedPreferences.setString(
-                    "texts",
-                    getCateAttrsModel!
-                        .data![index].attribute!.values![index].value
-                        .toString());
+                sharedPreferences.setString("texts", texts.toString());
                 sharedPreferences.setInt("related_id",
                     getCateAttrsModel!.data![0].attribute!.values![index].id!);
                 attrsListSelect.add({
-                  'id': getCateAttrsModel!.data![index].attribute!.id!,
+                  'id':
+                      getCateAttrsModel!.data![0].attribute!.values![index].id!,
                   'value': texts
                 });
                 for (var i = 0;
-                    i < getCateAttrsModel!.data![1].attribute!.values!.length;
+                    i <=
+                        getCateAttrsModel!.data![1].attribute!.values!.length +
+                            1;
                     i++) {
                   var value =
                       getCateAttrsModel!.data![1].attribute!.values![i].value;
@@ -704,7 +704,8 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                 selectattrs = true;
 
                 attrsListSelect.add({
-                  'id': testWithAttribute[index].attribute!.id!,
+                  'id':
+                      getCateAttrsModel!.data![1].attribute!.values![index].id!,
                   'value': textModel
                 });
 
