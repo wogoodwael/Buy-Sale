@@ -2,7 +2,10 @@ class SubCategoriesModel {
   bool? status;
   Data? data;
 
-  SubCategoriesModel({this.status, this.data});
+  SubCategoriesModel({
+    this.status,
+    this.data,
+  });
 
   SubCategoriesModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];

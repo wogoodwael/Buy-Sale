@@ -7,6 +7,8 @@ import 'package:shopping/core/utils/colors.dart';
 
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/categories_model.dart';
+import 'package:shopping/presentation/screens/categories/categories_screen.dart';
+import 'package:shopping/presentation/screens/categories/sub_categories.dart';
 
 class HomeContainer extends StatefulWidget {
   const HomeContainer({super.key});
@@ -44,13 +46,23 @@ class _HomeContainerState extends State<HomeContainer> {
                 CarouselSlider(
                     items: List.generate(
                         categoriesModel!.data!.categories!.length,
-                        (index) => Image.network(
-                                "https://buyandsell2024.com/${categoriesModel!.data!.categories![index].imgPath}",
-                                errorBuilder: (BuildContext context,
-                                    Object error, StackTrace? stackTrace) {
-                              // Error callback, display another image when the network image is not found
-                              return Image.asset('images/car_two.jpeg');
-                            })),
+                        (index) => GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CategoriesScreen(),
+                                  ),
+                                );
+                              },
+                              child: Image.network(
+                                  "https://buyandsell2024.com/${categoriesModel!.data!.categories![index].imgPath}",
+                                  errorBuilder: (BuildContext context,
+                                      Object error, StackTrace? stackTrace) {
+                                // Error callback, display another image when the network image is not found
+                                return Image.asset('images/car_two.jpeg');
+                              }),
+                            )),
                     options: CarouselOptions(
                       height: 100,
                       aspectRatio: 16 / 9,

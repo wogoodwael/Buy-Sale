@@ -3,7 +3,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,9 +20,7 @@ import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/models/sub_cate.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
 
-
 class ApiServices {
-
   //! update profile
   Future updateProfile(
       {required File? choosenFile,
@@ -262,7 +259,12 @@ class ApiServices {
   //* get advertisement
   Future<AdvertismentModel> getAdvertisement() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String id = prefs.getString("sub_category_id")!;
+    String? id;
+    if (prefs.getString("sub_category_id")!.isNotEmpty) {
+      id = prefs.getString("sub_category_id")!;
+    } else {
+      id = prefs.getString("categories_id")!;
+    }
 
     String token = prefs.getString('login_token')!;
     print("idddddddddddddofadvertisement$id");
@@ -298,8 +300,6 @@ class ApiServices {
     print(myAdvertisementModel.data![0].description);
     return myAdvertisementModel;
   }
-
-
 
 //!delete adv
   Future deleteAdv({required BuildContext context, required int id}) async {

@@ -146,63 +146,14 @@ class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
           );
         } else {
           return Center(
-            child: Text("Something went wrong "),
+            child: Text(
+              "لا يوجد قسم فرعي لهذا القسم ",
+              style: TextStyle(
+                  color: Colors.red, fontWeight: FontWeight.bold, fontSize: 17),
+            ),
           );
         }
       },
     );
   }
-
-  // void branshMenu(
-  //     BuildContext context, double top, SubCateCreateAdvCubit cubit) {
-  //   BlocBuilder<SubCateCreateAdvCubit, SubCateCreateAdvState>(
-  //     builder: (context, state) {
-  //       return StatefulBuilder(
-  //         builder: (BuildContext context, setState) {
-  //           return showMenu(
-  //             context: context,
-  //             color: grey,
-  //             constraints: const BoxConstraints(
-  //               minWidth: 230,
-  //               minHeight: 300,
-  //             ),
-  //             shape: const RoundedRectangleBorder(
-  //                 side: BorderSide(color: Colors.black)),
-  //             position: RelativeRect.fromLTRB(70, top, 40, 1),
-  //             items: List.generate(
-  //               cubit.lenght ?? 1,
-  //               (index) => PopupMenuItem(
-  //                   onTap: () {
-  //                     setState(() {
-  //                       text = subCategoriesModel!
-  //                           .data!.categories![index].nameAr
-  //                           .toString();
-  //                       cubit.lenght;
-
-  //                       //*set string lenght
-  //                     });
-  //                   },
-  //                   value: 1,
-  //                   child: StatefulBuilder(
-  //                     builder: (BuildContext context,
-  //                         void Function(void Function()) setState) {
-  //                       setState(
-  //                         () {
-  //                           cubit.lenght;
-  //                         },
-  //                       );
-  //                       return CountiesRow(
-  //                         country_name: subCategoriesModel!
-  //                             .data!.categories![index].nameAr
-  //                             .toString(),
-  //                       );
-  //                     },
-  //                   )),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
 }

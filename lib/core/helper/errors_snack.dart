@@ -14,3 +14,9 @@ CustomSnackBar(BuildContext context, String text, Color color) {
       ),
       content: Text(text)));
 }
+
+CustomCenter(String text) {
+  return Center(
+    child: Text(text),
+  );
+}

@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping/core/utils/colors.dart';
 
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/menu_item.dart';
+import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/Auth/sign_up.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
 import 'package:shopping/presentation/screens/home/home.dart';
@@ -30,10 +32,20 @@ class _MenuScreenState extends State<MenuScreen> {
     });
   }
 
+  String? img;
   @override
   void initState() {
     super.initState();
     getUserName();
+    imgf();
+  }
+
+  void imgf() async {
+    img = sharedpref.getString("img_path")!;
+    setState(() {
+      img;
+    });
+    print(img);
   }
 
   @override
@@ -104,10 +116,19 @@ class _MenuScreenState extends State<MenuScreen> {
                 const SizedBox(
                   height: 100,
                 ),
-                const Center(
+                Center(
                   child: CircleAvatar(
-                      backgroundImage: ExactAssetImage("images/person.png"),
-                      radius: 30),
+                    radius: 38,
+                    backgroundColor: darkbrawn,
+                    child: CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Colors.white,
+                      backgroundImage:
+                          NetworkImage("https://buyandsell2024.com/$img"),
+
+                      // Error callback, display another image when the network image is not found
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 10,
