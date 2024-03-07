@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shopping/business_logic/Cubit/advertisement/advertisment_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
@@ -22,7 +23,6 @@ class AdvertismentDetails extends StatefulWidget {
       this.sellerPhone,
       this.fullDescribition,
       this.comments,
-   
       this.files,
       required this.advId,
       this.commentername,
@@ -42,7 +42,6 @@ class AdvertismentDetails extends StatefulWidget {
   List<Comments>? comments;
   List<FilesAdv>? files;
 
-
   @override
   State<AdvertismentDetails> createState() => _AdvertismentDetailsState();
 }
@@ -58,7 +57,7 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
   bool isAdmine = false;
   ApiServices apiServices = ApiServices();
   TextEditingController content = TextEditingController();
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -257,15 +256,22 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      margin: EdgeInsets.only(left: 10),
-                      decoration: BoxDecoration(
-                          color: grey, borderRadius: BorderRadius.circular(20)),
-                      child: Icon(
-                        Icons.share,
-                        color: brawn,
+                    GestureDetector(
+                      onTap: () {
+                        Share.share(
+                            "https://buyandsell2024.com/?code=advDetails");
+                      },
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        margin: EdgeInsets.only(left: 10),
+                        decoration: BoxDecoration(
+                            color: grey,
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Icon(
+                          Icons.share,
+                          color: brawn,
+                        ),
                       ),
                     ),
                     const Spacer(),

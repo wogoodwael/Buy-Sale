@@ -247,7 +247,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       SelectAttribute(
                         ontap: () async {
                           branshMenuModel(context, .5 * mediaHiegh(context),
-                              testWithAttribute);
+                              );
 
                           setState(() {
                             textModel = textModel;
@@ -639,22 +639,16 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       getCateAttrsModel!.data![0].attribute!.values![index].id!,
                   'value': texts
                 });
-                for (var i = 0;
-                    i <=
-                        getCateAttrsModel!.data![1].attribute!.values!.length +
-                            1;
-                    i++) {
+                for (var i = 0;i <=getCateAttrsModel!.data![1].attribute!.values!.length +1;i++) {
                   var value =
                       getCateAttrsModel!.data![1].attribute!.values![i].value;
                   var id = getCateAttrsModel!
                       .data![1].attribute!.values![i].relatedAttributeId;
                   print(
                       "sssssssssssss${getCateAttrsModel!.data![0].attribute!.values![index].id!}");
-                  // Check if the item has the related attribute
                   if (id ==
                       getCateAttrsModel!
                           .data![0].attribute!.values![index].id) {
-                    // Add the item to the list of items with the related attribute
                     testWithAttribute.add(value!);
                   }
                 }
@@ -682,7 +676,6 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   void branshMenuModel(
     BuildContext context,
     double top,
-    List testWithAttribute,
   ) {
     showMenu(
       context: context,

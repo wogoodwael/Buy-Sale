@@ -149,7 +149,9 @@ class _MenuScreenState extends State<MenuScreen> {
             child: ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (context, index) {
-                  return ItemList(menuItemModel: items[index]);
+                  return GestureDetector(
+                      onTap: items[index].ontap,
+                      child: ItemList(menuItemModel: items[index]));
                 }),
           )
         ],
