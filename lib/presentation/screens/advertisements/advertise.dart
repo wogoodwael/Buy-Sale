@@ -246,8 +246,10 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       ),
                       SelectAttribute(
                         ontap: () async {
-                          branshMenuModel(context, .5 * mediaHiegh(context),
-                              );
+                          branshMenuModel(
+                            context,
+                            .5 * mediaHiegh(context),
+                          );
 
                           setState(() {
                             textModel = textModel;
@@ -621,54 +623,58 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
       items: List.generate(
         length!,
         (index) => PopupMenuItem(
-            onTap: () async {
-              SharedPreferences sharedPreferences =
-                  await SharedPreferences.getInstance();
-              setState(() {
-                // selectedId = getCateAttrsModel!.data![index].attribute!.id!;
-                texts = getCateAttrsModel!
-                    .data![0].attribute!.values![index].value
-                    .toString();
-                print("ttttttt$texts");
-                selectattrs = true;
-                sharedPreferences.setString("texts", texts.toString());
-                sharedPreferences.setInt("related_id",
-                    getCateAttrsModel!.data![0].attribute!.values![index].id!);
-                attrsListSelect.add({
-                  'id':
-                      getCateAttrsModel!.data![0].attribute!.values![index].id!,
-                  'value': texts
-                });
-                for (var i = 0;i <=getCateAttrsModel!.data![1].attribute!.values!.length +1;i++) {
-                  var value =
-                      getCateAttrsModel!.data![1].attribute!.values![i].value;
-                  var id = getCateAttrsModel!
-                      .data![1].attribute!.values![i].relatedAttributeId;
-                  print(
-                      "sssssssssssss${getCateAttrsModel!.data![0].attribute!.values![index].id!}");
-                  if (id ==
-                      getCateAttrsModel!
-                          .data![0].attribute!.values![index].id) {
-                    testWithAttribute.add(value!);
-                  }
-                }
+          onTap: () async {
+            SharedPreferences sharedPreferences =
+                await SharedPreferences.getInstance();
+            setState(() {
+              // Clear the testWithAttribute list before adding new items
+              testWithAttribute.clear();
 
-                print("With related attribute: $testWithAttribute");
-
-                // // Pass the selected ID and filtered lists to branshMenuModel
-                // branshMenuModel(context, top, testWithAttribute);
+              texts = getCateAttrsModel!
+                  .data![0].attribute!.values![index].value
+                  .toString();
+              print("ttttttt$texts");
+              selectattrs = true;
+              sharedPreferences.setString("texts", texts.toString());
+              sharedPreferences.setInt("related_id",
+                  getCateAttrsModel!.data![0].attribute!.values![index].id!);
+              attrsListSelect.add({
+                'id': getCateAttrsModel!.data![0].attribute!.values![index].id!,
+                'value': texts
               });
+              for (var i = 0;
+                  i <=
+                      getCateAttrsModel!.data![1].attribute!.values!.length + 1;
+                  i++) {
+                var value =
+                    getCateAttrsModel!.data![1].attribute!.values![i].value;
+                var id = getCateAttrsModel!
+                    .data![1].attribute!.values![i].relatedAttributeId;
+                print(
+                    "sssssssssssss${getCateAttrsModel!.data![0].attribute!.values![index].id!}");
+                if (id ==
+                    getCateAttrsModel!.data![0].attribute!.values![index].id) {
+                  testWithAttribute.add(value!);
+                }
+              }
+
+              print("With related attribute: $testWithAttribute");
+
+              // // Pass the selected ID and filtered lists to branshMenuModel
+              // branshMenuModel(context, top, testWithAttribute);
+            });
+          },
+          value: 1,
+          child: StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return CountiesRow(
+                  country_name: getCateAttrsModel!
+                      .data![0].attribute!.values![index].value
+                      .toString());
             },
-            value: 1,
-            child: StatefulBuilder(
-              builder: (BuildContext context,
-                  void Function(void Function()) setState) {
-                return CountiesRow(
-                    country_name: getCateAttrsModel!
-                        .data![0].attribute!.values![index].value
-                        .toString());
-              },
-            )),
+          ),
+        ),
       ),
     );
   }
@@ -702,7 +708,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   'value': textModel
                 });
 
-                print(attributesMap);
+                print("clearrrrrrrrrrrrrrrrrr$testWithAttribute");
               });
             },
             value: 1,

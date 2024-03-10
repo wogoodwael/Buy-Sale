@@ -23,10 +23,9 @@ import 'package:shopping/data/services/context_utility.dart';
 import 'package:shopping/data/services/uni_services.dart';
 import 'package:shopping/firebase_options.dart';
 import 'package:shopping/presentation/screens/Auth/sign_up.dart';
-import 'package:shopping/presentation/screens/advertisements/advertise.dart';
-import 'package:shopping/presentation/screens/advertisements/advertisement_details.dart';
+
 import 'package:shopping/presentation/screens/categories/categories_screen.dart';
-import 'package:shopping/presentation/screens/categories/sub_cate_adve.dart';
+
 import 'package:shopping/presentation/screens/client/profile.dart';
 
 import 'package:shopping/presentation/screens/home/home.dart';

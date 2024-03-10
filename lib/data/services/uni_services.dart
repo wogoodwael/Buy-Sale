@@ -2,13 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shopping/business_logic/Cubit/advertisement/advertisment_cubit.dart';
+
 import 'package:shopping/data/services/context_utility.dart';
-import 'package:shopping/main.dart';
-import 'package:shopping/presentation/screens/advertisements/advertise.dart';
-import 'package:shopping/presentation/screens/advertisements/advertisement_details.dart';
+
 import 'package:shopping/presentation/screens/categories/categories_screen.dart';
-import 'package:shopping/presentation/screens/categories/sub_cate_adve.dart';
+
 import 'package:shopping/presentation/screens/client/profile.dart';
 import 'package:uni_links/uni_links.dart';
 
