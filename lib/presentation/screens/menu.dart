@@ -8,6 +8,7 @@ import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/menu_item.dart';
 import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/Auth/sign_up.dart';
+import 'package:shopping/presentation/screens/client/complaints.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
 import 'package:shopping/presentation/screens/home/home.dart';
 import 'package:shopping/presentation/widgets/item_list.dart';
@@ -95,7 +96,15 @@ class _MenuScreenState extends State<MenuScreen> {
               context, MaterialPageRoute(builder: (_) => ProfileScreen()));
         },
         icon: Icons.settings,
-      )
+      ),
+      MenuItemModel(
+        text: " الشكاوي والمقترحات ",
+        ontap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (_) => ComplaintsPage()));
+        },
+        icon: Icons.help_outline,
+      ),
     ];
 
     return SingleChildScrollView(
@@ -145,7 +154,7 @@ class _MenuScreenState extends State<MenuScreen> {
             height: 5,
           ),
           Container(
-            height: 400,
+            height: 500,
             child: ListView.builder(
                 itemCount: items.length,
                 itemBuilder: (context, index) {

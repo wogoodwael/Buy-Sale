@@ -99,7 +99,9 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const AdvertisementHeader(),
+            const AdvertisementHeader(
+              text: 'اضف اعلان',
+            ),
             const Padding(
               padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
               child: Text(
