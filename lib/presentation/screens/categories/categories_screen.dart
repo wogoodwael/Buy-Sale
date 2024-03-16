@@ -76,7 +76,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     fontSize: 25, fontWeight: FontWeight.w600)),
             Container(
                 width: 500,
-                height: 500,
+                height: 700,
                 child: SingleChildScrollView(
                   child: Column(
                     children: [

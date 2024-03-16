@@ -9,10 +9,10 @@ class AdvertismentCubit extends Cubit<AdvertismentState> {
   AdvertismentCubit(this.apiServices) : super(AdvertismentInitial());
   ApiServices apiServices;
   AdvertismentModel? advertismentModel;
-  void getAdvertismentCubit() async {
+  void getAdvertismentCubit({required String id}) async {
     emit(AdvertismentLoading());
     try {
-      advertismentModel = await apiServices.getAdvertisement();
+      advertismentModel = await apiServices.getAdvertisement(id: id);
       emit(AdvertismentSuccess());
     } catch (e) {
       print(e.toString());

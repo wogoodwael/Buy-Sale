@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/categories/categories_cubit.dart';
+import 'package:shopping/core/utils/colors.dart';
 
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/categories_model.dart';
 import 'package:shopping/data/services/apis.dart';
+import 'package:shopping/presentation/screens/categories/sub_cate_adve.dart';
 
 import 'package:shopping/presentation/screens/categories/sub_categories.dart';
 
@@ -24,8 +26,6 @@ class _CategoriesColumnState extends State<CategoriesColumn> {
     super.initState();
     BlocProvider.of<CategoriesCubit>(context).getCategoriesCubit();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _CategoriesColumnState extends State<CategoriesColumn> {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        for (var item in currentRowItems)
+                        for (int i = 0; i < currentRowItems.length; i++)
                           Column(
                             children: [
                               Stack(
@@ -69,24 +69,48 @@ class _CategoriesColumnState extends State<CategoriesColumn> {
                                       SharedPreferences sharedPreferences =
                                           await SharedPreferences.getInstance();
                                       sharedPreferences.setString(
-                                          "categories_id", item.id.toString());
+                                          "categories_id",
+                                          currentRowItems[i].id.toString());
 
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  SubCategorieScreen()));
+                                      if (currentRowItems[i]
+                                              .haveSubCategories ==
+                                          0) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    SubCategoryAdvertise(
+                                                        sub_cate_id:
+                                                            currentRowItems[i]
+                                                                .id
+                                                                .toString())));
+                                      } else if (currentRowItems[i]
+                                              .haveSubCategories ==
+                                          1) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    SubCategorieScreen()));
+                                      }
                                     },
                                     child: Container(
+                                      margin: EdgeInsets.all(10),
                                       width: .42 * mediawidth(context),
-                                      height: 145,
+                                      height: 140,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                        image: const DecorationImage(
-                                          image:
-                                              AssetImage("images/product.png"),
-                                        ),
                                       ),
+                                      child: Image.network(
+                                          "https://buyandsell2024.com/${currentRowItems[i].imgPath}",
+                                          fit: BoxFit.cover, errorBuilder:
+                                              (BuildContext context,
+                                                  Object error,
+                                                  StackTrace? stackTrace) {
+                                        // Error callback, display another image when the network image is not found
+                                        return Image.asset(
+                                            'images/car_two.jpeg');
+                                      }),
                                     ),
                                   ),
                                   Positioned(
@@ -94,16 +118,19 @@ class _CategoriesColumnState extends State<CategoriesColumn> {
                                     right: 10,
                                     left: 10,
                                     child: Container(
+                                      margin:
+                                          EdgeInsets.symmetric(horizontal: 10),
                                       width: 147,
                                       height: 40,
                                       decoration: BoxDecoration(
+                                        border: Border.all(color: brawn),
                                         color: const Color(0xffFFFFFF),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Center(
                                         child: FittedBox(
                                           child: Text(
-                                            item.nameAr!,
+                                            currentRowItems[i].nameAr!,
                                             style: TextStyle(
                                               fontFamily: "",
                                               fontSize: 15,

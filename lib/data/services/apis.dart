@@ -191,7 +191,7 @@ class ApiServices {
   //! post advertisement
   Future postAdvertise(
       {required String name,
-      required var cityId,
+      required List<String> cityId,
       required String categoriesId,
       required String description,
       required List<PlatformFile> files,
@@ -199,7 +199,7 @@ class ApiServices {
       required String adress,
       required String price,
       required List<String> filetype,
-      required var atrributesid,
+      required List atrributesid,
       required BuildContext context}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String token = sharedPreferences.getString('login_token')!;
@@ -209,13 +209,23 @@ class ApiServices {
     response.headers['api-token'] = 'gh-general';
     response.headers['Authorization'] = 'Bearer $token';
     response.fields['name'] = name;
-    response.fields['city_id'] = cityId;
+    // cityId.forEach((element) {
+    //   response.fields['city_id[]'] = element;
+    // });
+    for (var i = 0; i < cityId.length; i++) {
+      response.fields['city_id[$i]'] = cityId[i];
+    }
+    for (var i = 0; i < atrributesid.length; i++) {
+      response.fields["attributes[$i][id]"] = atrributesid[i]['id'].toString();
+      response.fields["attributes[$i][value]"] = atrributesid[i]['value'];
+    }
+    // response.fields['city_id'] = cityId;
     response.fields['description'] = description;
     response.fields['category_id'] = categoriesId;
     response.fields['price'] = price;
     response.fields['phone'] = phone;
     response.fields['address'] = adress;
-    response.fields['attributes'] = atrributesid;
+    // response.fields['attributes'] = atrributesid;
 
     List<http.MultipartFile> files2 = [];
     for (PlatformFile file in files) {
@@ -257,14 +267,9 @@ class ApiServices {
   }
 
   //* get advertisement
-  Future<AdvertismentModel> getAdvertisement() async {
+  Future<AdvertismentModel> getAdvertisement({required String id}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? id;
-    if (prefs.getString("sub_category_id")!.isNotEmpty) {
-      id = prefs.getString("sub_category_id")!;
-    } else {
-      id = prefs.getString("categories_id")!;
-    }
+  
 
     String token = prefs.getString('login_token')!;
     print("idddddddddddddofadvertisement$id");

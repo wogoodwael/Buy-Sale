@@ -71,13 +71,21 @@ class _SubCategoryRowState extends State<SubCategoryRow> {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (_) =>
-                                              SubCategoryAdvertise()));
+                                          builder: (_) => SubCategoryAdvertise(
+                                                sub_cate_id: item.id.toString(),
+                                              )));
                                 },
                                 child: Container(
                                   width: 156,
                                   height: 200,
-                                  child: Image.asset("images/Rectangle.png"),
+                                  child: Image.network(
+                                      "https://buyandsell2024.com/${item.imgPath}",
+                                      errorBuilder: (BuildContext context,
+                                          Object error,
+                                          StackTrace? stackTrace) {
+                                    // Error callback, display another image when the network image is not found
+                                    return Image.asset('images/car_two.jpeg');
+                                  }),
                                 ),
                               ),
                               Padding(

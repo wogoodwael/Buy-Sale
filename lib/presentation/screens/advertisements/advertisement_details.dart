@@ -27,7 +27,8 @@ class AdvertismentDetails extends StatefulWidget {
       required this.advId,
       this.commentername,
       this.sellername,
-      this.nameofattrs});
+      this.nameofattrs,
+      required this.sub_id_adv_details});
   String? name;
   String? subdescribtion;
   String? location;
@@ -41,7 +42,7 @@ class AdvertismentDetails extends StatefulWidget {
   final String advId;
   List<Comments>? comments;
   List<FilesAdv>? files;
-
+  final String sub_id_adv_details;
   @override
   State<AdvertismentDetails> createState() => _AdvertismentDetailsState();
 }
@@ -421,7 +422,8 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                                     //     .add(widget.comments!.last);
                                     // widget.comments!.length;
                                     BlocProvider.of<AdvertismentCubit>(context)
-                                        .getAdvertismentCubit();
+                                        .getAdvertismentCubit(
+                                            id: widget.sub_id_adv_details);
                                   });
                                 },
                                 child: Icon(Icons.send)),

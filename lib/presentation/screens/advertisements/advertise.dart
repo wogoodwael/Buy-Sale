@@ -294,8 +294,8 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                                   print("=========$attrsListSelect");
                                 });
                               },
-                              decoration:
-                                  InputDecoration(border: InputBorder.none),
+                              decoration: const InputDecoration(
+                                  border: InputBorder.none),
                             ),
                           )),
                         ],
@@ -422,7 +422,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       borderRadius: BorderRadius.circular(2)),
                   child: TextField(
                     controller: describtion,
-                    decoration: InputDecoration(border: InputBorder.none),
+                    decoration: const InputDecoration(border: InputBorder.none),
                   )),
             ),
             const SizedBox(
@@ -436,9 +436,9 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   SharedPreferences sharedPreferences =
                       await SharedPreferences.getInstance();
 
-                  List cityid =
+                  List<String> cityid =
                       sharedPreferences.getStringList('selected_cities')!;
-                  String categoriesId = sharedPreferences.getString("sub_id")!;
+                  String categoriesId = sharedPreferences.getString("adv_category_id")!;
                   setState(() {
                     isLoading = true;
                   });
@@ -453,14 +453,14 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
 //!post adv
                   await apiServices.postAdvertise(
                     name: nameOfProduct.text,
-                    cityId: jsonEncode(cityid),
+                    cityId: cityid,
                     categoriesId: categoriesId,
                     description: describtion.text,
                     files: filesMap!.values.first,
                     phone: phone.text,
                     adress: locattion.text,
                     price: price.text,
-                    atrributesid: jsonEncode(attrsListSelect),
+                    atrributesid: attrsListSelect,
                     context: context,
                     filetype: fileType,
                   );
@@ -471,8 +471,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   print("cooshen category $categoriesId");
                   print("uploaded file ${filesMap!.values.first}");
 
-                  print(
-                      "uploaded attributes id ${jsonEncode(attrsListSelect)}");
+                  print("uploaded attributes  ${jsonEncode(attrsListSelect)}");
                   print(
                       "uploaded attributes value ${jsonEncode(attrsListvalue)}");
 
@@ -580,14 +579,14 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                     "type", getCateAttrsModel!.data![index].attribute!.type!);
                 sharedPreferences.setString(
                     "text", getCateAttrsModel!.data![index].attribute!.nameAr!);
-                print("ttttttttt${type}");
+                print("ttttttttt$type");
                 sharedPreferences.setInt("lenght",
                     getCateAttrsModel!.data![index].attribute!.values!.length);
                 sharedPreferences.setString("id_of_attrs",
                     getCateAttrsModel!.data![index].attribute!.id.toString());
 
                 length = sharedPreferences.getInt('lenght');
-                print("lenght of values list${length}");
+                print("lenght of values list$length");
               });
             },
             value: 1,
@@ -641,7 +640,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
               sharedPreferences.setInt("related_id",
                   getCateAttrsModel!.data![0].attribute!.values![index].id!);
               attrsListSelect.add({
-                'id': getCateAttrsModel!.data![0].attribute!.values![index].id!,
+                'id': getCateAttrsModel!.data![0].attributeId,
                 'value': texts
               });
               for (var i = 0;
@@ -706,7 +705,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
 
                 attrsListSelect.add({
                   'id':
-                      getCateAttrsModel!.data![1].attribute!.values![index].id!,
+                      getCateAttrsModel!.data![1].attributeId,
                   'value': textModel
                 });
 

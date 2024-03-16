@@ -16,8 +16,8 @@ import 'package:shopping/presentation/screens/advertisements/advertisement_detai
 import 'package:shopping/presentation/widgets/search_container.dart';
 
 class SubCategoryAdvertise extends StatefulWidget {
-  const SubCategoryAdvertise({super.key});
-
+  const SubCategoryAdvertise({super.key, required this.sub_cate_id});
+  final String sub_cate_id;
   @override
   State<SubCategoryAdvertise> createState() => _SubCategoryAdvertiseState();
 }
@@ -27,7 +27,8 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<AdvertismentCubit>(context).getAdvertismentCubit();
+    BlocProvider.of<AdvertismentCubit>(context)
+        .getAdvertismentCubit(id: widget.sub_cate_id);
   }
 
   TextEditingController searchname = TextEditingController();
@@ -185,6 +186,9 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                                         index]
                                                                     .comments ??
                                                                 [],
+                                                            sub_id_adv_details:
+                                                                widget
+                                                                    .sub_cate_id,
                                                           )));
                                               setState(() {
                                                 advertismentModel
@@ -199,7 +203,7 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                         .files!
                                                         .isNotEmpty
                                                     ? Image.network(
-                                                        "https://buyandsell2024.com/${advertismentModel!.data![index].imgPath}",
+                                                        "https://buyandsell2024.com/${advertismentModel!.data![index].files?[0].filePath}",
                                                         errorBuilder:
                                                             (BuildContext
                                                                     context,
@@ -237,9 +241,8 @@ class _SubCategoryAdvertiseState extends State<SubCategoryAdvertise> {
                                                               .id!);
                                                       int id = sharedPreferences
                                                           .getInt("id_adv")!;
-                                                      await
-                                                          addToFav(context,
-                                                              id: id);
+                                                      await addToFav(context,
+                                                          id: id);
                                                     },
                                                     child: Center(
                                                         child: Icon(

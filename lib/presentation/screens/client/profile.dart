@@ -28,9 +28,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? img;
   @override
   void initState() {
-  
     super.initState();
-   
+
     BlocProvider.of<MyAdvertisementCubit>(context).getMyAdvertiseCubit();
     imgf();
     fetchFavorites(context: context);
@@ -355,7 +354,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       borderRadius: BorderRadius.circular(30),
                                     ),
                                     child: Image.network(
-                                        "https://buyandsell2024.com/${snapshot.data!.data![index].imgPath}",
+                                        "https://buyandsell2024.com/${snapshot.data!.data![index].files?[0].filePath}",
                                         errorBuilder: (BuildContext context,
                                             Object error,
                                             StackTrace? stackTrace) {
