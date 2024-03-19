@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopping/core/utils/colors.dart';
+import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/advertisements/advertise.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
 import 'package:shopping/presentation/screens/home/home_body.dart';
@@ -20,6 +21,14 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentPage = 0;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final _pageController = PageController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    sharedpref.getString("user_name");
+    sharedpref.getString("img_path");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        drawer:  Drawer(
+        drawer: Drawer(
             backgroundColor: Color(0xffd9d9d9),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(

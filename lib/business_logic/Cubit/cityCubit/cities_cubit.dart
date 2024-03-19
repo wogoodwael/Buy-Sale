@@ -9,10 +9,10 @@ class CitiesCubit extends Cubit<CitiesState> {
   CitiesCubit(this.apiServices) : super(CitiesInitial());
   ApiServices apiServices;
   CityModel? cityModel;
-  void getCitiesCubit() async {
+  void getCitiesCubit({required String countryId}) async {
     emit(CitiesLoading());
     try {
-      cityModel = await apiServices.getCities();
+      cityModel = await apiServices.getCities(countryId: countryId);
       emit(CitiesSuccess());
     } catch (e) {
       print(e.toString());

@@ -18,6 +18,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/models/sub_cate.dart';
+import 'package:shopping/data/models/sub_categories_adv_model.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
 
 class ApiServices {
@@ -125,13 +126,13 @@ class ApiServices {
   }
 
   //*get cities --change token
-  Future<CityModel> getCities() async {
+  Future<CityModel> getCities({required String countryId}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
 
     String token = sharedPreferences.getString('login_token')!;
-    String governid = sharedPreferences.getString("government_choosen_id")!;
+    // String governid = sharedPreferences.getString("government_choosen_id")!;
     http.Response response = await http.get(
-        Uri.parse("https://buyandsell2024.com/api/governorate/$governid/city"),
+        Uri.parse("https://buyandsell2024.com/api/governorate/$countryId/city"),
         headers: {"api-token": "gh-general", "Authorization": "Bearer $token"});
     Map<String, dynamic> data = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -145,21 +146,18 @@ class ApiServices {
   }
 
 //! get sub categories for advertisement
-  Future<SubCategoriesModel> getSubCategoriesAdv() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String id = sharedPreferences.getString("adv_category_id")!;
-    print("@@@@@@@@@@$id");
+  Future<SubCategoriesAdvModel> getSubCategoriesAdv() async {
     http.Response response = await http.get(
-        Uri.parse("https://buyandsell2024.com/api/category?parent_id=$id"),
+        Uri.parse("https://buyandsell2024.com/api/category/ads/select"),
         headers: {"api-token": "gh-general"});
     Map<String, dynamic> data = jsonDecode(response.body);
     if (response.statusCode == 200) {
-      // print("the data in sub categories adv services is ${data}");
+      print("the data in sub categories adv services is ${data}");
     } else {
       print("error ${response.statusCode} ");
     }
-    SubCategoriesModel subCategoriesModel = SubCategoriesModel.fromJson(data);
-    print(subCategoriesModel.data!.categories![0].nameAr);
+    SubCategoriesAdvModel subCategoriesModel = SubCategoriesAdvModel.fromJson(data);
+    // print(subCategoriesModel.data!.categories![0].nameAr);
     return subCategoriesModel;
   }
 
@@ -269,7 +267,6 @@ class ApiServices {
   //* get advertisement
   Future<AdvertismentModel> getAdvertisement({required String id}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-  
 
     String token = prefs.getString('login_token')!;
     print("idddddddddddddofadvertisement$id");

@@ -13,8 +13,10 @@ class CenterChooseContainer extends StatefulWidget {
   CenterChooseContainer({
     Key? key,
     this.lenght,
+    required this.seletedname,
   });
   int? lenght;
+  final List seletedname;
 
   @override
   State<CenterChooseContainer> createState() => _CenterChooseContainerState();
@@ -72,7 +74,7 @@ class _CenterChooseContainerState extends State<CenterChooseContainer> {
                         childAspectRatio:
                             4.0, // You can adjust this ratio as needed
                       ),
-                      itemCount: cityModel!.data!.length,
+                      itemCount: widget.lenght,
                       itemBuilder: (BuildContext context, int index) {
                         if (isDeletedList.length <= index) {
                           isDeletedList.add(false);
@@ -92,6 +94,8 @@ class _CenterChooseContainerState extends State<CenterChooseContainer> {
                           child: isDeletedList[index]
                               ? Container()
                               : Container(
+                                  height: 100,
+                                  width: 150,
                                   margin: EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
@@ -117,13 +121,16 @@ class _CenterChooseContainerState extends State<CenterChooseContainer> {
                                             color: Colors.red,
                                           ),
                                         ),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
                                         isDeletedList[index]
                                             ? Container()
                                             : Center(
                                                 child: Text(
-                                                  cityModel!.data![index].nameAr
-                                                      .toString(),
+                                                  widget.seletedname[index],
                                                   style: TextStyle(
+                                                    fontSize: 20,
                                                     color: selectedCities
                                                             .contains(cityModel!
                                                                 .data![index])

@@ -46,7 +46,7 @@ class _PersonContainerState extends State<PersonContainer> {
                 backgroundColor: darkbrawn,
                 child: CircleAvatar(
                   radius: 35,
-                  backgroundColor: Colors.white,
+                  backgroundColor: brawn,
                   backgroundImage:
                       NetworkImage("https://buyandsell2024.com/$img"),
 

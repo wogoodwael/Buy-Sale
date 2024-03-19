@@ -7,11 +7,13 @@ import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_
 import 'package:shopping/business_logic/Cubit/sub_cate_create_adv/sub_cate_create_adv_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
-import 'package:shopping/data/models/sub_cate.dart';
+
+import 'package:shopping/data/models/sub_categories_adv_model.dart';
 import 'package:shopping/data/services/apis.dart';
 
 import 'package:shopping/presentation/widgets/countries_row.dart';
 
+// ignore: must_be_immutable
 class ChooseSubCategContainer extends StatefulWidget {
   ChooseSubCategContainer({super.key, required this.top, this.ontap});
   final double top;
@@ -23,7 +25,7 @@ class ChooseSubCategContainer extends StatefulWidget {
 }
 
 class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
-  SubCategoriesModel? subCategoriesModel;
+  SubCategoriesAdvModel? subCategoriesModel;
   ApiServices apiServices = ApiServices();
   int? lenght;
   void updateLength() async {
@@ -35,6 +37,7 @@ class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<SubCateCreateAdvCubit>(context).subCateCreateAdvCubit();
   }
 
   String? text;
@@ -90,12 +93,11 @@ class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
                                     setState(() {
                                       lenght;
                                       text = subCategoriesModel!
-                                          .data!.categories![index].nameAr
+                                          .data![index].nameAr
                                           .toString();
                                       sharedPreferences.setString(
                                           "sub_id",
-                                          subCategoriesModel!
-                                              .data!.categories![index].id
+                                          subCategoriesModel!.data![index].id
                                               .toString());
                                       BlocProvider.of<AttrsCategoriesCubit>(
                                               context)
@@ -116,7 +118,7 @@ class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
                                       );
                                       return CountiesRow(
                                         country_name: subCategoriesModel!
-                                            .data!.categories![index].nameAr
+                                            .data![index].nameAr
                                             .toString(),
                                       );
                                     },

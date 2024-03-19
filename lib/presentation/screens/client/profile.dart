@@ -241,6 +241,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 )));
                                   },
                                   child: Container(
+                                    margin: EdgeInsets.only(left: 5),
                                     width: 150,
                                     height: 180,
                                     decoration: BoxDecoration(
@@ -270,7 +271,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     );
                   } else {
                     return Center(
-                      child: Text("something went wrong"),
+                      child: Text(
+                        "لم تقم باضافه اي اعلان بعد ",
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold),
+                      ),
                     );
                   }
                 },

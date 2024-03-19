@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_cubit.dart';
+import 'package:shopping/business_logic/Cubit/sub_cate_create_adv/sub_cate_create_adv_cubit.dart';
 import 'package:shopping/core/helper/header.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
@@ -18,10 +19,9 @@ import 'package:shopping/data/models/sub_cate.dart';
 import 'package:shopping/data/services/apis.dart';
 import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_atrr._container.dart';
-import 'package:shopping/presentation/screens/advertisements/choose_cat.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_sub.dart';
 import 'package:shopping/presentation/screens/advertisements/select_attrs.dart';
-import 'package:shopping/presentation/screens/countries/center_choose_container.dart';
+
 import 'package:shopping/presentation/screens/countries/choose_city_container.dart';
 import 'package:shopping/presentation/screens/countries/choose_country_container.dart';
 import 'package:shopping/presentation/widgets/countries_row.dart';
@@ -85,6 +85,13 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   List testWithAttribute = [];
   List<String> testWithoutAttribute = [];
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    BlocProvider.of<SubCateCreateAdvCubit>(context).subCateCreateAdvCubit();
+  }
+
+  @override
   void dispose() {
     _controller?.dispose();
     super.dispose();
@@ -102,45 +109,41 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
             const AdvertisementHeader(
               text: 'اضف اعلان',
             ),
+            // const Padding(
+            //   padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
+            //   child: Text(
+            //     "اختر القسم الرئيسي ",
+            //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            //   ),
+            // ),
+            // GestureDetector(
+            //   child: ChooseCategoriesContainer(
+            //     top: .3 * mediaHiegh(context),
+            //     id: widget.id,
+            //     ontap: () {
+            //       setState(() {
+            //         show = true;
+            //       });
+            //     },
+            //   ),
+            // ),
             const Padding(
               padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
               child: Text(
-                "اختر القسم الرئيسي ",
+                "اختر القسم الفرعي ",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
-            GestureDetector(
-              child: ChooseCategoriesContainer(
-                top: .3 * mediaHiegh(context),
-                id: widget.id,
-                ontap: () {
-                  setState(() {
-                    show = true;
-                  });
-                },
-              ),
+            ChooseSubCategContainer(
+              top: .42 * mediaHiegh(context),
+              ontap: () {
+                setState(() {
+                  showAttrs = true;
+                  // getArrtibute();
+                });
+              },
             ),
-            (show == true)
-                ? const Padding(
-                    padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                    child: Text(
-                      "اختر القسم الفرعي ",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                  )
-                : Container(),
-            (show == true)
-                ? ChooseSubCategContainer(
-                    top: .42 * mediaHiegh(context),
-                    ontap: () {
-                      setState(() {
-                        showAttrs = true;
-                        // getArrtibute();
-                      });
-                    },
-                  )
-                : Container(),
+
             const Padding(
               padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
               child: Text(
@@ -172,9 +175,9 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                     top: .5 * mediaHiegh(context),
                   )
                 : Container(),
-            CenterChooseContainer(
-              lenght: sharedpref.getStringList('selected_cities_names')?.length,
-            ),
+            // CenterChooseContainer(
+            //   lenght: sharedpref.getStringList('selected_cities_names')?.length,
+            // ),
             const Padding(
                 padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
                 child: Text(
@@ -438,7 +441,8 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
 
                   List<String> cityid =
                       sharedPreferences.getStringList('selected_cities')!;
-                  String categoriesId = sharedPreferences.getString("adv_category_id")!;
+
+                  String categoriesId = sharedPreferences.getString("sub_id")!;
                   setState(() {
                     isLoading = true;
                   });
@@ -704,8 +708,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                 selectattrs = true;
 
                 attrsListSelect.add({
-                  'id':
-                      getCateAttrsModel!.data![1].attributeId,
+                  'id': getCateAttrsModel!.data![1].attributeId,
                   'value': textModel
                 });
 

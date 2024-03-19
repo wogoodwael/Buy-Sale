@@ -8,6 +8,7 @@ import 'package:shopping/business_logic/Cubit/government_cubit/government_cubit.
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/government_model.dart';
+import 'package:shopping/main.dart';
 import 'package:shopping/presentation/widgets/countries_row.dart';
 
 class ChooseCountryContainer extends StatefulWidget {
@@ -47,29 +48,31 @@ class _ChooseCountryContainerState extends State<ChooseCountryContainer> {
               height: 40,
               decoration:
                   BoxDecoration(border: Border.all(color: Colors.black)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onHorizontalDragCancel: widget.ontap,
-                    onTap: () {
-                      branshMenu(context, widget.top);
-                    },
-                    child: Icon(
-                      Icons.keyboard_arrow_down,
-                      color: brawn,
-                      weight: 20,
-                      size: 30,
+              child: FittedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onHorizontalDragCancel: widget.ontap,
+                      onTap: () {
+                        branshMenu(context, widget.top);
+                      },
+                      child: Icon(
+                        Icons.keyboard_arrow_down,
+                        color: brawn,
+                        weight: 20,
+                        size: 30,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10),
-                    child: Text(
-                      text ?? "",
-                      style: TextStyle(color: brawn, fontSize: 20),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: Text(
+                        text ?? "",
+                        style: TextStyle(color: brawn, fontSize: 20),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
@@ -83,6 +86,10 @@ class _ChooseCountryContainerState extends State<ChooseCountryContainer> {
   }
 
   void branshMenu(BuildContext context, double top) {
+    List<int> selectedValues = [];
+
+    List<String> selectedGovernmentNames =
+        []; // List to hold selected government names
     showMenu(
       context: context,
       color: grey,
@@ -96,30 +103,147 @@ class _ChooseCountryContainerState extends State<ChooseCountryContainer> {
       items: List.generate(
         governmentModel!.data!.length,
         (index) => PopupMenuItem(
-            onTap: () async {
-              SharedPreferences sharedPreferences =
-                  await SharedPreferences.getInstance();
-              sharedPreferences.setString(
-                  "government_id", governmentModel!.data![index].id.toString());
-              print(sharedPreferences.getString("government_id"));
-              setState(() {
-                text = governmentModel!.data![index].nameAr.toString();
-                widget.id = governmentModel!.data![index].id.toString();
-                sharedPreferences.setString("government_choosen_id",
-                    governmentModel!.data![index].id.toString());
-                BlocProvider.of<CitiesCubit>(context).getCitiesCubit();
-              });
+          onTap: () async {
+            SharedPreferences sharedPreferences =
+                await SharedPreferences.getInstance();
+            sharedPreferences.setString(
+                "government_id", governmentModel!.data![index].id.toString());
+            print(sharedPreferences.getString("government_id"));
+            setState(() {
+              String selectedName =
+                  governmentModel!.data![index].nameAr.toString();
+              selectedGovernmentNames
+                  .add(selectedName); // Add selected name to the list
+              text = selectedName;
+              widget.id = governmentModel!.data![index].id.toString();
+              sharedPreferences.setString("government_choosen_id",
+                  governmentModel!.data![index].id.toString());
+              BlocProvider.of<CitiesCubit>(context).getCitiesCubit(
+                  countryId: governmentModel!.data![index].id.toString());
+            });
+          },
+          value: 1,
+          child: StatefulBuilder(
+            builder: (BuildContext context,
+                void Function(void Function()) setState) {
+              return Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        governmentModel!.data![index].nameAr.toString(),
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      Checkbox(
+                        fillColor: MaterialStateProperty.resolveWith((states) {
+                          if (!states.contains(MaterialState.selected)) {
+                            return Colors.white;
+                          }
+                          return null;
+                        }),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(2)),
+                        side: BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                        activeColor: Colors.green,
+                        checkColor: Colors.white,
+                        value: selectedValues
+                            .contains(governmentModel!.data![index].id),
+                        onChanged: (val) {
+                          setState(() {
+                            if (val!) {
+                              selectedValues
+                                  .add(governmentModel!.data![index].id!);
+                              selectedGovernmentNames.add(governmentModel!
+                                  .data![index].nameAr
+                                  .toString());
+                            } else {
+                              selectedValues
+                                  .remove(governmentModel!.data![index].id!);
+                            }
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              );
             },
-            value: 1,
-            child: StatefulBuilder(
-              builder: (BuildContext context,
-                  void Function(void Function()) setState) {
-                return CountiesRow(
-                    country_name:
-                        governmentModel!.data![index].nameAr.toString());
+          ),
+        ),
+      )..addAll(
+          // Add the "تم" button at the end
+          [
+            PopupMenuItem(
+              child: Center(
+                child: Container(
+                  width: 50,
+                  height: 30,
+                  color: brawn,
+                  child: Center(
+                    child: Text(
+                      "تم",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.white),
+                      textDirection: TextDirection.rtl,
+                    ),
+                  ),
+                ),
+              ),
+              onTap: () {
+                setState(() {
+                  if (selectedValues.isNotEmpty) {
+                    widget.id = selectedValues.first.toString();
+                    text = selectedGovernmentNames.first;
+                    saveSelectedGovernmentNames([
+                      selectedGovernmentNames.first
+                    ]); // Save only the first selected government name
+
+                    sharedpref.setString("government_choosen_id", widget.id!);
+                    text = selectedGovernmentNames.join(", ");
+                  }
+                });
+                // Save selected values
+                saveSelectedValues(selectedValues);
+                // Close the menu
+                BlocProvider.of<CitiesCubit>(context).getCitiesCubit(
+                    countryId: sharedpref.getString("government_choosen_id")!);
+                // Save selected values
+
+                // Close the menu
               },
-            )),
-      ),
+            )
+          ],
+        ),
     );
+  }
+
+  void saveSelectedValues(
+    List<int> selectedValues,
+  ) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // Save selected values
+    sharedPreferences.setStringList(
+        'selected_cities', selectedValues.map((id) => id.toString()).toList());
+    sharedPreferences.setStringList('selected_cities_names',
+        selectedValues.map((nameAr) => nameAr.toString()).toList());
+    print(
+        "%%%%%%%%%%%%%%%%%%% ${sharedPreferences.getStringList('selected_cities')}");
+  }
+
+  void saveSelectedGovernmentNames(
+    List<String> selecteNames,
+  ) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // Save selected values
+
+    sharedPreferences.setStringList('selected_government_names',
+        selecteNames.map((nameAr) => nameAr.toString()).toList());
+
+    print(
+        "!!!!!!!!!!!!!!!!!!!!!!! ${sharedPreferences.getStringList('selected_government_names')}");
   }
 }

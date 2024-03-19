@@ -8,6 +8,7 @@ import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/city_model.dart';
 import 'package:shopping/main.dart';
+import 'package:shopping/presentation/screens/countries/center_choose_container.dart';
 
 class ChooseCityContainer extends StatefulWidget {
   const ChooseCityContainer({super.key, required this.top});
@@ -19,6 +20,8 @@ class ChooseCityContainer extends StatefulWidget {
 
 class _ChooseCityContainerState extends State<ChooseCityContainer> {
   CityModel? cityModel;
+  List<String> selectedNames = [];
+
   @override
   void initState() {
     super.initState();
@@ -36,39 +39,47 @@ class _ChooseCityContainerState extends State<ChooseCityContainer> {
             color: brawn,
           ));
         } else if (state is CitiesSuccess) {
-          return Center(
-            child: Container(
-              width: .8 * mediawidth(context),
-              height: 40,
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.black)),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        branshMenu(context, widget.top);
-                      },
-                      child: Icon(
-                        Icons.keyboard_arrow_down,
-                        color: brawn,
-                        weight: 20,
-                        size: 30,
-                      ),
+          return Column(
+            children: [
+              Center(
+                child: Container(
+                  width: .8 * mediawidth(context),
+                  height: 40,
+                  decoration:
+                      BoxDecoration(border: Border.all(color: Colors.black)),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            branshMenu(context, widget.top);
+                          },
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: brawn,
+                            weight: 20,
+                            size: 30,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Text(
+                            text ?? "",
+                            style: TextStyle(color: brawn, fontSize: 20),
+                          ),
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Text(
-                        text ?? "",
-                        style: TextStyle(color: brawn, fontSize: 20),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+              CenterChooseContainer(
+                lenght: selectedNames.length,
+                seletedname: selectedNames,
+              )
+            ],
           );
         } else {
           return Center(
@@ -80,10 +91,10 @@ class _ChooseCityContainerState extends State<ChooseCityContainer> {
   }
 
   void branshMenu(BuildContext context, double top) {
-    BlocProvider.of<CitiesCubit>(context).getCitiesCubit();
+    BlocProvider.of<CitiesCubit>(context).getCitiesCubit(
+        countryId: sharedpref.getString("government_choosen_id")!);
     // Track selected values
     List<int> selectedValues = [];
-    List<String> selectedNames = [];
     showMenu(
       context: context,
       color: grey,

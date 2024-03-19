@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/services/apis.dart';
+import 'package:shopping/data/services/google_auth.dart';
+import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/client/custom_text_field_profile.dart';
 
 class ProfileEditScreen extends StatefulWidget {
@@ -300,7 +302,9 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     firstName: firstName.text,
                     lastName: lastName.text,
                     email: email.text,
-                    gender: gender.text, context: context);
+                    gender: gender.text,
+                    context: context);
+                sharedpref.getString("user_name");
               },
               child: Container(
                 width: .8 * mediawidth(context),
