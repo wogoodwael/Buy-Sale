@@ -73,7 +73,15 @@ class _ChooseAttributeContainerState extends State<ChooseAttributeContainer> {
           );
         } else {
           return Center(
-            child: Text("Something went wrong"),
+            child: FittedBox(
+              child: Text(
+                "لا يوجد بيانات اختياريه لهذا المنتج\n من فضلك ادخل البيانات يدويا",
+                style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15),
+              ),
+            ),
           );
         }
       },

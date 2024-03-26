@@ -146,9 +146,12 @@ class ApiServices {
   }
 
 //! get sub categories for advertisement
-  Future<SubCategoriesAdvModel> getSubCategoriesAdv() async {
+  Future<SubCategoriesModel> getSubCategoriesAdv() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String id = sharedPreferences.getString("adv_category_id")!;
+    print("@@@@@@@@@@$id");
     http.Response response = await http.get(
-        Uri.parse("https://buyandsell2024.com/api/category/ads/select"),
+        Uri.parse("https://buyandsell2024.com/api/category?parent_id=$id"),
         headers: {"api-token": "gh-general"});
     Map<String, dynamic> data = jsonDecode(response.body);
     if (response.statusCode == 200) {
@@ -156,7 +159,8 @@ class ApiServices {
     } else {
       print("error ${response.statusCode} ");
     }
-    SubCategoriesAdvModel subCategoriesModel = SubCategoriesAdvModel.fromJson(data);
+      SubCategoriesModel subCategoriesModel = SubCategoriesModel.fromJson(data);
+    print(subCategoriesModel.data!.categories![0].nameAr);
     // print(subCategoriesModel.data!.categories![0].nameAr);
     return subCategoriesModel;
   }

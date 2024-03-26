@@ -4,21 +4,26 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_cubit.dart';
+import 'package:shopping/business_logic/Cubit/categories/categories_cubit.dart';
 import 'package:shopping/business_logic/Cubit/sub_cate_create_adv/sub_cate_create_adv_cubit.dart';
 import 'package:shopping/core/helper/header.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/categories_attrs_model.dart';
+import 'package:shopping/data/models/categories_model.dart';
 import 'package:shopping/data/models/sub_cate.dart';
 import 'package:shopping/data/services/apis.dart';
 import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_atrr._container.dart';
+import 'package:shopping/presentation/screens/advertisements/choose_cat.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_sub.dart';
 import 'package:shopping/presentation/screens/advertisements/select_attrs.dart';
 
@@ -40,6 +45,8 @@ class AdvertiseScreen extends StatefulWidget {
 class _AdvertiseScreenState extends State<AdvertiseScreen> {
   ApiServices apiServices = ApiServices();
   SubCategoriesModel? subCategoriesModel;
+  CategoriesModel? categoriesModel;
+
   GetCateAttrsModel? getCateAttrsModel;
   bool show = false;
   bool showCity = false;
@@ -89,6 +96,14 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
     // TODO: implement initState
     super.initState();
     BlocProvider.of<SubCateCreateAdvCubit>(context).subCateCreateAdvCubit();
+    BlocProvider.of<CategoriesCubit>(context).getCategoriesCubit();
+    categoriesModel = BlocProvider.of<CategoriesCubit>(context).categoriesModel;
+    subCategoriesModel =
+        BlocProvider.of<SubCateCreateAdvCubit>(context).subCategoriesModel;
+    BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
+    getCateAttrsModel =
+        BlocProvider.of<AttrsCategoriesCubit>(context).getCateAttrsModel;
+    // BlocProvider.of<SubCateCreateAdvCubit>(context).subCateCreateAdvCubit();
   }
 
   @override
@@ -109,40 +124,45 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
             const AdvertisementHeader(
               text: 'اضف اعلان',
             ),
-            // const Padding(
-            //   padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-            //   child: Text(
-            //     "اختر القسم الرئيسي ",
-            //     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            //   ),
-            // ),
-            // GestureDetector(
-            //   child: ChooseCategoriesContainer(
-            //     top: .3 * mediaHiegh(context),
-            //     id: widget.id,
-            //     ontap: () {
-            //       setState(() {
-            //         show = true;
-            //       });
-            //     },
-            //   ),
-            // ),
             const Padding(
               padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
               child: Text(
-                "اختر القسم الفرعي ",
+                "اختر القسم الرئيسي ",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
             ),
-            ChooseSubCategContainer(
-              top: .42 * mediaHiegh(context),
-              ontap: () {
-                setState(() {
-                  showAttrs = true;
-                  // getArrtibute();
-                });
-              },
+            GestureDetector(
+              child: ChooseCategoriesContainer(
+                top: .3 * mediaHiegh(context),
+                id: widget.id,
+                ontap: () {
+                  setState(() {
+                    show = true;
+                  });
+                },
+              ),
             ),
+            (show == true)
+                ? const Padding(
+                    padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
+                    child: Text(
+                      "اختر القسم الفرعي ",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  )
+                : Container(),
+            (show == true)
+                ? ChooseSubCategContainer(
+                    top: .42 * mediaHiegh(context),
+                    ontap: () {
+                      setState(() {
+                        showAttrs = true;
+                        // getArrtibute();
+                      });
+                    },
+                  )
+                : Container(),
 
             const Padding(
               padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
@@ -196,150 +216,177 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                 decoration: const InputDecoration(border: InputBorder.none),
               ),
             )),
+            SizedBox(
+              height: 20,
+            ),
             (showAttrs == true)
-                ? const Padding(
-                    padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                    child: Text(
-                      "مواصفات المنتج ",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ))
-                : Container(),
-            (showAttrs == true)
-                ? ChooseAttributeContainer(
-                    text: text,
-                    top: .5 * mediaHiegh(context),
-                    ontap: () async {
-                      branshMenu(
-                        context,
-                        .5 *
-                            mediaHiegh(
-                              context,
-                            ),
-                      );
+                ? Column(
+                    children: List.generate(
+                        getCateAttrsModel!.data!.length,
+                        (index) => Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.only(right: 30, bottom: 5),
+                                      child: Text(
+                                        getCateAttrsModel!
+                                            .data![index].attribute!.nameAr
+                                            .toString(),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                getCateAttrsModel!
+                                                .data![index].attribute!.type ==
+                                            "select" &&
+                                        getCateAttrsModel!
+                                            .data![index].attribute!.nameAr!
+                                            .contains("نوع")
+                                    ? SelectAttribute(
+                                        ontap: () async {
+                                          branshMenuType(
+                                              context,
+                                              .5 * mediaHiegh(context),
+                                              getCateAttrsModel!.data![index]
+                                                  .attribute!.values!.length);
 
-                      SharedPreferences sharedPreferences =
-                          await SharedPreferences.getInstance();
-                      type = sharedPreferences.getString("type")!;
-                      text = sharedPreferences.getString('text') ?? "";
-                      print("!!!!!!!!!!$type");
+                                          setState(() {
+                                            texts = texts;
+                                          });
+                                        },
+                                        text: texts,
+                                      )
+                                    : getCateAttrsModel!.data![index].attribute!
+                                                    .type ==
+                                                "select" &&
+                                            getCateAttrsModel!.data![index]
+                                                    .attribute!.nameAr ==
+                                                "موديل السيارة"
+                                        ? SelectAttribute(
+                                            ontap: () async {
+                                              branshMenuModel(
+                                                context,
+                                                .5 * mediaHiegh(context),
+                                              );
 
-                      setState(() {
-                        type = type;
-                        text = text;
-                      });
-                    },
+                                              setState(() {
+                                                textModel = textModel;
+                                              });
+                                            },
+                                            text: textModel,
+                                          )
+                                        : Center(
+                                            child: Container(
+                                            width: .85 * mediawidth(context),
+                                            height: 40,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Colors.black)),
+                                            child: TextField(
+                                              controller: stringAttrs,
+                                              onSubmitted: (val) {
+                                                String id = sharedpref
+                                                    .getString('id_of_attrs')!;
+                                                attrsListvalue.add({
+                                                  'id': id,
+                                                  'value': priceOfProduct.text
+                                                });
+                                                setState(() {
+                                                  numAttrs = true;
+                                                  attrsListSelect =
+                                                      List.from(attrsListvalue);
+                                                  print(
+                                                      "=========$attrsListSelect");
+                                                });
+                                              },
+                                              textDirection: TextDirection.rtl,
+                                              decoration: const InputDecoration(
+                                                  border: InputBorder.none),
+                                            ),
+                                          )),
+                              ],
+                            )),
                   )
                 : Container(),
-            (type == 'select')
+            (type == 'number')
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      SelectAttribute(
-                        ontap: () async {
-                          branshMenuType(
-                            context,
-                            .5 * mediaHiegh(context),
-                          );
-
-                          setState(() {
-                            texts = texts;
-                          });
-                        },
-                        text: texts,
-                        textofRow: 'النوع',
-                      ),
-                      SelectAttribute(
-                        ontap: () async {
-                          branshMenuModel(
-                            context,
-                            .5 * mediaHiegh(context),
-                          );
-
-                          setState(() {
-                            textModel = textModel;
-                          });
-                        },
-                        text: textModel,
-                        textofRow: 'الموديل',
-                      ),
+                      const Padding(
+                          padding:
+                              EdgeInsets.only(right: 30, top: 10, bottom: 5),
+                          child: Text(
+                            "  خصائص  المنتج الرقمية",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
+                          )),
+                      Center(
+                          child: Container(
+                        width: .85 * mediawidth(context),
+                        height: 40,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black)),
+                        child: TextField(
+                          textDirection: TextDirection.rtl,
+                          controller: priceOfProduct,
+                          onSubmitted: (val) {
+                            String id = sharedpref.getString('id_of_attrs')!;
+                            attrsListNumber
+                                .add({'id': id, 'value': priceOfProduct.text});
+                            setState(() {
+                              numAttrs = true;
+                              attrsListSelect = List.from(attrsListNumber);
+                              print("=========$attrsListSelect");
+                            });
+                          },
+                          decoration:
+                              const InputDecoration(border: InputBorder.none),
+                        ),
+                      )),
                     ],
                   )
-                : (type == 'number')
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Padding(
-                              padding: EdgeInsets.only(
-                                  right: 30, top: 10, bottom: 5),
-                              child: Text(
-                                "  خصائص  المنتج الرقمية",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                              )),
-                          Center(
-                              child: Container(
-                            width: .85 * mediawidth(context),
-                            height: 40,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black)),
-                            child: TextField(
-                              textDirection: TextDirection.rtl,
-                              controller: priceOfProduct,
-                              onSubmitted: (val) {
-                                String id =
-                                    sharedpref.getString('id_of_attrs')!;
-                                attrsListNumber.add(
-                                    {'id': id, 'value': priceOfProduct.text});
-                                setState(() {
-                                  numAttrs = true;
-                                  attrsListSelect = List.from(attrsListNumber);
-                                  print("=========$attrsListSelect");
-                                });
-                              },
-                              decoration: const InputDecoration(
-                                  border: InputBorder.none),
-                            ),
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Padding(
+                          padding:
+                              EdgeInsets.only(right: 30, top: 10, bottom: 5),
+                          child: Text(
+                            "  خصائص  المنتج النصية",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20),
                           )),
-                        ],
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          const Padding(
-                              padding: EdgeInsets.only(
-                                  right: 30, top: 10, bottom: 5),
-                              child: Text(
-                                "  خصائص  المنتج النصية",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 20),
-                              )),
-                          Center(
-                              child: Container(
-                            width: .85 * mediawidth(context),
-                            height: 40,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black)),
-                            child: TextField(
-                              controller: stringAttrs,
-                              onSubmitted: (val) {
-                                String id =
-                                    sharedpref.getString('id_of_attrs')!;
-                                attrsListvalue.add(
-                                    {'id': id, 'value': priceOfProduct.text});
-                                setState(() {
-                                  numAttrs = true;
-                                  attrsListSelect = List.from(attrsListvalue);
-                                  print("=========$attrsListSelect");
-                                });
-                              },
-                              textDirection: TextDirection.rtl,
-                              decoration: const InputDecoration(
-                                  border: InputBorder.none),
-                            ),
-                          )),
-                        ],
-                      ),
+                      Center(
+                          child: Container(
+                        width: .85 * mediawidth(context),
+                        height: 40,
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.black)),
+                        child: TextField(
+                          controller: stringAttrs,
+                          onSubmitted: (val) {
+                            String id = sharedpref.getString('id_of_attrs')!;
+                            attrsListvalue
+                                .add({'id': id, 'value': priceOfProduct.text});
+                            setState(() {
+                              numAttrs = true;
+                              attrsListSelect = List.from(attrsListvalue);
+                              print("=========$attrsListSelect");
+                            });
+                          },
+                          textDirection: TextDirection.rtl,
+                          decoration:
+                              const InputDecoration(border: InputBorder.none),
+                        ),
+                      )),
+                    ],
+                  ),
             AdvTextField(
               text: 'سعر المنتج',
               controller: price,
@@ -442,7 +489,10 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   List<String> cityid =
                       sharedPreferences.getStringList('selected_cities')!;
 
-                  String categoriesId = sharedPreferences.getString("sub_id")!;
+                  String categoriesId = showAttrs
+                      ? sharedPreferences.getString("sub_id")!
+                      : sharedPreferences.getString("postId")!;
+                  print("caaaaaaaaaaaaaaaaaaatid$categoriesId");
                   setState(() {
                     isLoading = true;
                   });
@@ -546,72 +596,68 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
     }
   }
 
-  void branshMenu(
-    BuildContext context,
-    double top,
-  ) {
-    BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
-    getCateAttrsModel =
-        BlocProvider.of<AttrsCategoriesCubit>(context).getCateAttrsModel;
-    showMenu(
-      context: context,
-      color: grey,
-      constraints: const BoxConstraints(
-        minWidth: 230,
-        minHeight: 300,
-      ),
-      shape:
-          const RoundedRectangleBorder(side: BorderSide(color: Colors.black)),
-      position: RelativeRect.fromLTRB(70, top, 40, 1),
-      items: List.generate(
-        getCateAttrsModel!.data!.length - 1,
-        (index) => PopupMenuItem(
-            onTap: () async {
-              SharedPreferences sharedPreferences =
-                  await SharedPreferences.getInstance();
-              setState(() {
-                text = getCateAttrsModel!.data![index].attribute!.nameAr;
-                type = getCateAttrsModel!.data![index].attribute!.type!;
-                if (getCateAttrsModel!.data![index].attribute!.type ==
-                    'select') {
-                  value = getCateAttrsModel!
-                      .data![index].attribute!.values![index].value;
-                }
-                length =
-                    getCateAttrsModel!.data![index].attribute!.values!.length;
-                sharedPreferences.setString(
-                    "type", getCateAttrsModel!.data![index].attribute!.type!);
-                sharedPreferences.setString(
-                    "text", getCateAttrsModel!.data![index].attribute!.nameAr!);
-                print("ttttttttt$type");
-                sharedPreferences.setInt("lenght",
-                    getCateAttrsModel!.data![index].attribute!.values!.length);
-                sharedPreferences.setString("id_of_attrs",
-                    getCateAttrsModel!.data![index].attribute!.id.toString());
+  // void branshMenu(
+  //   BuildContext context,
+  //   double top,
+  // ) {
+  //   BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
+  //   getCateAttrsModel =
+  //       BlocProvider.of<AttrsCategoriesCubit>(context).getCateAttrsModel;
+  //   showMenu(
+  //     context: context,
+  //     color: grey,
+  //     constraints: const BoxConstraints(
+  //       minWidth: 230,
+  //       minHeight: 300,
+  //     ),
+  //     shape:
+  //         const RoundedRectangleBorder(side: BorderSide(color: Colors.black)),
+  //     position: RelativeRect.fromLTRB(70, top, 40, 1),
+  //     items: List.generate(
+  //       getCateAttrsModel!.data!.length,
+  //       (index) => PopupMenuItem(
+  //           onTap: () async {
+  //             SharedPreferences sharedPreferences =
+  //                 await SharedPreferences.getInstance();
+  //             setState(() {
+  //               text = getCateAttrsModel!.data![index].attribute!.nameAr;
+  //               type = getCateAttrsModel!.data![index].attribute!.type!;
+  //               // if (getCateAttrsModel!.data![index].attribute!.type ==
+  //               //     'select') {
+  //               //   value = getCateAttrsModel!
+  //               //       .data![index].attribute!.values![index].value;
+  //               // }
 
-                length = sharedPreferences.getInt('lenght');
-                print("lenght of values list$length");
-              });
-            },
-            value: 1,
-            child: StatefulBuilder(
-              builder: (BuildContext context,
-                  void Function(void Function()) setState) {
-                return CountiesRow(
-                    country_name: getCateAttrsModel!
-                        .data![index].attribute!.nameAr
-                        .toString());
-              },
-            )),
-      ),
-    );
-  }
+  //               sharedPreferences.setString(
+  //                   "type", getCateAttrsModel!.data![index].attribute!.type!);
+  //               sharedPreferences.setString(
+  //                   "text", getCateAttrsModel!.data![index].attribute!.nameAr!);
+  //               print("ttttttttt$type");
+  //               sharedPreferences.setInt("lenght",
+  //                   getCateAttrsModel!.data![index].attribute!.values!.length);
+  //               sharedPreferences.setString("id_of_attrs",
+  //                   getCateAttrsModel!.data![index].attribute!.id.toString());
+
+  //               length = sharedPreferences.getInt('lenght');
+  //               print("lenght of values list$length");
+  //             });
+  //           },
+  //           value: 1,
+  //           child: StatefulBuilder(
+  //             builder: (BuildContext context,
+  //                 void Function(void Function()) setState) {
+  //               return CountiesRow(
+  //                   country_name: getCateAttrsModel!
+  //                       .data![index].attribute!.nameAr
+  //                       .toString());
+  //             },
+  //           )),
+  //     ),
+  //   );
+  // }
 
 //!attrs
-  void branshMenuType(
-    BuildContext context,
-    double top,
-  ) {
+  void branshMenuType(BuildContext context, double top, int lenght) {
     BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
     getCateAttrsModel =
         BlocProvider.of<AttrsCategoriesCubit>(context).getCateAttrsModel;
@@ -626,7 +672,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
           const RoundedRectangleBorder(side: BorderSide(color: Colors.black)),
       position: RelativeRect.fromLTRB(70, top, 40, 1),
       items: List.generate(
-        length!,
+        lenght,
         (index) => PopupMenuItem(
           onTap: () async {
             SharedPreferences sharedPreferences =

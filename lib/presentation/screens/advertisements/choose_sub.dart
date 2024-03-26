@@ -7,6 +7,7 @@ import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_
 import 'package:shopping/business_logic/Cubit/sub_cate_create_adv/sub_cate_create_adv_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
+import 'package:shopping/data/models/sub_cate.dart';
 
 import 'package:shopping/data/models/sub_categories_adv_model.dart';
 import 'package:shopping/data/services/apis.dart';
@@ -25,7 +26,7 @@ class ChooseSubCategContainer extends StatefulWidget {
 }
 
 class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
-  SubCategoriesAdvModel? subCategoriesModel;
+  SubCategoriesModel? subCategoriesModel;
   ApiServices apiServices = ApiServices();
   int? lenght;
   void updateLength() async {
@@ -38,9 +39,11 @@ class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
   void initState() {
     super.initState();
     BlocProvider.of<SubCateCreateAdvCubit>(context).subCateCreateAdvCubit();
+    BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
   }
 
   String? text;
+  String? id;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SubCateCreateAdvCubit, SubCateCreateAdvState>(
@@ -93,11 +96,20 @@ class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
                                     setState(() {
                                       lenght;
                                       text = subCategoriesModel!
-                                          .data![index].nameAr
+                                          .data!.categories![index].nameAr
                                           .toString();
+                                      id = subCategoriesModel!
+                                              .data!.categories!.isEmpty
+                                          ? subCategoriesModel!.data!.parent!.id
+                                              .toString()
+                                          : subCategoriesModel!
+                                              .data!.categories![index].id
+                                              .toString();
+                                      print("############$id");
                                       sharedPreferences.setString(
                                           "sub_id",
-                                          subCategoriesModel!.data![index].id
+                                          subCategoriesModel!
+                                              .data!.categories![index].id
                                               .toString());
                                       BlocProvider.of<AttrsCategoriesCubit>(
                                               context)
@@ -118,7 +130,7 @@ class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
                                       );
                                       return CountiesRow(
                                         country_name: subCategoriesModel!
-                                            .data![index].nameAr
+                                            .data!.categories![index].nameAr
                                             .toString(),
                                       );
                                     },

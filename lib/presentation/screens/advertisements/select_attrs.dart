@@ -8,9 +8,12 @@ import 'package:shopping/data/models/categories_attrs_model.dart';
 
 // ignore: must_be_immutable
 class SelectAttribute extends StatefulWidget {
-  SelectAttribute(
-      {super.key, this.top, required this.ontap, required this.text, required this.textofRow});
-  final String textofRow;
+  SelectAttribute({
+    super.key,
+    this.top,
+    required this.ontap,
+    required this.text,
+  });
   double? top;
   Function()? ontap;
   String? text;
@@ -36,18 +39,6 @@ class _SelectAttributeState extends State<SelectAttribute> {
         } else if (state is AttrsCategoriesSuccess) {
           return Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                   Padding(
-                      padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                      child: Text(
-                       widget. textofRow,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      )),
-                ],
-              ),
               Center(
                 child: Container(
                   width: .8 * mediawidth(context),
