@@ -10,11 +10,11 @@ class AttrsCategoriesCubit extends Cubit<AttrsCategoriesState> {
   ApiServices apiServices;
   GetCateAttrsModel? getCateAttrsModel;
   int? lenght;
-  void getCategoriesAttrsCubit() async {
+  void getCategoriesAttrsCubit({required String id }) async {
     emit(AttrsCategoriesLoading());
 
     try {
-      getCateAttrsModel = await apiServices.getCategoriesAttrs();
+      getCateAttrsModel = await apiServices.getCategoriesAttrs(id: id);
       lenght = getCateAttrsModel!.data!.length;
       if (lenght != null && lenght! > 0) {
         emit(AttrsCategoriesSuccess());

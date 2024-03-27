@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_cubit.dart';
 import 'package:shopping/business_logic/Cubit/categories/categories_cubit.dart';
 import 'package:shopping/business_logic/Cubit/sub_cate_create_adv/sub_cate_create_adv_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
+import 'package:shopping/data/models/categories_attrs_model.dart';
 import 'package:shopping/data/models/categories_model.dart';
 import 'package:shopping/presentation/widgets/countries_row.dart';
 
@@ -25,10 +27,12 @@ class ChooseCategoriesContainer extends StatefulWidget {
 class _ChooseCategoriesContainerState extends State<ChooseCategoriesContainer> {
   String? text;
   CategoriesModel? categoriesModel;
+  GetCateAttrsModel? getCateAttrsModel;
   @override
   void initState() {
     super.initState();
     BlocProvider.of<CategoriesCubit>(context).getCategoriesCubit();
+    // BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
   }
 
   @override
@@ -129,6 +133,8 @@ class _ChooseCategoriesContainerState extends State<ChooseCategoriesContainer> {
                 text = sharedPreferences.getString("category_choosen_name");
                 BlocProvider.of<SubCateCreateAdvCubit>(context)
                     .subCateCreateAdvCubit();
+                BlocProvider.of<AttrsCategoriesCubit>(context)
+                    .getCategoriesAttrsCubit(id:widget.id! );
 
                 print("idinadv${widget.id}");
               });

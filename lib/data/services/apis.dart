@@ -166,9 +166,9 @@ class ApiServices {
   }
 
 //* get categories attrs
-  Future<GetCateAttrsModel> getCategoriesAttrs() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String id = sharedPreferences.getString("sub_id")!;
+  Future<GetCateAttrsModel> getCategoriesAttrs({required String id}) async {
+    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    // String id = sharedPreferences.getString("sub_id")!;
     print("iddddddddddddSyb$id");
     http.Response response = await http.get(
         Uri.parse(

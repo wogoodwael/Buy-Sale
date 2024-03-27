@@ -23,6 +23,14 @@ class SelectAttribute extends StatefulWidget {
 
 class _SelectAttributeState extends State<SelectAttribute> {
   GetCateAttrsModel? getCateAttrsModel;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
+    // getCateAttrsModel =
+    //     BlocProvider.of<AttrsCategoriesCubit>(context).getCateAttrsModel;
+  }
 
   @override
   Widget build(BuildContext context) {

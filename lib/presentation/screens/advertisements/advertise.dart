@@ -59,11 +59,14 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   String? value;
   TextEditingController nameOfProduct = TextEditingController();
   TextEditingController priceOfProduct = TextEditingController();
+  late List<TextEditingController> emptyValueProduct;
+
   TextEditingController locattion = TextEditingController();
   TextEditingController sellerName = TextEditingController();
   TextEditingController describtion = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController price = TextEditingController();
+  late List<bool> pressed;
   String? text;
   String? texts;
   String? textModel;
@@ -95,15 +98,8 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    BlocProvider.of<SubCateCreateAdvCubit>(context).subCateCreateAdvCubit();
-    BlocProvider.of<CategoriesCubit>(context).getCategoriesCubit();
-    categoriesModel = BlocProvider.of<CategoriesCubit>(context).categoriesModel;
-    subCategoriesModel =
-        BlocProvider.of<SubCateCreateAdvCubit>(context).subCategoriesModel;
-    BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
-    getCateAttrsModel =
-        BlocProvider.of<AttrsCategoriesCubit>(context).getCateAttrsModel;
-    // BlocProvider.of<SubCateCreateAdvCubit>(context).subCateCreateAdvCubit();
+    emptyValueProduct = List.generate(3, (index) => TextEditingController());
+    pressed = List.generate(3, (index) => false);
   }
 
   @override
@@ -158,7 +154,6 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                     ontap: () {
                       setState(() {
                         showAttrs = true;
-                        // getArrtibute();
                       });
                     },
                   )
@@ -219,99 +214,162 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
             SizedBox(
               height: 20,
             ),
-            (showAttrs == true)
-                ? Column(
-                    children: List.generate(
-                        getCateAttrsModel!.data!.length,
-                        (index) => Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.only(right: 30, bottom: 5),
-                                      child: Text(
-                                        getCateAttrsModel!
-                                            .data![index].attribute!.nameAr
-                                            .toString(),
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20),
+            (show == true)
+                ? BlocBuilder<AttrsCategoriesCubit, AttrsCategoriesState>(
+                    builder: (context, state) {
+                      if (state is AttrsCategoriesLoading) {
+                        return CircularProgressIndicator(); // Or any loading widget
+                      } else if (state is AttrsCategoriesSuccess) {
+                        // Update getCateAttrsModel here
+                        getCateAttrsModel =
+                            BlocProvider.of<AttrsCategoriesCubit>(context)
+                                .getCateAttrsModel;
+                        return Column(
+                          children: List.generate(
+                              getCateAttrsModel!.data!.length,
+                              (index) => Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                right: 30, bottom: 5),
+                                            child: Text(
+                                              getCateAttrsModel?.data?[index]
+                                                      .attribute?.nameAr
+                                                      .toString() ??
+                                                  "",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                getCateAttrsModel!
-                                                .data![index].attribute!.type ==
-                                            "select" &&
-                                        getCateAttrsModel!
-                                            .data![index].attribute!.nameAr!
-                                            .contains("نوع")
-                                    ? SelectAttribute(
-                                        ontap: () async {
-                                          branshMenuType(
-                                              context,
-                                              .5 * mediaHiegh(context),
+                                      getCateAttrsModel!.data![index].attribute!
+                                                      .type ==
+                                                  "select" &&
                                               getCateAttrsModel!.data![index]
-                                                  .attribute!.values!.length);
+                                                  .attribute!.nameAr!
+                                                  .contains("نوع") &&
+                                              getCateAttrsModel!.data![index]
+                                                  .attribute!.values!.isNotEmpty
+                                          ? SelectAttribute(
+                                              ontap: () async {
+                                                branshMenuType(
+                                                    context,
+                                                    .5 * mediaHiegh(context),
+                                                    getCateAttrsModel!
+                                                        .data![index]
+                                                        .attribute!
+                                                        .values!
+                                                        .length);
 
-                                          setState(() {
-                                            texts = texts;
-                                          });
-                                        },
-                                        text: texts,
-                                      )
-                                    : getCateAttrsModel!.data![index].attribute!
-                                                    .type ==
-                                                "select" &&
-                                            getCateAttrsModel!.data![index]
-                                                    .attribute!.nameAr ==
-                                                "موديل السيارة"
-                                        ? SelectAttribute(
-                                            ontap: () async {
-                                              branshMenuModel(
-                                                context,
-                                                .5 * mediaHiegh(context),
-                                              );
-
-                                              setState(() {
-                                                textModel = textModel;
-                                              });
-                                            },
-                                            text: textModel,
-                                          )
-                                        : Center(
-                                            child: Container(
-                                            width: .85 * mediawidth(context),
-                                            height: 40,
-                                            decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.black)),
-                                            child: TextField(
-                                              controller: stringAttrs,
-                                              onSubmitted: (val) {
-                                                String id = sharedpref
-                                                    .getString('id_of_attrs')!;
-                                                attrsListvalue.add({
-                                                  'id': id,
-                                                  'value': priceOfProduct.text
-                                                });
                                                 setState(() {
-                                                  numAttrs = true;
-                                                  attrsListSelect =
-                                                      List.from(attrsListvalue);
-                                                  print(
-                                                      "=========$attrsListSelect");
+                                                  texts = texts;
                                                 });
                                               },
-                                              textDirection: TextDirection.rtl,
-                                              decoration: const InputDecoration(
-                                                  border: InputBorder.none),
-                                            ),
-                                          )),
-                              ],
-                            )),
+                                              text: texts,
+                                            )
+                                          : getCateAttrsModel!.data![index]
+                                                          .attribute!.type ==
+                                                      "select" &&
+                                                  getCateAttrsModel!
+                                                          .data![index]
+                                                          .attribute!
+                                                          .nameAr ==
+                                                      "موديل السيارة"
+                                              ? SelectAttribute(
+                                                  ontap: () async {
+                                                    branshMenuModel(
+                                                      context,
+                                                      .5 * mediaHiegh(context),
+                                                    );
+
+                                                    setState(() {
+                                                      textModel = textModel;
+                                                    });
+                                                  },
+                                                  text: textModel,
+                                                )
+                                              : Center(
+                                                  child: Container(
+                                                  width:
+                                                      .85 * mediawidth(context),
+                                                  height: 40,
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                          color: Colors.black)),
+                                                  child: TextField(
+                                                    controller:
+                                                        emptyValueProduct[
+                                                            index],
+                                                    // onSubmitted: (val) {
+                                                    //   setState(() {
+                                                    //     numAttrs = true;
+                                                    //     // attrsListSelect =
+                                                    //     //     List.from(
+                                                    //     //         attrsListvalue);
+                                                    //     print(
+                                                    //         "=========$attrsListSelect");
+                                                    //   });
+                                                    // },
+                                                    textDirection:
+                                                        TextDirection.rtl,
+                                                    decoration: InputDecoration(
+                                                        border:
+                                                            InputBorder.none,
+                                                        prefixIcon: IconButton(
+                                                            onPressed: () {
+                                                              setState(() {
+                                                                pressed[index] =
+                                                                    !pressed[
+                                                                        index];
+                                                              });
+                                                              attrsListSelect
+                                                                  .add({
+                                                                'id': getCateAttrsModel!
+                                                                    .data![
+                                                                        index]
+                                                                    .attributeId,
+                                                                'value':
+                                                                    emptyValueProduct[
+                                                                            index]
+                                                                        .text
+                                                              });
+                                                              print(
+                                                                  "=========$attrsListSelect");
+                                                            },
+                                                            icon: Icon(
+                                                              Icons
+                                                                  .check_circle,
+                                                              color: !pressed[
+                                                                      index]
+                                                                  ? Colors.grey
+                                                                  : Colors
+                                                                      .green,
+                                                            ))),
+                                                  ),
+                                                )),
+                                    ],
+                                  )),
+                        );
+                      } else if (state is AttrsCategoriesFail) {
+                        return Center(
+                          child: Text(
+                            "لا يوجد مواصفات لهذا المنتج",
+                            style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17),
+                          ),
+                        ); // Or any error widget
+                      } else {
+                        return Text("Failed to load attrs");
+                      }
+                    },
                   )
                 : Container(),
             (type == 'number')
@@ -371,12 +429,11 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                         child: TextField(
                           controller: stringAttrs,
                           onSubmitted: (val) {
-                            String id = sharedpref.getString('id_of_attrs')!;
-                            attrsListvalue
-                                .add({'id': id, 'value': priceOfProduct.text});
+                            attrsListSelect
+                                .add({'name': stringAttrs.text, 'value': "5"});
                             setState(() {
                               numAttrs = true;
-                              attrsListSelect = List.from(attrsListvalue);
+                              // attrsListSelect = List.from(attrsListvalue);
                               print("=========$attrsListSelect");
                             });
                           },
@@ -658,7 +715,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
 
 //!attrs
   void branshMenuType(BuildContext context, double top, int lenght) {
-    BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
+    // BlocProvider.of<AttrsCategoriesCubit>(context).getCategoriesAttrsCubit();
     getCateAttrsModel =
         BlocProvider.of<AttrsCategoriesCubit>(context).getCateAttrsModel;
     showMenu(
