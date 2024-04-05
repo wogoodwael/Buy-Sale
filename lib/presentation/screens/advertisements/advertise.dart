@@ -464,49 +464,78 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
               height: 20,
             ),
             Center(
-              child: Container(
-                width: .8 * mediawidth(context),
-                height: 150,
-                decoration: BoxDecoration(
-                    color: grey, borderRadius: BorderRadius.circular(10)),
-                child: GestureDetector(
-                  onTap: () async {
-                    await pickFiles();
-                    //!add
+              child: Stack(
+                children: [
+                  Container(
+                    width: .8 * mediawidth(context),
+                    height: 150,
+                    decoration: BoxDecoration(
+                      color: grey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: GestureDetector(
+                      onTap: () async {
+                        await pickFiles();
+                        //!add
 
-                    filesMap = {
-                      'files[0][file_path]': files,
-                      'files[0][type]': fileType
-                    };
+                        filesMap = {
+                          'files[0][file_path]': files,
+                          'files[0][type]': fileType
+                        };
 
-                    for (var i = 0; i < files.length; i++) {
-                      if (files[i].extension == 'mp4') {
-                        setState(() {
-                          pickedVideo = true;
-                        });
-                      } else {
-                        setState(() {
-                          picked = true;
-                        });
-                      }
-                    }
+                        for (var i = 0; i < files.length; i++) {
+                          if (files[i].extension == 'mp4') {
+                            setState(() {
+                              pickedVideo = true;
+                            });
+                          } else {
+                            setState(() {
+                              picked = true;
+                            });
+                          }
+                        }
 
-                    print("filesssssssss${files[0].path}");
-                    print("filesssssssss${files.first.extension!}");
-                  },
-                  child: picked
-                      ? image
-                      : pickedVideo
-                          ? _controller != null
-                              ? VideoPlayer(_controller!)
-                              : Container()
-                          : Center(
-                              child: CircleAvatar(
-                                backgroundColor: brawn,
-                                child: const Icon(Icons.add),
-                              ),
-                            ),
-                ),
+                        print("filesssssssss${files[0].path}");
+                        print("filesssssssss${files.first.extension!}");
+                      },
+                      child: picked
+                          ? image
+                          : pickedVideo
+                              ? _controller != null
+                                  ? VideoPlayer(_controller!)
+                                  : Container()
+                              : Center(
+                                  child: CircleAvatar(
+                                    backgroundColor: brawn,
+                                    child: const Icon(Icons.add),
+                                  ),
+                                ),
+                    ),
+                  ),
+                  if (picked || pickedVideo)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            // Reset the picked state
+                            picked = false;
+                            pickedVideo = false;
+
+                            // Optionally reset the picked image or video
+                            _controller?.dispose();
+                            _controller = null;
+                            image = null;
+                          });
+                        },
+                      ),
+                    ),
+                ],
               ),
             ),
             const SizedBox(
@@ -528,6 +557,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                       color: grey,
                       borderRadius: BorderRadius.circular(2)),
                   child: TextField(
+                    textDirection: TextDirection.rtl,
                     controller: describtion,
                     decoration: const InputDecoration(border: InputBorder.none),
                   )),

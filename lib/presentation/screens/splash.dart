@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "4Buy&sale",
+                    "2Buy&sale",
                     style: TextStyle(
                         color: brawn,
                         height: 1,

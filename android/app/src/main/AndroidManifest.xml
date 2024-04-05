@@ -5,7 +5,7 @@
 
     <application
         android:usesCleartextTraffic="true"
-        android:label="4BuyAndSale"
+        android:label="2BuyAndSale"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

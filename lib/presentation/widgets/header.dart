@@ -20,7 +20,7 @@ class Header extends StatelessWidget {
                     const BorderRadius.only(bottomRight: Radius.circular(100))),
             child: Center(
               child: Text(
-                "4Buy&sale",
+                "2Buy&sale",
                 style: TextStyle(
                     color: Colors.white,
                     fontSize: 50,

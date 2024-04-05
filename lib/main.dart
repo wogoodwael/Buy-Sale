@@ -29,6 +29,7 @@ import 'package:shopping/presentation/screens/categories/categories_screen.dart'
 import 'package:shopping/presentation/screens/client/profile.dart';
 
 import 'package:shopping/presentation/screens/home/home.dart';
+import 'package:shopping/presentation/screens/introduction.dart';
 
 import 'package:shopping/presentation/screens/splash.dart';
 
@@ -80,7 +81,7 @@ class _MyAppState extends State<MyApp> {
           debugShowCheckedModeBanner: false,
           routes: {
             "/": (context) => sharedpref.getString("login_token") == null
-                ? const SplashScreen()
+                ? const IntroductionScreen()
                 : HomeScreen(),
             "/advDetails": (context) => CategoriesScreen(),
             "/profile": (context) => ProfileScreen(),

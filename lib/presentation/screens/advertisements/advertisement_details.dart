@@ -1,4 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -228,29 +229,34 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                     ),
                   ],
                 ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: List.generate(
-                      widget.attributes?.length ?? 2,
-                      (index) => Row(
-                        children: [
-                          Text(
-                            widget.attributes?[index].value ?? "no value",
-                            style: GoogleFonts.plusJakartaSans(
-                                fontWeight: FontWeight.w600),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(
-                            widget.attributes?[index].attribute?.name ??
-                                "no name",
-                            style: GoogleFonts.plusJakartaSans(
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ],
-                      ),
-                    )),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: List.generate(
+                        widget.attributes?.length ?? 2,
+                        (index) => Row(
+                          children: [
+                            Text(
+                              widget.attributes?[index].value ?? "no value",
+                              style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              ":${widget.attributes?[index].attribute?.name}",
+                              style: GoogleFonts.plusJakartaSans(
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                          ],
+                        ),
+                      )),
+                ),
                 SizedBox(
                   height: 20,
                 ),
