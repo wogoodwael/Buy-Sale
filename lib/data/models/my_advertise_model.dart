@@ -40,10 +40,13 @@ class Data {
   List<MyComments>? mycomments;
   User? user;
   List<Files>? files;
+  List<MyAttributes>? attributes;
 
   Data(
       {this.id,
       this.categoryId,
+          this.attributes,
+
       this.userId,
       this.name,
       this.description,
@@ -71,7 +74,12 @@ class Data {
     updatedAt = json['updated_at'];
     phone = json['phone'];
     address = json['address'];
-
+ if (json['attributes'] != null) {
+      attributes = <MyAttributes>[];
+      json['attributes'].forEach((v) {
+        attributes!.add(new MyAttributes.fromJson(v));
+      });
+    }
     if (json['files'] != null) {
       files = <Files>[];
       json['files'].forEach((v) {
@@ -102,6 +110,9 @@ class Data {
     data['phone'] = this.phone;
     data['address'] = this.address;
 
+    if (this.attributes != null) {
+      data['attributes'] = this.attributes!.map((v) => v.toJson()).toList();
+    }
     if (this.files != null) {
       data['files'] = this.files!.map((v) => v.toJson()).toList();
     }
@@ -111,6 +122,61 @@ class Data {
     if (this.user != null) {
       data['user'] = this.user!.toJson();
     }
+    return data;
+  }
+}
+class MyAttributes {
+  int? id;
+  int? advertisementId;
+  int? attributeId;
+  String? value;
+  MyAttribute? attribute;
+
+  MyAttributes(
+      {this.id,
+      this.advertisementId,
+      this.attributeId,
+      this.value,
+      this.attribute});
+
+  MyAttributes.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    advertisementId = json['advertisement_id'];
+    attributeId = json['attribute_id'];
+    value = json['value'];
+    attribute = json['attribute'] != null
+        ? new MyAttribute.fromJson(json['attribute'])
+        : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['advertisement_id'] = this.advertisementId;
+    data['attribute_id'] = this.attributeId;
+    data['value'] = this.value;
+    if (this.attribute != null) {
+      data['attribute'] = this.attribute!.toJson();
+    }
+    return data;
+  }
+}
+
+class MyAttribute {
+  int? id;
+  String? name;
+
+  MyAttribute({this.id, this.name});
+
+  MyAttribute.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
     return data;
   }
 }

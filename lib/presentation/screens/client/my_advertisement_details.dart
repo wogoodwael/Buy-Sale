@@ -1,4 +1,3 @@
-
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:flutter/material.dart';
@@ -14,6 +13,7 @@ import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/services/apis.dart';
 import 'package:shopping/data/services/comments_api.dart';
 import 'package:shopping/data/services/favorite_api.dart';
+import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/advertisements/video.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
 import 'package:video_player/video_player.dart';
@@ -29,6 +29,7 @@ class MyAdvertisementDetails extends StatefulWidget {
       this.subdescribtion,
       this.price,
       this.description,
+      required this.attributes,
       this.name,
       this.files,
       this.phone,
@@ -47,6 +48,7 @@ class MyAdvertisementDetails extends StatefulWidget {
   int? cityId;
   int? price;
   List<Files>? files;
+  List<MyAttributes>? attributes;
   String? createdAt;
   String? updatedAt;
   String? phone;
@@ -58,17 +60,18 @@ class MyAdvertisementDetails extends StatefulWidget {
 }
 
 class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
-  bool ontapcar = false;
-
-  bool ontapchar1 = false;
-
-  bool ontapproduct = false;
-
-  bool ontapchar2 = false;
   bool isAdmine = false;
   ApiServices apiServices = ApiServices();
   TextEditingController content = TextEditingController();
+  String? img;
 
+  void imgf() async {
+    img = sharedpref.getString("img_path")!;
+    setState(() {
+      img;
+    });
+    print(img);
+  }
 
   String? userName;
   getUserName() async {
@@ -82,8 +85,8 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
   @override
   void initState() {
     super.initState();
-
     getUserName();
+    imgf();
   }
 
   @override
@@ -148,41 +151,41 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                         height: 200,
                         color: Colors.white,
                         child: widget.files!.isEmpty
-                            ? Center(child: Text("لم تضف اي صور لاعلانك ")):
-                            widget.files?[0].type=='video'? VideoPlayerScreen(
-                                        url:
-                                            "https://buyandsell2024.com/${widget.files?[0].filePath}"):
-                             CarouselSlider(
-                                items: List.generate(widget.files?.length ?? 1,
-                                    (index) {
-                                   
-                                    return Image.network(
-                                        "https://buyandsell2024.com/${widget.files?[index].filePath}",
-                                        errorBuilder: (BuildContext context,
-                                            Object error,
-                                            StackTrace? stackTrace) {
-                                      // Error callback, display another image when the network image is not found
-                                      return Image.asset('images/car_two.jpeg');
-                                    });
-                                
-                                }),
-                                options: CarouselOptions(
-                                  height: 200,
-                                  aspectRatio: 16 / 9,
-                                  viewportFraction: 0.5,
-                                  initialPage: 0,
-                                  enableInfiniteScroll: false,
-                                  reverse: false,
-                                  autoPlay: false,
-                                  autoPlayInterval: Duration(seconds: 1),
-                                  autoPlayAnimationDuration:
-                                      Duration(milliseconds: 3000),
-                                  autoPlayCurve: Curves.linear,
-                                  enlargeCenterPage: true,
-                                  enlargeFactor: 0.3,
-                                  // onPageChanged: callbackFunction,
-                                  scrollDirection: Axis.horizontal,
-                                ))),
+                            ? Center(child: Text("لم تضف اي صور لاعلانك "))
+                            : widget.files?[0].type == 'video'
+                                ? VideoPlayerScreen(
+                                    url:
+                                        "https://buyandsell2024.com/${widget.files?[0].filePath}")
+                                : CarouselSlider(
+                                    items: List.generate(
+                                        widget.files?.length ?? 1, (index) {
+                                      return Image.network(
+                                          "https://buyandsell2024.com/${widget.files?[index].filePath}",
+                                          errorBuilder: (BuildContext context,
+                                              Object error,
+                                              StackTrace? stackTrace) {
+                                        // Error callback, display another image when the network image is not found
+                                        return Image.asset(
+                                            'images/car_two.jpeg');
+                                      });
+                                    }),
+                                    options: CarouselOptions(
+                                      height: 200,
+                                      aspectRatio: 16 / 9,
+                                      viewportFraction: 0.5,
+                                      initialPage: 0,
+                                      enableInfiniteScroll: false,
+                                      reverse: false,
+                                      autoPlay: false,
+                                      autoPlayInterval: Duration(seconds: 1),
+                                      autoPlayAnimationDuration:
+                                          Duration(milliseconds: 3000),
+                                      autoPlayCurve: Curves.linear,
+                                      enlargeCenterPage: true,
+                                      enlargeFactor: 0.3,
+                                      // onPageChanged: callbackFunction,
+                                      scrollDirection: Axis.horizontal,
+                                    ))),
 
                     Padding(
                       padding: EdgeInsets.only(left: 15, right: 15, top: 20),
@@ -247,7 +250,18 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                         Spacer(),
                         Padding(
                           padding: EdgeInsets.only(right: 60),
-                          child: Text("${widget.price ?? 0}"),
+                          child: Row(
+                            children: [
+                              Text("${widget.price ?? "no price"}"),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                ": السعر ",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                         ),
                         Text(
                           widget.address ?? "no location",
@@ -267,16 +281,41 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                         ),
                       ],
                     ),
-                    // Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //     children: List.generate(
-                    //       widget.attributes?.length ?? 2,
-                    //       (index) => Text(
-                    //         widget.attributes?[index].value ?? "no value",
-                    //         style: GoogleFonts.plusJakartaSans(
-                    //             fontWeight: FontWeight.w600),
-                    //       ),
-                    //     )),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: List.generate(
+                            widget.attributes?.length ?? 2,
+                            (index) => FittedBox(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      widget.attributes?[index].value ??
+                                          "no value",
+                                      style: GoogleFonts.plusJakartaSans(
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      ":${widget.attributes?[index].attribute?.name}",
+                                      style: GoogleFonts.plusJakartaSans(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )),
+                    ),
                     SizedBox(
                       height: 20,
                     ),
@@ -287,27 +326,33 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
                           onTap: () {
                             Share.share('${widget.id}');
                           },
-                          child: Container(
-                            width: 40,
-                            height: 40,
-                            margin: EdgeInsets.only(left: 10),
-                            decoration: BoxDecoration(
-                                color: grey,
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Icon(
-                              Icons.share,
-                              color: brawn,
+                          child: GestureDetector(
+                            onTap: () {
+                              Share.share(
+                                  "https://buyandsell2024.com/?code=advDetails");
+                            },
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              margin: EdgeInsets.only(left: 10),
+                              decoration: BoxDecoration(
+                                  color: grey,
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Icon(
+                                Icons.share,
+                                color: brawn,
+                              ),
                             ),
                           ),
                         ),
                         const Spacer(),
-                        const Padding(
+                        Padding(
                           padding: EdgeInsets.only(right: 30, top: 10),
                           child: CircleAvatar(
                             backgroundColor: Colors.grey,
                             radius: 20,
                             backgroundImage:
-                                ExactAssetImage("images/person.png"),
+                                NetworkImage("https://buyandsell2024.com/$img"),
                           ),
                         ),
                         Padding(
@@ -474,6 +519,4 @@ class _MyAdvertisementDetailsState extends State<MyAdvertisementDetails> {
       )),
     );
   }
-
-  
 }

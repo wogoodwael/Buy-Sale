@@ -200,45 +200,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (_) =>
-                                                MyAdvertisementDetails(
-                                                  sellername:
-                                                      myAdvertisementModel!
-                                                          .data![index]
-                                                          .user!
-                                                          .firstName,
-                                                  description:
-                                                      myAdvertisementModel!
-                                                          .data![index]
-                                                          .description,
-                                                  price: myAdvertisementModel!
-                                                      .data![index].price,
-                                                  id: myAdvertisementModel!
-                                                      .data![index].id,
-                                                  name: myAdvertisementModel!
-                                                      .data![index].name,
-                                                  files: myAdvertisementModel
-                                                          ?.data?[index]
-                                                          .files ??
-                                                      [],
-                                                  phone: myAdvertisementModel!
-                                                      .data![index].phone,
-                                                  address: myAdvertisementModel!
-                                                      .data![index].address,
-                                                  subdescribtion:
-                                                      myAdvertisementModel!
-                                                          .data![index]
-                                                          .description!,
-                                                  comments: myAdvertisementModel
-                                                          ?.data?[index]
-                                                          .mycomments ??
-                                                      [],
-                                                  videoUrl: myAdvertisementModel
-                                                          ?.data?[index]
-                                                          .files?[0]
-                                                          .filePath ??
-                                                      "",
-                                                )));
+                                            builder: (_) => MyAdvertisementDetails(
+                                                sellername: myAdvertisementModel!
+                                                    .data![index]
+                                                    .user!
+                                                    .firstName,
+                                                description:
+                                                    myAdvertisementModel!
+                                                        .data![index]
+                                                        .description,
+                                                price: myAdvertisementModel!
+                                                    .data![index].price,
+                                                id: myAdvertisementModel!
+                                                    .data![index].id,
+                                                name: myAdvertisementModel!
+                                                    .data![index].name,
+                                                files: myAdvertisementModel
+                                                        ?.data?[index].files ??
+                                                    [],
+                                                phone: myAdvertisementModel!
+                                                    .data![index].phone,
+                                                address: myAdvertisementModel!
+                                                    .data![index].address,
+                                                subdescribtion:
+                                                    myAdvertisementModel!
+                                                        .data![index]
+                                                        .description!,
+                                                comments: myAdvertisementModel?.data?[index].mycomments ?? [],
+                                                videoUrl: myAdvertisementModel?.data?[index].files?[0].filePath ?? "",
+                                                attributes: myAdvertisementModel!.data![index].attributes)));
                                   },
                                   child: Container(
                                     margin: EdgeInsets.only(left: 5),

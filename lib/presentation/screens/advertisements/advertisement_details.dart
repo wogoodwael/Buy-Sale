@@ -11,6 +11,7 @@ import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/advertisement_model.dart';
 import 'package:shopping/data/services/apis.dart';
 import 'package:shopping/data/services/comments_api.dart';
+import 'package:shopping/main.dart';
 
 // ignore: must_be_immutable
 class AdvertismentDetails extends StatefulWidget {
@@ -49,16 +50,18 @@ class AdvertismentDetails extends StatefulWidget {
 }
 
 class _AdvertismentDetailsState extends State<AdvertismentDetails> {
-  bool ontapcar = false;
-
-  bool ontapchar1 = false;
-
-  bool ontapproduct = false;
-
-  bool ontapchar2 = false;
   bool isAdmine = false;
   ApiServices apiServices = ApiServices();
   TextEditingController content = TextEditingController();
+  String? img;
+
+  void imgf() async {
+    img = sharedpref.getString("img_path")!;
+    setState(() {
+      img;
+    });
+    print(img);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +212,18 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                     Spacer(),
                     Padding(
                       padding: EdgeInsets.only(right: 60),
-                      child: Text(widget.price ?? "no price"),
+                      child: Row(
+                        children: [
+                          Text(widget.price ?? "no price"),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            ": السعر ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                     Text(
                       widget.location ?? "no location",
@@ -231,29 +245,35 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                 ),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: List.generate(
                         widget.attributes?.length ?? 2,
-                        (index) => Row(
-                          children: [
-                            Text(
-                              widget.attributes?[index].value ?? "no value",
-                              style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.w600),
+                        (index) => FittedBox(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  widget.attributes?[index].value ?? "no value",
+                                  style: GoogleFonts.plusJakartaSans(
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  ":${widget.attributes?[index].attribute?.name}",
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                              ],
                             ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              ":${widget.attributes?[index].attribute?.name}",
-                              style: GoogleFonts.plusJakartaSans(
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                          ],
+                          ),
                         ),
                       )),
                 ),
@@ -282,12 +302,13 @@ class _AdvertismentDetailsState extends State<AdvertismentDetails> {
                       ),
                     ),
                     const Spacer(),
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(right: 30, top: 10),
                       child: CircleAvatar(
                         backgroundColor: Colors.grey,
                         radius: 20,
-                        backgroundImage: ExactAssetImage("images/person.png"),
+                        backgroundImage:
+                            NetworkImage("https://buyandsell2024.com/$img"),
                       ),
                     ),
                     Padding(
