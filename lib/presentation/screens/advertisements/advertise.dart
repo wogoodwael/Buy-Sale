@@ -25,7 +25,9 @@ import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_atrr._container.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_cat.dart';
 import 'package:shopping/presentation/screens/advertisements/choose_sub.dart';
+import 'package:shopping/presentation/screens/advertisements/second_sub_choose.dart';
 import 'package:shopping/presentation/screens/advertisements/select_attrs.dart';
+import 'package:shopping/presentation/screens/advertisements/third_sub_container.dart';
 
 import 'package:shopping/presentation/screens/countries/choose_city_container.dart';
 import 'package:shopping/presentation/screens/countries/choose_country_container.dart';
@@ -48,14 +50,18 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   CategoriesModel? categoriesModel;
 
   GetCateAttrsModel? getCateAttrsModel;
-  bool show = false;
+  bool shows1 = false;
+  bool shows2 = false;
+  bool shows3 = false;
   bool showCity = false;
   bool showAttrs = false;
+  bool showAttrs2 = false;
+  bool showAttrs3 = false;
   bool selectattrs = false;
   bool numAttrs = false;
   bool sringAttrs = false;
   String type = '';
-  int? length;
+  // int? length;
   String? value;
   TextEditingController nameOfProduct = TextEditingController();
   TextEditingController priceOfProduct = TextEditingController();
@@ -94,6 +100,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   List<String> fileType = [];
   List testWithAttribute = [];
   List<String> testWithoutAttribute = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -133,27 +140,84 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                 id: widget.id,
                 ontap: () {
                   setState(() {
-                    show = true;
+                    shows1 = true;
                   });
                 },
               ),
             ),
-            (show == true)
-                ? const Padding(
+            (shows1 == true)
+                ? Padding(
                     padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                    child: Text(
-                      "اختر القسم الفرعي ",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    child: GestureDetector(
+                      onTap: () {
+                        print("heeeee${subCategoriesModel!.data!.parent!.id}");
+                      },
+                      child: Text(
+                        "اختر القسم الفرعي ",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
                     ),
                   )
                 : Container(),
-            (show == true)
+            (shows1 == true)
                 ? ChooseSubCategContainer(
                     top: .42 * mediaHiegh(context),
                     ontap: () {
                       setState(() {
                         showAttrs = true;
+                        shows2 = true;
+                      });
+                    },
+                  )
+                : Container(),
+            (shows2 == true)
+                ? Padding(
+                    padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
+                    child: GestureDetector(
+                      onTap: () {
+                        print("heeeee${subCategoriesModel!.data!.parent!.id}");
+                      },
+                      child: Text(
+                        " اختر القسم الفرعي الثاني",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                    ),
+                  )
+                : Container(),
+            (shows2 == true)
+                ? SecondSubCategContainer(
+                    top: .42 * mediaHiegh(context),
+                    ontap: () {
+                      setState(() {
+                        showAttrs2 = true;
+                        shows3 = true;
+                      });
+                    },
+                  )
+                : Container(),
+            (shows3 == true)
+                ? Padding(
+                    padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
+                    child: GestureDetector(
+                      onTap: () {
+                        print("heeeee${subCategoriesModel!.data!.parent!.id}");
+                      },
+                      child: Text(
+                        " اختر القسم الفرعي الثالث",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                    ),
+                  )
+                : Container(),
+            (shows3 == true)
+                ? ThirdSubCategContainer(
+                    top: .42 * mediaHiegh(context),
+                    ontap: () {
+                      setState(() {
+                        showAttrs3 = true;
                       });
                     },
                   )
@@ -214,7 +278,7 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
             SizedBox(
               height: 20,
             ),
-            (show == true)
+            (shows1 == true)
                 ? BlocBuilder<AttrsCategoriesCubit, AttrsCategoriesState>(
                     builder: (context, state) {
                       if (state is AttrsCategoriesLoading) {
@@ -576,9 +640,11 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   List<String> cityid =
                       sharedPreferences.getStringList('selected_cities')!;
 
-                  String categoriesId = showAttrs
-                      ? sharedPreferences.getString("sub_id")!
-                      : sharedPreferences.getString("postId")!;
+                  String categoriesId = showAttrs3? sharedPreferences.getString("third_sub_id")! :  showAttrs2
+                      ? sharedPreferences.getString("second_sub_id")!
+                      : showAttrs
+                          ? sharedPreferences.getString("sub_id")!
+                          : sharedPreferences.getString("postId")!;
                   print("caaaaaaaaaaaaaaaaaaatid$categoriesId");
                   setState(() {
                     isLoading = true;

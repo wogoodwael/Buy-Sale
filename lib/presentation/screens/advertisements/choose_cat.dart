@@ -132,9 +132,12 @@ class _ChooseCategoriesContainerState extends State<ChooseCategoriesContainer> {
                 sharedPreferences.setString("category_choosen_name", text!);
                 text = sharedPreferences.getString("category_choosen_name");
                 BlocProvider.of<SubCateCreateAdvCubit>(context)
-                    .subCateCreateAdvCubit();
+                    .subCateCreateAdvCubit(
+                        id: categoriesModel!.data!.categories![index].id
+                            .toString());
+                            
                 BlocProvider.of<AttrsCategoriesCubit>(context)
-                    .getCategoriesAttrsCubit(id:widget.id! );
+                    .getCategoriesAttrsCubit(id: widget.id!);
 
                 print("idinadv${widget.id}");
               });

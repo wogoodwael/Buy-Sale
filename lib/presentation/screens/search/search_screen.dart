@@ -79,8 +79,9 @@ class SearchScreen extends SearchDelegate {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (_) =>
-                                                SubCategorieScreen()));
+                                            builder: (_) => SubCategorieScreen(
+                                                  id: item.id.toString(),
+                                                )));
                                   },
                                   child: Container(
                                     width: .42 * mediawidth(context),

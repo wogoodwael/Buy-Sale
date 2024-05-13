@@ -14,8 +14,10 @@ import 'package:shopping/business_logic/Cubit/filter_category_cubit/filter_categ
 import 'package:shopping/business_logic/Cubit/government_cubit/government_cubit.dart';
 
 import 'package:shopping/business_logic/Cubit/my_advertise/my_advertisement_cubit.dart';
+import 'package:shopping/business_logic/Cubit/second_sub/second_sub_cubit.dart';
 import 'package:shopping/business_logic/Cubit/subCategories/sub_categories_cubit.dart';
 import 'package:shopping/business_logic/Cubit/sub_cate_create_adv/sub_cate_create_adv_cubit.dart';
+import 'package:shopping/business_logic/Cubit/third_sub/third_sub_cubit.dart';
 import 'package:shopping/core/helper/fav_provider.dart';
 import 'package:shopping/core/utils/app_routes.dart';
 import 'package:shopping/data/services/apis.dart';
@@ -55,7 +57,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   AppRouter appRouter = AppRouter();
 
-  int? lenght;
+  // int? lenght;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +70,17 @@ class _MyAppState extends State<MyApp> {
         BlocProvider(create: (context) => MyAdvertisementCubit(ApiServices())),
         BlocProvider(create: (context) => AdvertismentCubit(ApiServices())),
         BlocProvider(
-            create: (context) => SubCateCreateAdvCubit(ApiServices(), lenght)),
+            create: (context) => SubCateCreateAdvCubit(
+                  ApiServices(),
+                )),
+        BlocProvider(
+            create: (context) => SecondSubCubit(
+                  ApiServices(),
+                )),
+        BlocProvider(
+            create: (context) => ThirdSubCubit(
+                  ApiServices(),
+                )),
         BlocProvider(create: (context) => AttrsCategoriesCubit(ApiServices())),
         BlocProvider(create: (context) => FilterCategoryCubit(ApiServices()))
       ],

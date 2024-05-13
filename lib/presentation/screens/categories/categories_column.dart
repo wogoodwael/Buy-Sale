@@ -91,7 +91,7 @@ class _CategoriesColumnState extends State<CategoriesColumn> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (_) =>
-                                                    SubCategorieScreen()));
+                                                    SubCategorieScreen(id: currentRowItems[i].id.toString(),)));
                                       }
                                     },
                                     child: Container(

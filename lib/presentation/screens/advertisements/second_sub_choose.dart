@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping/business_logic/Cubit/attrs_categories/attrs_categories_cubit.dart';
 import 'package:shopping/business_logic/Cubit/second_sub/second_sub_cubit.dart';
 import 'package:shopping/business_logic/Cubit/sub_cate_create_adv/sub_cate_create_adv_cubit.dart';
+import 'package:shopping/business_logic/Cubit/third_sub/third_sub_cubit.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/data/models/categories_attrs_model.dart';
@@ -14,25 +15,25 @@ import 'package:shopping/data/services/apis.dart';
 import 'package:shopping/presentation/widgets/countries_row.dart';
 
 // ignore: must_be_immutable
-class ChooseSubCategContainer extends StatefulWidget {
-  ChooseSubCategContainer({Key? key, required this.top, this.ontap})
+class SecondSubCategContainer extends StatefulWidget {
+  SecondSubCategContainer({Key? key, required this.top, this.ontap})
       : super(key: key);
   final double top;
   final void Function()? ontap;
 
   @override
-  State<ChooseSubCategContainer> createState() =>
-      _ChooseSubCategContainerState();
+  State<SecondSubCategContainer> createState() =>
+      _SecondSubCategContainerState();
 }
 
-class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
+class _SecondSubCategContainerState extends State<SecondSubCategContainer> {
   SubCategoriesModel? subCategoriesModel;
   GetCateAttrsModel? getCateAttrsModel;
   ApiServices apiServices = ApiServices();
   // int? lenght;
   void updateLength() async {
     setState(() {
-      // lenght = BlocProvider.of<SubCateCreateAdvCubit>(context).lenght;
+      // lenght = BlocProvider.of<SecondSubCubit>(context).lenght;
     });
   }
 
@@ -58,21 +59,21 @@ class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
   String? id;
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SubCateCreateAdvCubit, SubCateCreateAdvState>(
+    return BlocBuilder<SecondSubCubit, SecondSubState>(
       builder: (context, state) {
         subCategoriesModel =
-            BlocProvider.of<SubCateCreateAdvCubit>(context).subCategoriesModel;
-        // lenght = BlocProvider.of<SubCateCreateAdvCubit>(context).lenght;
+            BlocProvider.of<SecondSubCubit>(context).subCategoriesModel;
+        // lenght = BlocProvider.of<SecondSubCubit>(context).lenght;
 
-        // print(lenght);
+        // print("second sub lenght $lenght");
 
-        if (state is SubCateCreateAdvLoading) {
+        if (state is SecondSubLoading) {
           return Center(
             child: SpinKitDualRing(
               color: brawn,
             ),
           );
-        } else if (state is SubCateCreateAdvSuccess) {
+        } else if (state is SecondSubSuccess) {
           return Center(
             child: StatefulBuilder(
               builder: (BuildContext context, setState) {
@@ -120,14 +121,12 @@ class _ChooseSubCategContainerState extends State<ChooseSubCategContainer> {
                                       print("############$id");
 
                                       sharedPreferences.setString(
-                                          "sub_id",
+                                          "second_sub_id",
                                           subCategoriesModel!
                                               .data!.categories![index].id
                                               .toString());
-                                      print(
-                                          "api${apiServices.getSecondSubCategoriesAdv(id: id!)}");
-                                      BlocProvider.of<SecondSubCubit>(context)
-                                          .secondSubCubit(id: id!);
+                                      BlocProvider.of<ThirdSubCubit>(context)
+                                          .thirdSubCubit(id: id!);
                                       BlocProvider.of<AttrsCategoriesCubit>(
                                               context)
                                           .getCategoriesAttrsCubit(id: id!);

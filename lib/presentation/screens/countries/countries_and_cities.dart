@@ -25,7 +25,7 @@ class _CountriesState extends State<Countries> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Center(
@@ -37,9 +37,9 @@ class _CountriesState extends State<Countries> {
               const SizedBox(
                 height: 20,
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
-                child: Text(
+                child:  Text(
                   "اختار المحافظة ",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
@@ -47,10 +47,10 @@ class _CountriesState extends State<Countries> {
               ChooseCountryContainer(
                 top: .25 * mediaHiegh(context),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Padding(
+              const Padding(
                 padding: EdgeInsets.only(right: 30, top: 10, bottom: 5),
                 child: Text(
                   "اختار المدينة ",
@@ -58,12 +58,12 @@ class _CountriesState extends State<Countries> {
                 ),
               ),
               ChooseCityContainer(top: .4 * mediaHiegh(context)),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               //  CenterChooseContainer(),
               // CenterChooseContainer(),
-              SizedBox(
+              const SizedBox(
                 height: 40,
               ),
 
@@ -92,7 +92,7 @@ class _CountriesState extends State<Countries> {
                                     name: name,
                                   )));
                     },
-                    child: Text(
+                    child: const Text(
                       " التالي ",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 25),

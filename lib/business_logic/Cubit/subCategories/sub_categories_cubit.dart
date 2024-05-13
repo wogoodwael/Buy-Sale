@@ -9,10 +9,10 @@ class SubCategoriesCubit extends Cubit<SubCategoriesState> {
   SubCategoriesCubit(this.apiServices) : super(SubCategoriesInitial());
   ApiServices apiServices;
   SubCategoriesModel? subCategoriesModel;
-  void getSubCategoriesCubit() async {
+  void getSubCategoriesCubit({required String id}) async {
     emit(SubCategoriesLoading());
     try {
-      subCategoriesModel = await apiServices.getSubCategories();
+      subCategoriesModel = await apiServices.getSubCategories(id: id);
       emit(SubCategoriesSuccess());
     } catch (e) {
       print(e.toString());

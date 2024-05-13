@@ -60,7 +60,7 @@ class SubCategories {
   int? parentId;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  // Null? deletedAt;
   int? active;
   Parent? parent;
 
@@ -73,7 +73,7 @@ class SubCategories {
       this.parentId,
       this.createdAt,
       this.updatedAt,
-      this.deletedAt,
+      // this.deletedAt,
       this.active,
       this.parent});
 
@@ -86,7 +86,7 @@ class SubCategories {
     parentId = json['parent_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    // deletedAt = json['deleted_at'];
     active = json['active'];
     parent =
         json['parent'] != null ? new Parent.fromJson(json['parent']) : null;
@@ -102,7 +102,7 @@ class SubCategories {
     data['parent_id'] = this.parentId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    data['deleted_at'] = this.deletedAt;
+    // data['deleted_at'] = this.deletedAt;
     data['active'] = this.active;
     if (this.parent != null) {
       data['parent'] = this.parent!.toJson();
@@ -117,10 +117,10 @@ class Parent {
   String? nameEn;
   String? imgPath;
   int? haveSubCategories;
-  Null? parentId;
+  // Null? parentId;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  // Null? deletedAt;
   int? active;
 
   Parent(
@@ -129,10 +129,10 @@ class Parent {
       this.nameEn,
       this.imgPath,
       this.haveSubCategories,
-      this.parentId,
+      // this.parentId,
       this.createdAt,
       this.updatedAt,
-      this.deletedAt,
+      // this.deletedAt,
       this.active});
 
   Parent.fromJson(Map<String, dynamic> json) {
@@ -141,10 +141,10 @@ class Parent {
     nameEn = json['name_en'];
     imgPath = json['img_path'];
     haveSubCategories = json['have_sub_categories'];
-    parentId = json['parent_id'];
+    // parentId = json['parent_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    // deletedAt = json['deleted_at'];
     active = json['active'];
   }
 
@@ -155,10 +155,10 @@ class Parent {
     data['name_en'] = this.nameEn;
     data['img_path'] = this.imgPath;
     data['have_sub_categories'] = this.haveSubCategories;
-    data['parent_id'] = this.parentId;
+    // data['parent_id'] = this.parentId;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
-    data['deleted_at'] = this.deletedAt;
+    // data['deleted_at'] = this.deletedAt;
     data['active'] = this.active;
     return data;
   }

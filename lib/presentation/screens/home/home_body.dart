@@ -54,7 +54,7 @@ class _HomeBodyState extends State<HomeBody> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Padding(
-            padding: EdgeInsets.only(right: 30),
+            padding: const EdgeInsets.only(right: 30),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -70,7 +70,7 @@ class _HomeBodyState extends State<HomeBody> {
                 const SizedBox(
                   width: 20,
                 ),
-                Text(
+                const Text(
                   "اهلا بك",
                   style: TextStyle(
                     fontSize: 15,
@@ -83,7 +83,7 @@ class _HomeBodyState extends State<HomeBody> {
           ),
 
           Padding(
-            padding: EdgeInsets.only(right: 40),
+            padding: const EdgeInsets.only(right: 40),
             child: Text(
               'عن ماذا ستبحث اليوم ؟',
               style: TextStyle(
@@ -94,7 +94,7 @@ class _HomeBodyState extends State<HomeBody> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(right: 45),
+            padding: const EdgeInsets.only(right: 45),
             child: GestureDetector(
               onTap: () {
                 RouteSettings settings = ModalRoute.of(context)!.settings;
@@ -110,11 +110,11 @@ class _HomeBodyState extends State<HomeBody> {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           // SearchContainer(),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Center(
@@ -128,7 +128,7 @@ class _HomeBodyState extends State<HomeBody> {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Row(
@@ -141,7 +141,7 @@ class _HomeBodyState extends State<HomeBody> {
                 style: GoogleFonts.poppins(fontSize: 22),
               ),
               Padding(
-                padding: EdgeInsets.only(left: 90),
+                padding: const EdgeInsets.only(left: 90),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.push(context,
@@ -155,11 +155,11 @@ class _HomeBodyState extends State<HomeBody> {
               ),
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           //تكملت التاب بار
-          HomeContainer()
+          const HomeContainer()
         ],
       ),
     );

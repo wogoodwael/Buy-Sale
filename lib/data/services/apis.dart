@@ -108,9 +108,8 @@ class ApiServices {
   }
 
   //* get sub categories
-  Future<SubCategoriesModel> getSubCategories() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String id = sharedPreferences.getString("categories_id")!;
+  Future<SubCategoriesModel> getSubCategories({required String id }) async {
+   
     http.Response response = await http.get(
         Uri.parse("https://buyandsell2024.com/api/category?parent_id=${id}"),
         headers: {"api-token": "gh-general"});
@@ -146,22 +145,85 @@ class ApiServices {
   }
 
 //! get sub categories for advertisement
-  Future<SubCategoriesModel> getSubCategoriesAdv() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String id = sharedPreferences.getString("adv_category_id")!;
-    print("@@@@@@@@@@$id");
+  Future<SubCategoriesModel> getSubCategoriesAdv({required String id}) async {
+    print("object**************$id");
+
+    if (id.isEmpty) {
+      throw ArgumentError('id cannot be empty');
+    }
+
     http.Response response = await http.get(
-        Uri.parse("https://buyandsell2024.com/api/category?parent_id=$id"),
-        headers: {"api-token": "gh-general"});
+      Uri.parse("https://buyandsell2024.com/api/category?parent_id=$id"),
+      headers: {"api-token": "gh-general"},
+    );
+
     Map<String, dynamic> data = jsonDecode(response.body);
+
     if (response.statusCode == 200) {
       print("the data in sub categories adv services is ${data}");
     } else {
       print("error ${response.statusCode} ");
     }
-      SubCategoriesModel subCategoriesModel = SubCategoriesModel.fromJson(data);
+
+    SubCategoriesModel subCategoriesModel = SubCategoriesModel.fromJson(data);
     print(subCategoriesModel.data!.categories![0].nameAr);
-    // print(subCategoriesModel.data!.categories![0].nameAr);
+
+    return subCategoriesModel;
+  }
+
+//! get second sub categories for advertisement
+  Future<SubCategoriesModel> getSecondSubCategoriesAdv(
+      {required String id}) async {
+    print("Second  object**************$id");
+
+    if (id.isEmpty) {
+      throw ArgumentError('id cannot be empty');
+    }
+
+    http.Response response = await http.get(
+      Uri.parse("https://buyandsell2024.com/api/category?parent_id=$id"),
+      headers: {"api-token": "gh-general"},
+    );
+
+    Map<String, dynamic> data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      print("the data in second sub categories adv services is ${data}");
+    } else {
+      print("error ${response.statusCode} ");
+    }
+
+    SubCategoriesModel subCategoriesModel = SubCategoriesModel.fromJson(data);
+    print(subCategoriesModel.data!.categories![0].nameAr);
+
+    return subCategoriesModel;
+  }
+  
+  //!get thied sub
+  Future<SubCategoriesModel> getThirdSubCategoriesAdv(
+      {required String id}) async {
+    print("Second  object**************$id");
+
+    if (id.isEmpty) {
+      throw ArgumentError('id cannot be empty');
+    }
+
+    http.Response response = await http.get(
+      Uri.parse("https://buyandsell2024.com/api/category?parent_id=$id"),
+      headers: {"api-token": "gh-general"},
+    );
+
+    Map<String, dynamic> data = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      print("the data in second sub categories adv services is ${data}");
+    } else {
+      print("error ${response.statusCode} ");
+    }
+
+    SubCategoriesModel subCategoriesModel = SubCategoriesModel.fromJson(data);
+    print(subCategoriesModel.data!.categories![0].nameAr);
+
     return subCategoriesModel;
   }
 

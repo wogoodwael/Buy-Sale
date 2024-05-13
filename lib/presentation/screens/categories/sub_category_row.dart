@@ -7,10 +7,11 @@ import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/data/models/sub_cate.dart';
 import 'package:shopping/data/services/apis.dart';
 import 'package:shopping/presentation/screens/categories/sub_cate_adve.dart';
+import 'package:shopping/presentation/screens/categories/sub_categories.dart';
 
 class SubCategoryRow extends StatefulWidget {
-  const SubCategoryRow({super.key});
-
+  const SubCategoryRow({super.key, required this.id});
+  final String id;
   @override
   State<SubCategoryRow> createState() => _SubCategoryRowState();
 }
@@ -21,7 +22,8 @@ class _SubCategoryRowState extends State<SubCategoryRow> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<SubCategoriesCubit>(context).getSubCategoriesCubit();
+    BlocProvider.of<SubCategoriesCubit>(context)
+        .getSubCategoriesCubit(id: widget.id);
   }
 
   @override
@@ -58,28 +60,46 @@ class _SubCategoryRowState extends State<SubCategoryRow> {
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        for (var item in currentRowItems)
+                        for (int i = 0; i < currentRowItems.length; i++)
                           Column(
                             children: [
                               GestureDetector(
                                 onTap: () async {
+                                  print("we will check here ${widget.id}");
                                   SharedPreferences prefs =
                                       await SharedPreferences.getInstance();
-                                  prefs.setString(
-                                      'sub_category_id', item.id.toString());
+                                  prefs.setString('sub_category_id',
+                                      currentRowItems[i].id.toString());
 
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => SubCategoryAdvertise(
-                                                sub_cate_id: item.id.toString(),
-                                              )));
+                                  if (currentRowItems[i].haveSubCategories ==
+                                      0) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                SubCategoryAdvertise(
+                                                    sub_cate_id:
+                                                        currentRowItems[i]
+                                                            .id
+                                                            .toString())));
+                                  } else if (currentRowItems[i]
+                                          .haveSubCategories ==
+                                      1) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => SubCategorieScreen(
+                                                  id: currentRowItems[i]
+                                                      .id
+                                                      .toString(),
+                                                )));
+                                  }
                                 },
                                 child: Container(
                                   width: 156,
                                   height: 200,
                                   child: Image.network(
-                                      "https://buyandsell2024.com/${item.imgPath}",
+                                      "https://buyandsell2024.com/${currentRowItems[i].imgPath}",
                                       errorBuilder: (BuildContext context,
                                           Object error,
                                           StackTrace? stackTrace) {
@@ -91,7 +111,7 @@ class _SubCategoryRowState extends State<SubCategoryRow> {
                               Padding(
                                 padding: EdgeInsets.only(right: 70),
                                 child: Text(
-                                  item.nameAr.toString(),
+                                  currentRowItems[i].nameAr.toString(),
                                   style: TextStyle(
                                     fontSize: 11,
                                     fontWeight: FontWeight.w500,
@@ -104,7 +124,7 @@ class _SubCategoryRowState extends State<SubCategoryRow> {
                               Container(
                                 width: 120,
                                 child: Text(
-                                  item.parent!.nameAr.toString(),
+                                  currentRowItems[i].parent!.nameAr.toString(),
                                   softWrap: true,
                                   style: TextStyle(
                                     fontFamily: "PlusJakartaSans-Bold",

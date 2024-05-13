@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:shopping/presentation/screens/categories/sub_category_row.dart';
 
 class SubCategorieScreen extends StatelessWidget {
-  const SubCategorieScreen({super.key});
-
+  const SubCategorieScreen({super.key, required this.id});
+  final String id;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +49,7 @@ class SubCategorieScreen extends StatelessWidget {
           width: 500,
           height: 500,
           child: Column(
-            children: [SubCategoryRow()],
+            children: [SubCategoryRow(id: id,)],
           ),
         )
       ]),
