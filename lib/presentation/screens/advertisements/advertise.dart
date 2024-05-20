@@ -65,14 +65,14 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   String? value;
   TextEditingController nameOfProduct = TextEditingController();
   TextEditingController priceOfProduct = TextEditingController();
-  late List<TextEditingController> emptyValueProduct;
+  // late List<TextEditingController> emptyValueProduct;
 
   TextEditingController locattion = TextEditingController();
   TextEditingController sellerName = TextEditingController();
   TextEditingController describtion = TextEditingController();
   TextEditingController phone = TextEditingController();
   TextEditingController price = TextEditingController();
-  late List<bool> pressed;
+
   String? text;
   String? texts;
   String? textModel;
@@ -100,13 +100,33 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
   List<String> fileType = [];
   List testWithAttribute = [];
   List<String> testWithoutAttribute = [];
+  List<TextEditingController> emptyValueProduct = [];
+  List<bool> pressed = [];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Update lists length when getCateAttrsModel is available
+    final getCateAttrsModel =
+        BlocProvider.of<AttrsCategoriesCubit>(context).getCateAttrsModel;
+    if (getCateAttrsModel != null) {
+      if (emptyValueProduct.length != getCateAttrsModel.data!.length) {
+        emptyValueProduct = List.generate(
+          getCateAttrsModel.data!.length,
+          (_) => TextEditingController(),
+        );
+      }
+      if (pressed.length != getCateAttrsModel.data!.length) {
+        pressed = List.generate(getCateAttrsModel.data!.length, (_) => false);
+      }
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    emptyValueProduct = List.generate(3, (index) => TextEditingController());
-    pressed = List.generate(3, (index) => false);
+    getCateAttrsModel =
+        BlocProvider.of<AttrsCategoriesCubit>(context).getCateAttrsModel;
   }
 
   @override
@@ -288,6 +308,21 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                         getCateAttrsModel =
                             BlocProvider.of<AttrsCategoriesCubit>(context)
                                 .getCateAttrsModel;
+                        if (getCateAttrsModel != null &&
+                            getCateAttrsModel!.data != null) {
+                          if (emptyValueProduct.length !=
+                              getCateAttrsModel!.data!.length) {
+                            emptyValueProduct = List.generate(
+                              getCateAttrsModel!.data!.length,
+                              (_) => TextEditingController(),
+                            );
+                          }
+                          if (pressed.length !=
+                              getCateAttrsModel!.data!.length) {
+                            pressed = List.generate(
+                                getCateAttrsModel!.data!.length, (_) => false);
+                          }
+                        }
                         return Column(
                           children: List.generate(
                               getCateAttrsModel!.data!.length,
@@ -370,16 +405,6 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                                                     controller:
                                                         emptyValueProduct[
                                                             index],
-                                                    // onSubmitted: (val) {
-                                                    //   setState(() {
-                                                    //     numAttrs = true;
-                                                    //     // attrsListSelect =
-                                                    //     //     List.from(
-                                                    //     //         attrsListvalue);
-                                                    //     print(
-                                                    //         "=========$attrsListSelect");
-                                                    //   });
-                                                    // },
                                                     textDirection:
                                                         TextDirection.rtl,
                                                     decoration: InputDecoration(
@@ -640,11 +665,13 @@ class _AdvertiseScreenState extends State<AdvertiseScreen> {
                   List<String> cityid =
                       sharedPreferences.getStringList('selected_cities')!;
 
-                  String categoriesId = showAttrs3? sharedPreferences.getString("third_sub_id")! :  showAttrs2
-                      ? sharedPreferences.getString("second_sub_id")!
-                      : showAttrs
-                          ? sharedPreferences.getString("sub_id")!
-                          : sharedPreferences.getString("postId")!;
+                  String categoriesId = showAttrs3
+                      ? sharedPreferences.getString("third_sub_id")!
+                      : showAttrs2
+                          ? sharedPreferences.getString("second_sub_id")!
+                          : showAttrs
+                              ? sharedPreferences.getString("sub_id")!
+                              : sharedPreferences.getString("postId")!;
                   print("caaaaaaaaaaaaaaaaaaatid$categoriesId");
                   setState(() {
                     isLoading = true;

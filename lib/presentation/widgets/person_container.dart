@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:shopping/core/utils/colors.dart';
 import 'package:shopping/core/utils/strings.dart';
 import 'package:shopping/main.dart';
@@ -40,6 +43,35 @@ class _PersonContainerState extends State<PersonContainer> {
                 Icons.menu,
                 size: 40,
                 color: Color(0xff935C09),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacementNamed(context, countries);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "الرجوع للمحافظات",
+                      style: GoogleFonts.cairo(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: brawn),
+                      textDirection: TextDirection.rtl,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Icon(
+                      FontAwesomeIcons.flag,
+                      color: brawn,
+                      size: 15,
+                    ),
+                  ],
+                ),
               ),
               CircleAvatar(
                 radius: 38,

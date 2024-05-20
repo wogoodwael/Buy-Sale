@@ -23,7 +23,7 @@ class SubCategorieScreen extends StatelessWidget {
             ),
             Center(
                 child: Text(
-              "اسم القسم الأساسى",
+              " القسم الفرعي",
               style: TextStyle(
                 fontFamily: "PlusJakartaSans-Bold",
                 fontSize: 20,
@@ -49,7 +49,11 @@ class SubCategorieScreen extends StatelessWidget {
           width: 500,
           height: 500,
           child: Column(
-            children: [SubCategoryRow(id: id,)],
+            children: [
+              SubCategoryRow(
+                id: id,
+              )
+            ],
           ),
         )
       ]),

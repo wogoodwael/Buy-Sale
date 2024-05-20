@@ -109,32 +109,20 @@ class _SubCategoryRowState extends State<SubCategoryRow> {
                                 ),
                               ),
                               Padding(
-                                padding: EdgeInsets.only(right: 70),
+                                padding: EdgeInsets.only(
+                                  right: 50,
+                                ),
                                 child: Text(
                                   currentRowItems[i].nameAr.toString(),
                                   style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w500,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
                                     fontFamily: "PlusJakartaSans",
-                                    color: Colors.grey,
+                                    color: Colors.black,
                                   ),
                                   textAlign: TextAlign.start,
                                 ),
                               ),
-                              Container(
-                                width: 120,
-                                child: Text(
-                                  currentRowItems[i].parent!.nameAr.toString(),
-                                  softWrap: true,
-                                  style: TextStyle(
-                                    fontFamily: "PlusJakartaSans-Bold",
-                                    fontSize: 14,
-                                    color: Color(0xff111111),
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                  textAlign: TextAlign.right,
-                                ),
-                              )
                             ],
                           ),
                       ],

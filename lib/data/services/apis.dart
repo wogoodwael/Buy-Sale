@@ -19,6 +19,7 @@ import 'package:http/http.dart' as http;
 import 'package:shopping/data/models/my_advertise_model.dart';
 import 'package:shopping/data/models/sub_cate.dart';
 import 'package:shopping/data/models/sub_categories_adv_model.dart';
+import 'package:shopping/main.dart';
 import 'package:shopping/presentation/screens/client/profile.dart';
 
 class ApiServices {
@@ -108,8 +109,7 @@ class ApiServices {
   }
 
   //* get sub categories
-  Future<SubCategoriesModel> getSubCategories({required String id }) async {
-   
+  Future<SubCategoriesModel> getSubCategories({required String id}) async {
     http.Response response = await http.get(
         Uri.parse("https://buyandsell2024.com/api/category?parent_id=${id}"),
         headers: {"api-token": "gh-general"});
@@ -176,9 +176,9 @@ class ApiServices {
       {required String id}) async {
     print("Second  object**************$id");
 
-    if (id.isEmpty) {
-      throw ArgumentError('id cannot be empty');
-    }
+    // if (id.isEmpty) {
+    //   throw ArgumentError('id cannot be empty');
+    // }
 
     http.Response response = await http.get(
       Uri.parse("https://buyandsell2024.com/api/category?parent_id=$id"),
@@ -198,7 +198,7 @@ class ApiServices {
 
     return subCategoriesModel;
   }
-  
+
   //!get thied sub
   Future<SubCategoriesModel> getThirdSubCategoriesAdv(
       {required String id}) async {
@@ -335,10 +335,14 @@ class ApiServices {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String token = prefs.getString('login_token')!;
+    String governId = sharedpref.getString("government_choosen_id")!;
+    String cityId = sharedpref.getStringList('selected_cities')!.first;
     print("idddddddddddddofadvertisement$id");
+    print("goverrrrrrrrrrnfadvertisement$governId");
+    print("cittttttttttyofadvertisement$cityId");
     http.Response response = await http.get(
         Uri.parse(
-            "https://buyandsell2024.com/api/advertisement?category_id=$id"),
+            "https://buyandsell2024.com/api/advertisement?category_id=$id&governorate_id=$governId&?city_id=$cityId"),
         headers: {"api-token": "gh-general", "Authorization": "Bearer $token"});
     Map<String, dynamic> data = jsonDecode(response.body);
     if (response.statusCode == 200) {
